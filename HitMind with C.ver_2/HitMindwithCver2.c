@@ -20,7 +20,7 @@ HitMind With C.ver_2
 // #pragma comment 는 visual studio에서만 사용 가능 *솔루션 플렛폼을 64비트로 해주세요
 #pragma comment (lib, "lib/libmysql.lib")	//mysql라이브러리
 #pragma comment (lib, "lib/SDL2")			//그래픽 라이브러리 1
-#pragma comment (lib, "lib/SDL2main")		//그래픽 라이브러리 2
+#pragma comment (lib, "lib/SDL2main")		//그래픽 라이브러리 2 
 #pragma comment (lib, "lib/SDL2_image")		//그래픽 라이브러리 3
 #pragma comment (lib,"lib/SDL2_ttf")
 #pragma comment (lib, "lib/SDL2_mixer.lib")	//그래픽 사운드 라이브러리 4
