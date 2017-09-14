@@ -20,11 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HitMindwithCver2.c" />
+    <ClCompile Include="HitMind_Console.c" />
+    <ClCompile Include="HitMind_Graphic.c" />
+    <ClCompile Include="HitMind_Mysql.c" />
+    <ClCompile Include="HitMind_Socket.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HitMind_Console.h" />
     <ClInclude Include="HitMind_Graphic.h" />
-    <ClInclude Include="HitMind_mysql.h" />
+    <ClInclude Include="HitMind_Mysql.h" />
     <ClInclude Include="HitMind_Socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

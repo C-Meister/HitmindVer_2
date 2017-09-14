@@ -17,11 +17,20 @@
     <ClCompile Include="HitMindwithCver2.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="HitMind_Console.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HitMind_Graphic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HitMind_Mysql.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HitMind_Socket.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HitMind_mysql.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="HitMind_Graphic.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -29,6 +38,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="HitMind_Socket.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="HitMind_Mysql.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
