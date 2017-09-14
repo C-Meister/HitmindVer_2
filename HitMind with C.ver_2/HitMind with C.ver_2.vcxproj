@@ -26,10 +26,7 @@
     <ClCompile Include="HitMind_Socket.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HitMind_Console.h" />
-    <ClInclude Include="HitMind_Graphic.h" />
-    <ClInclude Include="HitMind_Mysql.h" />
-    <ClInclude Include="HitMind_Socket.h" />
+    <ClInclude Include="include.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

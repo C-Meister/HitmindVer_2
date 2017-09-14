@@ -8,7 +8,7 @@
  * codepoint for KSC's codepoint (n, m) would be found at
  * index (n-33)*94+m-33.
  */
-long tabksc5601[] = {
+static long tabksc5601[] = {
 /* KSC 5601 -> Unicode mapping table; max codepoint = 0x7d7e */
        0x3000,0x3001,0x3002,0x00B7,0x2025,0x2026,0x00A8,
 0x3003,0x00AD,0x2015,0x2225,0xFF3C,0x223C,0x2018,0x2019,
@@ -1129,7 +1129,7 @@ long tabksc5601[] = {
 0/*  End of table; # of entries=8741(0x2225)+1 */
 
 };
-int ksc5601max=sizeof(tabksc5601)/sizeof(tabksc5601[0])-1;
+static int ksc5601max=sizeof(tabksc5601)/sizeof(tabksc5601[0])-1;
         /* # of entries in the table. */
 
 static unsigned short convert_char_ksc5601_to_ucs2(unsigned char byte1, unsigned char byte2)
@@ -1145,7 +1145,7 @@ static unsigned short convert_char_ksc5601_to_ucs2(unsigned char byte1, unsigned
 }
 
 
-void han2unicode(char *src, Uint16 *dest)
+static void han2unicode(char *src, Uint16 *dest)
 {
   while (*src) {
     if (*src > 0 && *src < 128) {
