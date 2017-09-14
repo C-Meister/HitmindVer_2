@@ -39,13 +39,30 @@
 #define CLS system("cls")	//콘솔 화면 지우기
 #define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //콘솔 출력 글씨 설정
 #define RESET(X) ZeroMemory(X, sizeof(X))	//초기화 memset()이랑 같음
+#define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
+//MouseUp_Wait = PutMenu를 사용할때 마우스 버튼을 클릭하자말자 넘어가기 때문에 방지를 해줌.
 
+typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 사용함. 쉽게 사용하기위해 typedef 해줌
 
+/*
+	변수에 대한 설명:
+	이 include.h헤더파일은 여러 군데에서 사용을함.
+	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
+*/
+static int Display_X = 1920;	//해상도 - X	
+static int Display_Y = 1080;	//해상도 - Y
+
+								
 //---------------콘솔 함수----------------
 
 
 
 //---------------그래픽 함수--------------
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y);		//SDL - 텍스트를 출력하는함수
+int PutMenu(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
+//SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size);
+//SDL - PutText 텍스트를 출력함.
 
 
 //---------------MySql 함수---------------
