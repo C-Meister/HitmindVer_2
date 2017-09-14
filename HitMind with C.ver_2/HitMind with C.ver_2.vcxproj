@@ -21,6 +21,12 @@
   <ItemGroup>
     <ClCompile Include="HitMindwithCver2.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HitMind_Console.h" />
+    <ClInclude Include="HitMind_Graphic.h" />
+    <ClInclude Include="HitMind_mysql.h" />
+    <ClInclude Include="HitMind_Socket.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{A3155CB1-A3E4-4D3A-801B-4C31F89C0249}</ProjectGuid>
