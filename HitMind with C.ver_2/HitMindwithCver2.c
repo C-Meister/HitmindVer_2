@@ -7,10 +7,6 @@ HitMind With C.ver_2
 
 #include <stdio.h>
 
-#include "SDL/SDL.h"			//SDL - 그래픽 헤더파일
-#include "SDL/SDL_image.h"		
-#include "SDL/SDL_ttf.h"
-#include "SDL/han2unicode.h"
 #include "mysql/mysql.h"
 #include "SDL/SDL_mixer.h"
 #include "SDL/SDL.h"
