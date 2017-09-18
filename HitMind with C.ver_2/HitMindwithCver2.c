@@ -28,7 +28,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	
-	SDL_Window * Window = nullptr;		//SDL 관련
+	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
 	TTF_Init();
@@ -47,12 +47,39 @@ int main(int argc, char *argv[])
 	TitleRect.w = 1280;
 	TitleRect.h = 720;
 	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\wallpapers\\test.jpg", 255, 255, 255);
-	int exit = 1;
-	while (exit)
+	int quit = false;
+	while (!quit)
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 255, 255, 0);
 		SDL_RenderClear(renderer);
-		SDL_PollEvent(&event);
+		if (SDL_PollEvent(&event)) {
+			switch (event.type) {
+				case SDL_TEXTINPUT: // 채팅 입력 이벤트
+				
+					break;
+				case SDL_KEYDOWN: // 키보드 입력 이벤트
+					
+					break;
+				case SDL_QUIT :
+					quit = true;
+					break;
+				case SDL_WINDOWEVENT:
+					switch (event.window.event) {
+						case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+							quit = true;// quit를 true로 변경
+							Sleep(100);
+							break;// 브레이크
+						case SDL_WINDOWEVENT_ENTER:// 윈도우
+							SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+							break;
+						case SDL_WINDOWEVENT_LEAVE:
+						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+							break;
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
+							break;
+					}
+			}
+		}
 		RenderTexture(renderer, TitleImage, &TitleRect);
 		SDL_RenderPresent(renderer);
 		
