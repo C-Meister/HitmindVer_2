@@ -61,8 +61,8 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static int Display_X = 1920;	//해상도 - X	
-static int Display_Y = 1080;	//해상도 - Y
+static double Display_X = 1920;	//해상도 - X	
+static double Display_Y = 1080;	//해상도 - Y
 								
 //---------------콘솔 함수----------------
 
