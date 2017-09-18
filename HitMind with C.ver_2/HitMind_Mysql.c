@@ -35,8 +35,8 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 
 char * Get_Random_Topic(MYSQL *cons)
 {
-	MYSQL_ROW sql_row;
-	mysql_query(cons, "select top from topic order by rand() limit 1");
-	sql_row = mysql_fetch_row(mysql_store_result(cons));
-	return sql_row[0];
+	MYSQL_ROW sql_row;	//sql_row 는 typedef로 char **와 똑같음
+	mysql_query(cons, "select top from topic order by rand() limit 1");		//이 명령어는 topic 테이블에서 랜덤된 값 하나를 불러옴
+	sql_row = mysql_fetch_row(mysql_store_result(cons));	//mysql_store_result로 값을 저장한 뒤 fetch_row로 값을 char **값으로 변환시킴
+	return sql_row[0];	//char **값의 첫번째를 반환
 }
