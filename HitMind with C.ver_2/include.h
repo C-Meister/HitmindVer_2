@@ -81,7 +81,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
-char * Get_Random_Topic(MYSQL *cons);
-Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
+char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	//아이디와 패스워드로 로그인함
 
 //---------------Socket 함수--------------
