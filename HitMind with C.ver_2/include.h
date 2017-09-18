@@ -80,7 +80,8 @@ SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, in
 //SDL -  LoadTextureEx 이미지를 특별하게 불러옴 인자값 : 렌더러, 파일 경로, r, g, b 해당 색깔을 없앰
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
-
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h);
+//SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
