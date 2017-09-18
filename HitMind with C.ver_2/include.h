@@ -5,20 +5,16 @@
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 //헤더파일
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h>				//Standard Input/Output
+#include <stdlib.h>				//malloc 사용
 #include <math.h>				//수학 관련 함수
 #include <process.h>			//Thread 사용 함수
 #include <Windows.h>			//Window api 관련 함수
 #include <signal.h>				//Interrupt처리 함수
-#include <time.h>				
+#include <time.h>				//시간 관련 함수
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
-#include <crtdbg.h>
-#include <mmsystem.h>			//사운드 관련
-#include <Digitalv.h>
-
 #include <mysql/mysql.h>		//MySQL 함수들
 
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
@@ -35,7 +31,6 @@
 #pragma comment (lib, "lib/SDL2_image")		//그래픽 라이브러리 3
 #pragma comment (lib, "lib/SDL2_ttf")		//그래픽 라이브러리 4
 #pragma comment (lib, "lib/SDL2_mixer.lib")	//그래픽 사운드 라이브러리 5
-#pragma comment (lib, "winmm.lib")			//사운드
 #pragma comment (lib, "ws2_32.lib")			//소켓 라이브러리
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL 라이브러리
 

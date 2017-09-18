@@ -40,7 +40,7 @@ int PutMenu(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SD
 	han2unicode(sentence, unicode);		//옮김
 
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size + plussize);	 //폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
-	TTF_DrawText(renderer, font, unicode, x - (plussize * (strlen(sentence) / 4)), y - (plussize / 2));	//Text를 적음
+	TTF_DrawText(renderer, font, unicode, x - (int)(plussize * (strlen(sentence) / 4)), y - (plussize / 2));	//Text를 적음
 	TTF_CloseFont(font);	//임시로 출력하기위한 폰트를 닫음
 	return 0;	//클릭이 안되었으니 0을 리턴
 }
