@@ -39,13 +39,24 @@
 #pragma comment (lib, "ws2_32.lib")			//소켓 라이브러리
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL 라이브러리
 
+#define CHOP(x) x[strlen(x) - 1] = ' '	//fgets를 쓰면 엔터도 배열에남음. 엔터를 배열에서 삭제해주는것
 #define CLS system("cls")	//콘솔 화면 지우기
 #define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //콘솔 출력 글씨 설정
 #define RESET(X) ZeroMemory(X, sizeof(X))	//초기화 memset()이랑 같음
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 //MouseUp_Wait = PutMenu를 사용할때 마우스 버튼을 클릭하자말자 넘어가기 때문에 방지를 해줌.
 
+//typedef
 typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 사용함. 쉽게 사용하기위해 typedef 해줌
+
+//struct 구조체
+typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
+	char id[30];	//id :  로그인할때 id
+	char name[30]; //name : 사용자의 이름
+	int level;		//level : 접속자의 레벨
+	int money;		//money : 접속자의 돈
+}Hit_User;
+
 
 /*
 	변수에 대한 설명:
@@ -71,6 +82,6 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);
-
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 
 //---------------Socket 함수--------------

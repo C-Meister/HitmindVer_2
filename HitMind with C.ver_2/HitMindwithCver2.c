@@ -27,8 +27,14 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	MYSQL *cons = Mysql_Connect("10.80.162.92");
-	printf("%s", Get_Random_Topic(cons));
-	mysql_close(cons);
+	Hit_User *user = User_Login_sql(cons, "test_id", "test_password");
+	if (user == 0)
+		printf("로그인 실패");
+	else
+	{
+		printf("%s님 환영합니다", user->name);
+		free(user);
+	}
 	return 0;
 }
 
