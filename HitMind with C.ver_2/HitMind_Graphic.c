@@ -56,19 +56,19 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
 	int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;// JPG파일과 PNG파일 로드 가능
 	if (IMG_Init(imgFlags) != imgFlags) {//IMG 초기화하고 초기화 안되면 if문 실행
-		IMG_ErrorLog("IMG_Init");
+		
 		return nullptr;//널포인터 반환
 	}
 	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
 	if (Surface == nullptr) {//서피스에 이미지로드가 안되면 
-		IMG_ErrorLog("IMG_Load");
+		
 		IMG_Quit();// IMG 종료
 		return nullptr;// 널포인터 반환
 	}
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
 	SDL_FreeSurface(Surface);// 서피스 메모리해제
 	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
-		SDL_ErrorLog("SDL_CreateTextureFromSurface");// 에러 코드 출력
+		
 		IMG_Quit();// IMG 종료
 		return nullptr;// 널포인터 반환
 	}
@@ -125,18 +125,5 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	center.y = (Rect->h / 2);
 
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
-	return;
-}
-void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect) {//텍스쳐를 출력하는 함수 선언
-	SDL_Rect Src;// 직사각형 선언
-	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
-	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
-	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
-	SDL_Rect Dst;
-	Dst.x = Rect->x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
-	Dst.y = Rect->y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
-	Dst.w = Rect->w;//매개변수w를 직사각형의 너비에 대입
-	Dst.h = Rect->h;//매개변수h를 직사각형의 높이에 대입
-	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
