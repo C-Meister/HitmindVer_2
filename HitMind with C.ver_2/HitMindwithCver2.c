@@ -19,7 +19,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 	Ⅱ. 프로젝트 받기
 		1. 팀 탐색기 - 홈(팀 탐색기 제일 위에 집모양을 클릭) 에 들어가 동기화를 클릭합니다.
 		2. "분기: master"아래에 페치를 클릭합니다.
-		3. "분기: master"아래에 끌어오기를 클릭합니다.
+		3. "분기: master"아래에 동기화를 클릭합니다.
 		4. 끝
 */
 
@@ -28,7 +28,8 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	
-	SDL_Window * Window = nullptr;		//SDL 관련
+	
+	SDL_Window * Window = nullptr; //SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
 	TTF_Init();
@@ -41,23 +42,35 @@ int main(int argc, char *argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	SDL_Rect TitleRect;
-	TitleRect.x = 100;
-	TitleRect.y = 100;
-	TitleRect.w = 1280;
-	TitleRect.h = 720;
-	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\wallpapers\\test.jpg", 255, 255, 255);
-	int exit = 1;
+	SDL_Rect TitleRect, TitleRect_2;
+	TitleRect.x = 0;
+	TitleRect.y = 0;
+	TitleRect.w = Display_X;
+	TitleRect.h = Display_Y;
+	TitleRect_2.x = Display_X / 3;
+	TitleRect_2.y = 100;
+	TitleRect_2.w = 640;
+	TitleRect_2.h = 360;
+	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
+	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");
+	int quit = 1;
 	while (exit)
 	{
+		if (SDL_PollEvent(&event)) {
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				quit = 0;
+		}
 		SDL_SetRenderDrawColor(renderer, 0, 255, 255, 0);
 		SDL_RenderClear(renderer);
-		SDL_PollEvent(&event);
 		RenderTexture(renderer, TitleImage, &TitleRect);
+		RenderTexture(renderer, TitleText, &TitleRect_2);
 		SDL_RenderPresent(renderer);
 		
 	}
-
+	SDL_DestroyTexture(TitleImage);
+	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(Window);
