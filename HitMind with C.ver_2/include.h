@@ -15,14 +15,14 @@
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
-#include "mysql/mysql.h"		//MySQL 함수들
+#include "mysql/mysql.h"//MySQL 함수들
 
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
 #include "SDL/SDL_image.h"		//SDL - 이미지 헤더파일
 #include "SDL/SDL_ttf.h"		//SDL - 폰트(텍스트) 헤더파일
 #include "SDL/han2unicode.h"	//han2unicode - 기본 949 언어들을 uniocde로 바꿔줌
 #include "SDL/SDL_mixer.h"		//SDL - 사운드 헤더파일
-
+//#include "vld/vld.h"
 
 
 
@@ -58,8 +58,8 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static int Display_X = 1920;	//해상도 - X	
-static int Display_Y = 1080;	//해상도 - Y
+//static int Display_X = 1920;	//해상도 - X	
+//static int Display_Y = 1080;	//해상도 - Y
 
 								
 //---------------콘솔 함수----------------
