@@ -15,7 +15,7 @@
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
-#include <mysql/mysql.h>		//MySQL 함수들
+#include "mysql/mysql.h"		//MySQL 함수들
 
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
 #include "SDL/SDL_image.h"		//SDL - 이미지 헤더파일
