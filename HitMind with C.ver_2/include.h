@@ -1,7 +1,10 @@
 ﻿//헤더파일들이 선언된 헤더파일
 //모든 .c파일에 선언해주자
 #pragma once
-
+//전처리기
+#define	_CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+//헤더파일
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>				//수학 관련 함수
@@ -66,7 +69,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 
 
 //---------------MySql 함수---------------
-
+MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 
 
 //---------------Socket 함수--------------

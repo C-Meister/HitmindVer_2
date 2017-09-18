@@ -26,8 +26,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	mysql_init(NULL);
+	MYSQL *cons = Mysql_Connect("10.80.162.92");
 	return 0;
 }
 
