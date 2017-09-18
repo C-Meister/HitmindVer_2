@@ -55,6 +55,14 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int r, int g, int b)
+{
+	SDL_Color color = { r, g, b };
+	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
+	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
+	TTF_CloseFont(font);	//폰트를 닫음
+	return 0;	//평소에도 0을 리턴
+}
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
 	int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;// JPG파일과 PNG파일 로드 가능
 	if (IMG_Init(imgFlags) != imgFlags) {//IMG 초기화하고 초기화 안되면 if문 실행
