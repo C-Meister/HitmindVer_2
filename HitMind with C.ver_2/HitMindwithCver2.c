@@ -45,10 +45,8 @@ int main(int argc, char *argv[])
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");
 	if (WaitBar == 0)
 		getchar();
-	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\mainicon\\main_wallpaper.jpg", 255, 255, 255);
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png"); 
 	
-	int quit = false;
 	SDL_Rect TitleRect;
 	TitleRect.x = 100;
 	TitleRect.y = 100;
@@ -65,9 +63,11 @@ int main(int argc, char *argv[])
 	char euckr[128] = ""; // euckr 변환에 필요한 배열
 	char utf8[192] = ""; // utf8 변환에 필요한 배열
 	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
-	
+	SDL_Color color = { 0,0,0 ,0};
 	while (!quit)
 	{
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		SDL_RenderClear(renderer);
 		if (SDL_PollEvent(&event)) {
 			switch (event.type) {
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -143,18 +143,18 @@ int main(int argc, char *argv[])
 					}
 			}
 		}
-		
-		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
-		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-		RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-		SDL_RenderPresent(renderer);
 		if (textinput == true) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
-			TTF_DrawText(renderer, font,wstr,0,0);
+			TTF_DrawText(renderer, font, wstr, 0, 0, color);
 			textinput = false;
 		}
+		
+	//	RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
+	//	PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+	//	RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+	//	RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleImage);
