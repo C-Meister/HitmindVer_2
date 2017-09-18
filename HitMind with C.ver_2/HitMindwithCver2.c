@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	
-	MYSQL *cons = Mysql_Connect("10.80.162.92");
+//	MYSQL *cons = Mysql_Connect("10.80.162.92");
 	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
@@ -42,16 +42,10 @@ int main(int argc, char *argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");
-	if (WaitBar == 0)
-		getchar();
-	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png"); 
-	
-	SDL_Rect TitleRect;
-	TitleRect.x = 100;
-	TitleRect.y = 100;
-	TitleRect.w = 1280;
-	TitleRect.h = 720;
+	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
+	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
+	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
+	SDL_Texture * LoadingBar = LoadTexture(renderer, ".\\maintema\\loading.png");
 	int quit = false; // while문 조건문에 쓰이는 불 변수
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	int hangeul = false; // 현재 입력하고 있는 글자가 한글인지 아닌지 식별해주는 불 변수
@@ -68,7 +62,7 @@ int main(int argc, char *argv[])
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 		SDL_RenderClear(renderer);
 		if (SDL_PollEvent(&event)) {
-			switch (event.type) {
+			switch (event.type) {/*
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
 					if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
 					{
@@ -121,7 +115,7 @@ int main(int argc, char *argv[])
 					else
 						hangeul = true;
 					textinput = true;
-					break;
+					break;*/
 				case SDL_QUIT :
 					quit = true;
 					break;
@@ -142,22 +136,21 @@ int main(int argc, char *argv[])
 					}
 			}
 		}
+
+			RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
+			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+			RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+			PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
 		if (textinput == true) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
-			PutText_Unicode(renderer, wstr, 0, 0, 30, 255, 255, 255);
+			PutText_Unicode(renderer, wstr, 0, 0, 30, 0, 0, 0);
 			textinput = false;
 		}
-		
-	//	RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
-	//	PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-	//	RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-	//	RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+
 		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
-	SDL_DestroyTexture(TitleImage);
-	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);

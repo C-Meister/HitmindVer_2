@@ -20,7 +20,32 @@ void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int
 
 	return;
 }
+int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event) {//이미지 버튼 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
+	SDL_PollEvent(event);
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
+	{
 
+		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	}
+	else {
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	
+	}
+	return 0;
+}
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
 {
 	SDL_Color color = { r, g, b };
