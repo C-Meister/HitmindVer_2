@@ -127,3 +127,61 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
+
+wchar_t* UTF82UNICODE(char* UTF8, int len) {
+	wchar_t wstr[128] = L"";
+	//	int i, sum;
+	int i;
+	for (i = 0; i < len; i += 3) {
+		wstr[i / 3] = (UTF8[i] + 22) * 64 * 64 + (UTF8[i + 1] + 128) * 64 + UTF8[i + 2] + 41088;
+	}
+	wcscat(wstr, L"\0");
+	return wstr;
+}
+char* UNICODE2UTF8(wchar_t* unicode, int len) {
+	char str[128] = "";
+	int i = 0, j = 0;
+	for (i = 0; j < len; j++) {
+		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \'로 입력해야하므로 예외 처리를 해준다
+			str[i] = 92;
+			str[i + 1] = unicode[j];
+			i += 2;
+		}
+		else if (unicode[j] >= 0xac00 && unicode[j] <= 0xD7A0) {// 완성형 한글일경우
+			str[i] = (unicode[j] - 40960) / (64 * 64) - 22;
+			str[i + 1] = (unicode[j] - 40960) % (4096) / 64 - 128;
+			str[i + 2] = (unicode[j] - 40960) % 64 - 128;
+			i += 3;
+		}
+		else if (unicode[j] >= 0x3131 && unicode[j] <= 0x3163) {// 초중종성일 경우
+			str[i] = (unicode[j] - 12544) / (64 * 64) - 29;
+			str[i + 1] = (unicode[j] - 12544) % (4096) / 64 - 124;
+			str[i + 2] = (unicode[j] - 12544) % 64 - 128;
+			i += 3;
+		}
+		else {
+			str[i] = unicode[j];
+			i++;
+		}
+	}
+	strcat(str, "\0");
+	return str;
+}
+int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength)
+{
+	iconv_t cd = iconv_open("EUC-KR", "UTF-8");
+
+	int ires = (int)iconv(cd, &inBuf, (size_t*)&inLength, &outBuf, (size_t*)&outLength);
+
+	iconv_close(cd);
+
+	return ires;
+}
+int hannum(wchar_t unicode[], int len) {
+	int i, cnt = 0;
+	for (i = 0; i < len; i++) {
+		if ((unicode[i] >= 0xac00 && unicode[i] <= 0xd7a0) || (unicode[i] >= 0x3131 && unicode[i] <= 0x3163))
+			cnt++;
+	}
+	return cnt;
+}

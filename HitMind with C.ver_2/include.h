@@ -16,7 +16,8 @@
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
 #include "mysql/mysql.h"//MySQL 함수들
-
+#include <tchar.h>
+#include "lib//iconv.h"
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
 #include "SDL/SDL_image.h"		//SDL - 이미지 헤더파일
 #include "SDL/SDL_ttf.h"		//SDL - 폰트(텍스트) 헤더파일
@@ -26,6 +27,7 @@
 
 
 
+#pragma comment (lib, "lib/libiconv.lib")
 #pragma comment (lib, "lib/SDL2")			//그래픽 라이브러리 1
 #pragma comment (lib, "lib/SDL2main")		//그래픽 라이브러리 2 
 #pragma comment (lib, "lib/SDL2_image")		//그래픽 라이브러리 3
@@ -80,7 +82,10 @@ SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, in
 //SDL -  LoadTextureEx 이미지를 특별하게 불러옴 인자값 : 렌더러, 파일 경로, r, g, b 해당 색깔을 없앰
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
-
+char* UNICODE2UTF8(wchar_t* unicode, int len);
+wchar_t* UTF82UNICODE(char* UTF8, int len);
+int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
+int hannum(wchar_t unicode[], int len);
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
