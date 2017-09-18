@@ -80,9 +80,8 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int r, int g, int b)
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color)
 {
-	SDL_Color color = { r, g, b };
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
 	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
 	TTF_CloseFont(font);	//폰트를 닫음
@@ -123,7 +122,11 @@ void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rec
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
-void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h) {//텍스쳐를 출력하는 함수 선언
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh) {//텍스쳐를 출력하는 함수 선언
+	int x = round(xx);
+	int y = round(yy);
+	int w = round(ww);
+	int h = round(hh);
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
 	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화

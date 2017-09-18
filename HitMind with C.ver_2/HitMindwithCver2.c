@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
 		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
+	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
