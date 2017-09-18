@@ -1,8 +1,8 @@
 ﻿#include "include.h"
 
 //그래픽 관련 함수들
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y) {
-	SDL_Color Color = { 0,0,0 };
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
+
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
@@ -21,8 +21,9 @@ void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int
 	return;
 }
 
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event)
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
 {
+	SDL_Color color = { r, g, b };
 	int plussize = 0;		//마우스를 가져다될때 커지는 사이즈
 	SDL_PollEvent(event);	//SDL에서 이벤트를 꺼냄
 	if (event->type == SDL_MOUSEBUTTONDOWN)	//클릭 되었을때
@@ -40,16 +41,17 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, 
 	han2unicode(sentence, unicode);		//옮김
 
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size + plussize);	 //폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
-	TTF_DrawText(renderer, font, unicode, x - (int)(plussize * (strlen(sentence) / 4)), y - (plussize / 2));	//Text를 적음
+	TTF_DrawText(renderer, font, unicode, x - (int)(plussize * (strlen(sentence) / 4)), y - (plussize / 2), color);	//Text를 적음
 	TTF_CloseFont(font);	//임시로 출력하기위한 폰트를 닫음
 	return 0;	//클릭이 안되었으니 0을 리턴
 }
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size)
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b)
 {
+	SDL_Color color = { r, g, b };
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
-	TTF_DrawText(renderer, font, unicode, x, y);			//Text를 적음
+	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
@@ -85,6 +87,19 @@ void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rec
 	Dst.y = Rect->y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = Rect->w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = Rect->h;//매개변수h를 직사각형의 높이에 대입
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	return;
+}
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h) {//텍스쳐를 출력하는 함수 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }

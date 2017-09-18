@@ -69,10 +69,10 @@ static int Display_Y = 1080;	//해상도 - Y
 
 
 //---------------그래픽 함수--------------
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y);		//SDL - 텍스트를 출력하는함수
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		//SDL - 텍스트를 출력하는함수
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size);
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
 //SDL - PutText 텍스트를 출력함.
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 //SDL - LoadTexture 이미지를 불러옴 인자값 : 렌더러, 파일 경로
@@ -86,6 +86,8 @@ char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
 int hannum(wchar_t unicode[], int len);
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h);
+//SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환

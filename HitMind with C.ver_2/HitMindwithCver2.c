@@ -27,10 +27,12 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	
+	MYSQL *cons = Mysql_Connect("10.80.162.92");
 	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
 	TTF_Init();
+	char version[] = "1.0.1 - Beta";
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);
 	if (font == 0)
 	{
@@ -38,8 +40,15 @@ int main(int argc, char *argv[])
 		getchar();
 	}
 	SDL_Init(SDL_INIT_EVERYTHING);
-	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);
+	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");
+	if (WaitBar == 0)
+		getchar();
+	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\mainicon\\main_wallpaper.jpg", 255, 255, 255);
+	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png"); 
+	
+	int quit = false;
 	SDL_Rect TitleRect;
 	TitleRect.x = 100;
 	TitleRect.y = 100;
@@ -134,7 +143,11 @@ int main(int argc, char *argv[])
 					}
 			}
 		}
-		RenderTexture(renderer, TitleImage, &TitleRect);
+		
+		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
+		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+		RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 		SDL_RenderPresent(renderer);
 		if (textinput == true) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -143,7 +156,9 @@ int main(int argc, char *argv[])
 			textinput = false;
 		}
 	}
-
+	SDL_DestroyTexture(WaitBar);
+	SDL_DestroyTexture(TitleImage);
+	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
