@@ -143,20 +143,15 @@ int main(int argc, char *argv[])
 			}
 		}
 		if (textinput == true) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-			SDL_RenderClear(renderer);
-			PutText_Unicode(renderer, wstr, 0, 0, 30, 255, 255, 255);
 			textinput = false;
 		}
-		
-	//	RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
-	//	PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-	//	RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-	//	RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+		PutText_Unicode(renderer, wstr, 0, 0, 30, color);
+		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+		RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
-	SDL_DestroyTexture(TitleImage);
 	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	TTF_Quit();

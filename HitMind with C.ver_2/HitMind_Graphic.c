@@ -55,9 +55,8 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int r, int g, int b)
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color)
 {
-	SDL_Color color = { r, g, b };
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
 	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
 	TTF_CloseFont(font);	//폰트를 닫음
