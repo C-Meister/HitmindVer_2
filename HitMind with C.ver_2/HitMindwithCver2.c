@@ -48,13 +48,11 @@ int main(int argc, char *argv[])
 	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\mainicon\\main_wallpaper.jpg", 255, 255, 255);
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png"); 
 	
-	int quit = false;
 	SDL_Rect TitleRect;
 	TitleRect.x = 100;
 	TitleRect.y = 100;
 	TitleRect.w = 1280;
 	TitleRect.h = 720;
-	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\wallpapers\\test.jpg", 255, 255, 255);
 	int quit = false; // while문 조건문에 쓰이는 불 변수
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	int hangeul = false; // 현재 입력하고 있는 글자가 한글인지 아닌지 식별해주는 불 변수
@@ -152,7 +150,7 @@ int main(int argc, char *argv[])
 		if (textinput == true) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
-			TTF_DrawText(renderer, font,wstr,0,0);
+			PutText_Unicode(renderer, wstr, 0, 0, 30, 255, 255, 255);
 			textinput = false;
 		}
 	}
