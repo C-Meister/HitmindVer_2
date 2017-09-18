@@ -27,6 +27,8 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	MYSQL *cons = Mysql_Connect("10.80.162.92");
+	printf("%s", Get_Random_Topic(cons));
+	mysql_close(cons);
 	return 0;
 }
 

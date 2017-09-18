@@ -32,3 +32,11 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 	}
 	return cons;	//연결값을 반환
 }
+
+char * Get_Random_Topic(MYSQL *cons)
+{
+	MYSQL_ROW sql_row;
+	mysql_query(cons, "select top from topic order by rand() limit 1");
+	sql_row = mysql_fetch_row(mysql_store_result(cons));
+	return sql_row[0];
+}

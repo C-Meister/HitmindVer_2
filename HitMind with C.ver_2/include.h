@@ -70,6 +70,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
+char * Get_Random_Topic(MYSQL *cons);
 
 
 //---------------Socket 함수--------------
