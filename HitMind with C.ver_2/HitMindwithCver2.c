@@ -41,15 +41,19 @@ int main(int argc, char *argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	SDL_Rect rect;
-	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\image\\titleimage.jpg");
+	SDL_Rect TitleRect;
+	TitleRect.x = 100;
+	TitleRect.y = 100;
+	TitleRect.w = 1280;
+	TitleRect.h = 720;
+	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\wallpapers\\test.jpg", 255, 255, 255);
 	int exit = 1;
 	while (exit)
 	{
-		SDL_SetRenderDrawColor(renderer, 255, 255, 250, 0);
+		SDL_SetRenderDrawColor(renderer, 0, 255, 255, 0);
 		SDL_RenderClear(renderer);
 		SDL_PollEvent(&event);
-		
+		RenderTexture(renderer, TitleImage, &TitleRect);
 		SDL_RenderPresent(renderer);
 		
 	}

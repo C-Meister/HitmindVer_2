@@ -61,7 +61,6 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 */
 static int Display_X = 1920;	//해상도 - X	
 static int Display_Y = 1080;	//해상도 - Y
-
 								
 //---------------콘솔 함수----------------
 
