@@ -28,10 +28,12 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	
+	MYSQL *cons = Mysql_Connect("10.80.162.92");
 	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
 	TTF_Init();
+	char version[] = "1.0.1 - Beta";
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);
 	if (font == 0)
 	{
@@ -41,16 +43,22 @@ int main(int argc, char *argv[])
 	SDL_Init(SDL_INIT_EVERYTHING);
 	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	SDL_Rect TitleRect;
-	TitleRect.x = 100;
-	TitleRect.y = 100;
-	TitleRect.w = 1280;
-	TitleRect.h = 720;
-	SDL_Texture * TitleImage = LoadTextureEx(renderer, ".\\wallpapers\\test.jpg", 255, 255, 255);
+	SDL_Rect TitleRect, TitleRect_2;
+	TitleRect.x = 0;
+	TitleRect.y = 0;
+	TitleRect.w = Display_X;
+	TitleRect.h = Display_Y;
+
+	TitleRect_2.x = Display_X / 3;
+	TitleRect_2.y = Display_Y / 10;
+	TitleRect_2.w = Display_X / 3;
+	TitleRect_2.h = Display_Y / 3;
+	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
+	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");
 	int quit = false;
 	while (!quit)
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 255, 255, 0);
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 		SDL_RenderClear(renderer);
 		if (SDL_PollEvent(&event)) {
 			switch (event.type) {
@@ -81,10 +89,13 @@ int main(int argc, char *argv[])
 			}
 		}
 		RenderTexture(renderer, TitleImage, &TitleRect);
+		PutText(renderer, version, 20, Display_Y - 100, 40, 255, 255, 255);
+		RenderTexture(renderer, TitleText, &TitleRect_2);
 		SDL_RenderPresent(renderer);
 		
 	}
-
+	SDL_DestroyTexture(TitleImage);
+	SDL_DestroyTexture(TitleText);
 	TTF_CloseFont(font);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(Window);

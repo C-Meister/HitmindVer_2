@@ -67,10 +67,10 @@ static int Display_Y = 1080;	//해상도 - Y
 
 
 //---------------그래픽 함수--------------
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y);		//SDL - 텍스트를 출력하는함수
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		//SDL - 텍스트를 출력하는함수
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size);
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
 //SDL - PutText 텍스트를 출력함.
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 //SDL - LoadTexture 이미지를 불러옴 인자값 : 렌더러, 파일 경로
