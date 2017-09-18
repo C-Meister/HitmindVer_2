@@ -34,6 +34,7 @@
 #pragma comment (lib, "ws2_32.lib")			//소켓 라이브러리
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL 라이브러리
 
+#define nullptr 0 //c++에만 있는 nullptr  0으로 지정
 #define CHOP(x) x[strlen(x) - 1] = ' '	//fgets를 쓰면 엔터도 배열에남음. 엔터를 배열에서 삭제해주는것
 #define CLS system("cls")	//콘솔 화면 지우기
 #define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //콘솔 출력 글씨 설정
@@ -58,8 +59,8 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-//static int Display_X = 1920;	//해상도 - X	
-//static int Display_Y = 1080;	//해상도 - Y
+static int Display_X = 1920;	//해상도 - X	
+static int Display_Y = 1080;	//해상도 - Y
 
 								
 //---------------콘솔 함수----------------
@@ -68,11 +69,18 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 
 //---------------그래픽 함수--------------
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y);		//SDL - 텍스트를 출력하는함수
-int PutMenu(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
 int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size);
 //SDL - PutText 텍스트를 출력함.
-
+SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
+//SDL - LoadTexture 이미지를 불러옴 인자값 : 렌더러, 파일 경로
+void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
+//SDL - RenderTexture 이미지를 렌더러에 출력함 Rect로 x, y, h, w를 설정 가능
+SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
+//SDL -  LoadTextureEx 이미지를 특별하게 불러옴 인자값 : 렌더러, 파일 경로, r, g, b 해당 색깔을 없앰
+void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
+//SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
 
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함

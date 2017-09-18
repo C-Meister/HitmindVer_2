@@ -27,17 +27,37 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	MYSQL *cons = Mysql_Connect("10.80.162.92");
-	Hit_User *user = User_Login_sql(cons, "1234", "1234");
-	if (user == 0)
-		printf("로그인 실패");
-	else
+	
+	SDL_Window * Window = nullptr;		//SDL 관련
+	SDL_Renderer *renderer;
+	SDL_Event event;
+	TTF_Init();
+	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);
+	if (font == 0)
 	{
-		printf("%s님 환영합니다", user->name);
+		printf("error");
+		getchar();
+	}
+	SDL_Init(SDL_INIT_EVERYTHING);
+	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);
+	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_Rect rect;
+	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\image\\titleimage.jpg");
+	int exit = 1;
+	while (exit)
+	{
+		SDL_SetRenderDrawColor(renderer, 255, 255, 250, 0);
+		SDL_RenderClear(renderer);
+		SDL_PollEvent(&event);
+		
+		SDL_RenderPresent(renderer);
 		
 	}
-	free(user);
-	mysql_close(cons);
+
+	TTF_CloseFont(font);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(Window);
+	SDL_Quit();
 	return 0;
 }
 
