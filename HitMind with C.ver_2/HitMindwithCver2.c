@@ -26,8 +26,10 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-
-	//	MYSQL *cons = Mysql_Connect("10.80.162.92");
+	Connect_status status;
+	MYSQL *cons = 0;
+	status.arg = cons;
+	status.ishappen = false;
 	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
@@ -57,6 +59,7 @@ int main(int argc, char *argv[])
 	char utf8[192] = ""; // utf8 변환에 필요한 배열
 	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
 	SDL_Color color = { 0,0,0 ,0 };
+	_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, NULL, 0);
 	while (!quit)
 	{
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -138,17 +141,17 @@ int main(int argc, char *argv[])
 		}
 		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
 		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-	
 		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
 		
-		PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
+		if (status.ishappen == false)
+			RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+	//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
 		if (textinput == true) {
 		/*	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
 			PutText_Unicode(renderer, wstr, 0, 0, 30, 0, 0, 0);
 			textinput = false;*/
 		}
-
 		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);

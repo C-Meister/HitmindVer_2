@@ -1,6 +1,14 @@
 #include "include.h"
 
 //mysql관련 함수들
+
+
+void Thread_MySQL(Connect_status *type)
+{
+	(MYSQL *)type->arg = Mysql_Connect("10.80.162.92");
+	type->ishappen = true;
+}
+
 MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL구조체
 {
 	/*
