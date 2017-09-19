@@ -86,9 +86,9 @@ char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
 int hannum(wchar_t unicode[], int len);
-void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h);
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int r, int g, int b);
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다

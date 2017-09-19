@@ -8,11 +8,11 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 공동으로 작업:
 	Ⅰ. 프로젝트 올리기
-		1. 팀 탐색기 - 홈(팀 탐색기 제일 위에 집모양을 클릭) 에 들어가 변경 내용을 클릭합니다. 
+		1. 팀 탐색기 - 홈(팀 탐색기 제일 위에 집모양을 클릭) 에 들어가 변경 내용을 클릭합니다.
 		2. 자신의 작업한 내용을 커밋 메시지에 입력합니다.
 		3. 모두 커밋(I)를 클릭합니다.
 		4. 프로젝트를 저장합니다.
-		5. 변경 내용 아래에 "커밋 ********을(를) 로컬에서 만들었습니다.... 라고 내용이 나오면 
+		5. 변경 내용 아래에 "커밋 ********을(를) 로컬에서 만들었습니다.... 라고 내용이 나오면
 		"내용을 공유하여 동기화합니다"에서 동기화를 클릭합니다.
 		6. 동기화로 넘어가면 "분기: master" 아래에 동기화를 클릭합니다.
 		7. 끝
@@ -26,8 +26,8 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-	
-//	MYSQL *cons = Mysql_Connect("10.80.162.92");
+
+	//	MYSQL *cons = Mysql_Connect("10.80.162.92");
 	SDL_Window * Window = NULL;		//SDL 관련
 	SDL_Renderer *renderer;
 	SDL_Event event;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 		getchar();
 	}
 	SDL_Init(SDL_INIT_EVERYTHING);
-	Window = SDL_CreateWindow("Orbit or Beat with C", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
+	Window = SDL_CreateWindow("HitMind_2", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	char euckr[128] = ""; // euckr 변환에 필요한 배열
 	char utf8[192] = ""; // utf8 변환에 필요한 배열
 	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
-	SDL_Color color = { 0,0,0 ,0};
+	SDL_Color color = { 0,0,0 ,0 };
 	while (!quit)
 	{
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -116,36 +116,37 @@ int main(int argc, char *argv[])
 						hangeul = true;
 					textinput = true;
 					break;*/
-				case SDL_QUIT :
-					quit = true;
+			case SDL_QUIT:
+				quit = true;
+				break;
+			case SDL_WINDOWEVENT:
+				switch (event.window.event) {
+				case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+					quit = true;// quit를 true로 변경
+					Sleep(100);
+					break;// 브레이크
+				case SDL_WINDOWEVENT_ENTER:// 윈도우
+					SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 					break;
-				case SDL_WINDOWEVENT:
-					switch (event.window.event) {
-						case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-							quit = true;// quit를 true로 변경
-							Sleep(100);
-							break;// 브레이크
-						case SDL_WINDOWEVENT_ENTER:// 윈도우
-							SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-							break;
-						case SDL_WINDOWEVENT_LEAVE:
-						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-							break;
-						case SDL_WINDOWEVENT_FOCUS_GAINED:
-							break;
-					}
+				case SDL_WINDOWEVENT_LEAVE:
+					//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+					break;
+				case SDL_WINDOWEVENT_FOCUS_GAINED:
+					break;
+				}
 			}
 		}
-
-			RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
-			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-			RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-			PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
+		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
+		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+	
+		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+		
+		PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
 		if (textinput == true) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+		/*	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
 			PutText_Unicode(renderer, wstr, 0, 0, 30, 0, 0, 0);
-			textinput = false;
+			textinput = false;*/
 		}
 
 		SDL_RenderPresent(renderer);
