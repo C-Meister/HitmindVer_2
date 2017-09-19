@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	{
 		if (SDL_PollEvent(&event)) {
 			switch (event.type) {
-				/*	case SDL_TEXTINPUT: // 채팅 입력 이벤트
+					case SDL_TEXTINPUT: // 채팅 입력 이벤트
 						if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
 						{
 							wcscpy(wchar, L"");
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 							hangeul = true;
 							slice++;
 						}
-						break;*/
+						break;
 			case SDL_QUIT:
 				quit = true;
 				break;
@@ -260,7 +260,6 @@ int main(int argc, char *argv[])
 						{
 
 						}
-
 						SDL_RenderPresent(renderer);
 					//	SDL_WaitEvent(&event);
 					}
@@ -283,20 +282,13 @@ int main(int argc, char *argv[])
 
 			}
 			//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
-			/*	if (textinput == true) {
-					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-					SDL_RenderClear(renderer);
-					PutText_Unicode(renderer,wstr,0,0,30,color);
-					PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-					RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-					RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-
-
-					textinput = false;
-				}*/
-
+			if (textinput == true) {
+				PutText_Unicode(renderer,wstr,0,0,30,color);
+				textinput = false;
+			}
+		//	DrawRoundRect(renderer, color, 100, 100, 500, 500, 100, 5);
 			SDL_RenderPresent(renderer);
-			SDL_WaitEvent(&event);
+	//		SDL_WaitEvent(&event);
 		}
 		SDL_DestroyTexture(WaitBar);
 		SDL_DestroyTexture(TitleText);

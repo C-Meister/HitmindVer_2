@@ -176,34 +176,81 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius,int strong) {
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-	for (float angle = 90; angle <= 180; angle++) {
-		SDL_RenderDrawPoint(Renderer, Rect->x + radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));	
+	int old_x, old_y;
+	for (float angle = 90; angle < 180; angle++) {
+		old_x = Rect->x + radius + radius*cos(M_PI / 180 * angle);
+		old_y = Rect->y + radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, old_x, old_y, Rect->x + radius + radius*cos(M_PI / 180 * (angle+1)), Rect->y + radius - radius*sin(M_PI / 180 * (angle+1)));	
 	}
 	SDL_RenderDrawLine(Renderer, Rect->x + radius, Rect->y, Rect->x + Rect->w - radius, Rect->y);
 	for (float angle = 0; angle <= 90; angle++) {
-		SDL_RenderDrawPoint(Renderer,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));
+		old_x = 1+Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle);
+		old_y = Rect->y + radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer,old_x,old_y,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * (angle+1)), Rect->y + radius - radius*sin(M_PI / 180 * (angle+1)));
 	}
 	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w, Rect->y + radius, Rect->x + Rect->w, Rect->y + Rect->h - radius);
 	for (float angle = 270; angle <= 360; angle++) {
-		SDL_RenderDrawPoint(Renderer,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle));
+		old_x = 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle);
+		old_y = 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer,old_x,old_y,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * (angle+1)),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * (angle+1)));
 	}
 	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w - radius, Rect->y + Rect->h, Rect->x + radius, Rect->y + Rect->h);
 	for (float angle = 180; angle <= 270; angle++) {
-		SDL_RenderDrawPoint(Renderer, Rect->x + radius + radius*cos(M_PI / 180 * angle),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle));
+		old_x = Rect->x + radius + radius*cos(M_PI / 180 * angle);
+		old_y = 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, old_x,old_y,Rect->x + radius + radius*cos(M_PI / 180 * (angle+1)),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * (angle+1)));
 	}
 	SDL_RenderDrawLine(Renderer, Rect->x, Rect->y + Rect->h - radius, Rect->x, Rect->y + radius);
 }
+void SDL_DrawRoundLine(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
+	/*SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int in_x, in_y;
+	for (float angle = 90; angle < 180; angle++) {
+		in_x = Rect->x+strong + radius + radius*cos(M_PI / 180 * angle);
+		in_y = Rect->y+strong + radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, in_x, in_y, Rect->x + radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + radius, Rect->y, Rect->x + Rect->w - radius, Rect->y);
+	for (float angle = 0; angle <= 90; angle++) {
+		in_x = 1 + Rect->x + strong + Rect->w - 2*strong - radius + radius*cos(M_PI / 180 * angle);
+		in_y = Rect->y + strong + radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, in_x, in_y, 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle ));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w, Rect->y + radius, Rect->x + Rect->w, Rect->y + Rect->h - radius);
+	for (float angle = 270; angle <= 360; angle++) {
+		in_x = 1 + Rect->x + strong + Rect->w - 2*strong - radius + radius*cos(M_PI / 180 * angle);
+		in_y = 1 + Rect->y + strong + Rect->h - 2*strong - radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, in_x, in_y, 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 *angle), 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle ));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w - radius, Rect->y + Rect->h, Rect->x + radius, Rect->y + Rect->h);
+	for (float angle = 180; angle <= 270; angle++) {
+		in_x = Rect->x + strong + radius + radius*cos(M_PI / 180 * angle);
+		in_y = 1 + Rect->y + strong + Rect->h -2*strong- radius - radius*sin(M_PI / 180 * angle);
+		SDL_RenderDrawLine(Renderer, in_x, in_y, Rect->x + radius + radius*cos(M_PI / 180 * angle), 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle ));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x, Rect->y + Rect->h - radius, Rect->x, Rect->y + radius);*/
+	for (int i = 0; i < 180; i++) {
+		int x1 = sin(3.14 / 180 * i)*radius;
+		int y1 = cos(3.14 / 180 * i)*radius;
+		int x2 = sin(3.14 / 180 * (360 - i))*(radius);
+		int y2 = cos(3.14 / 180 * (360 - i))*radius;
+		SDL_RenderDrawLine(Renderer, x1 + Rect->x+Rect->w/2, y1 + Rect->y + Rect->h / 2, x2 + Rect->x + Rect->w / 2, y2 + Rect->y + Rect->h / 2);
+	}
+}
 
 void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
-	SDL_Rect rect = { x-strong/2,y-strong/2,w+2*strong,h+2*strong };
+	SDL_Rect rect = { x-strong/2,y-strong/2,w+strong,h+strong };
+	SDL_DrawRoundLine( Renderer, &rect,color,radius,strong);
 	for (int i = 0; i < strong; i++) {
-		SDL_DrawRoundRect(Renderer,&rect,color,radius,strong);
-		rect.x++;
-		rect.y++;
-		rect.w -= 2;
-		rect.h -= 2;
+		SDL_DrawRoundRect(Renderer, &rect, color, radius);
+		for (int j = 0; j < 1; j++) {
+			rect.x++;
+			rect.y++;
+			rect.w -= 2;
+			rect.h -= 2;
+		}
 	}
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
