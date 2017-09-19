@@ -53,8 +53,12 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
+	char ownip[30];
 }Hit_User;
-
+typedef struct Connect_Status {
+	void * arg;
+	bool ishappen;
+}Connect_status;
 
 /*
 	변수에 대한 설명:
@@ -63,36 +67,45 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 */
 static double Display_X = 1920;	//해상도 - X	
 static double Display_Y = 1080;	//해상도 - Y
-								
-//---------------콘솔 함수----------------
 
+//---------------콘솔 함수----------------
+//나의 IP를 받아옴
+char * GetDefaultMyIP();
 
 
 //---------------그래픽 함수--------------
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		//SDL - 텍스트를 출력하는함수
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
+//SDL - 텍스트를 출력하는함수
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutText 텍스트를 출력함.
-SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
 //SDL - LoadTexture 이미지를 불러옴 인자값 : 렌더러, 파일 경로
-void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
+SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 //SDL - RenderTexture 이미지를 렌더러에 출력함 Rect로 x, y, h, w를 설정 가능
-SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
+void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
 //SDL -  LoadTextureEx 이미지를 특별하게 불러옴 인자값 : 렌더러, 파일 경로, r, g, b 해당 색깔을 없앰
-void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
+SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
+void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
+
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
 int hannum(wchar_t unicode[], int len);
-void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, int x, int y, int w, int h);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
+//SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
-//SDL - PutText_Unicode unicode 출력용 Text
+//SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
+int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
-MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
-char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
-Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	//아이디와 패스워드로 로그인함
-
+//_beginthreadex용 함수. 쓰레드로 mysql에 연결함
+void Thread_MySQL(Connect_status *type);
+//처음 MySQL에 연결함
+MYSQL * Mysql_Connect(char *ip); 
+//주제중에 랜덤으로 하나를 불러와 문자열로 반환
+char * Get_Random_Topic(MYSQL *cons);	
+//아이디와 패스워드로 로그인함
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
 //---------------Socket 함수--------------
