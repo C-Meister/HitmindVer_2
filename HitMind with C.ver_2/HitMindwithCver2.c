@@ -26,23 +26,23 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-	Connect_status status;
-	MYSQL *cons = 0;
-	status.arg = cons;
-	status.ishappen = false;
+	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
+	MYSQL *cons = 0;		//MySQL선언
+	status.arg = cons;		//status에 mysql의 주소를 저장한다
+	status.ishappen = false;//연결이 안된 상태
 	SDL_Window * Window = NULL;		//SDL 관련
-	SDL_Renderer *renderer;
-	SDL_Event event;
-	TTF_Init();
-	char version[] = "1.0.1 - Beta";
-	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);
+	SDL_Renderer *renderer;			//SDL - 렌더러로 그리기에 씀
+	SDL_Event event;				//SDL 이벤트를 저장함
+	TTF_Init();		//TTF 초기화
+	char version[] = "1.0.1 - Beta";		//현제 버전
+	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);	//나눔고딕 폰트를 불러옴
 	if (font == 0)
 	{
 		printf("error");
 		getchar();
 	}
-	SDL_Init(SDL_INIT_EVERYTHING);
-	Window = SDL_CreateWindow("HitMind_2", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN);
+	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
+	Window = SDL_CreateWindow("HitMind_2", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -60,17 +60,12 @@ int main(int argc, char *argv[])
 	wchar_t unicode[256] = L""; // unicode 변환에 필요한 배열
 	int slice = 0;
 	SDL_Color color = { 0,0,0 ,0};
-	wchar_t wstr[64] = L"";// 지금까지 입력한 텍스트를 저장하는 배열
-	char euckr[128] = ""; // euckr 변환에 필요한 배열
-	char utf8[192] = ""; // utf8 변환에 필요한 배열
-	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
-	SDL_Color color = { 0,0,0 ,0 };
-	_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, NULL, 0);
+	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	while (!quit)
 	{
 		if (SDL_PollEvent(&event)){
 			switch (event.type) {
-				case SDL_TEXTINPUT: // 채팅 입력 이벤트
+			/*	case SDL_TEXTINPUT: // 채팅 입력 이벤트
 					if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
 					{
 						wcscpy(wchar, L"");
@@ -137,7 +132,7 @@ int main(int argc, char *argv[])
 						hangeul = true;
 						slice++;
 					}
-					break;
+					break;*/
 				case SDL_QUIT :
 					quit = true;
 					break;
@@ -164,18 +159,25 @@ int main(int argc, char *argv[])
 		
 		if (status.ishappen == false)
 			RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+		else
+		{
+			if (PutButtonImage(renderer, WaitBar, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event));
+
+		}
 	//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
-		if (textinput == true) {
+	/*	if (textinput == true) {
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 			SDL_RenderClear(renderer);
 			PutText_Unicode(renderer,wstr,0,0,30,color);
 			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
 			RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
 			RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-			SDL_RenderPresent(renderer);
+			
 
 			textinput = false;
-		}
+		}*/
+		
+		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
