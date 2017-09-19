@@ -17,7 +17,6 @@ void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int
 	Dst.h = Src.h;
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
 	SDL_DestroyTexture(Texture);
-
 	return;
 }
 
@@ -151,17 +150,29 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 }
 
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
-	wchar_t wstr[128] = L"";
-	//	int i, sum;
+	wchar_t wstr[256] = L"";
+	wchar_t wchar[2] = L"";
+	int temp;
 	int i;
 	for (i = 0; i < len; i += 3) {
-		wstr[i / 3] = (UTF8[i] + 22) * 64 * 64 + (UTF8[i + 1] + 128) * 64 + UTF8[i + 2] + 41088;
+		temp = (UTF8[i] + 22) * 64 * 64 + (UTF8[i + 1] + 128) * 64 + UTF8[i + 2] + 41088;
+		if (hancheck(temp) == false) {
+			wchar[0] = UTF8[i];
+			if (wchar[0] == 92) {
+				wchar[0] = UTF8[i + 1];
+				i++;
+			}
+			i -= 2;
+		}
+		else
+			wchar[0] = temp;
+		wcscat(wstr, wchar);
 	}
 	wcscat(wstr, L"\0");
 	return wstr;
 }
 char* UNICODE2UTF8(wchar_t* unicode, int len) {
-	char str[128] = "";
+	char str[192] = "";
 	int i = 0, j = 0;
 	for (i = 0; j < len; j++) {
 		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \'로 입력해야하므로 예외 처리를 해준다
@@ -192,11 +203,8 @@ char* UNICODE2UTF8(wchar_t* unicode, int len) {
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength)
 {
 	iconv_t cd = iconv_open("EUC-KR", "UTF-8");
-
 	int ires = (int)iconv(cd, &inBuf, (size_t*)&inLength, &outBuf, (size_t*)&outLength);
-
 	iconv_close(cd);
-
 	return ires;
 }
 int hannum(wchar_t unicode[], int len) {
@@ -205,5 +213,11 @@ int hannum(wchar_t unicode[], int len) {
 		if ((unicode[i] >= 0xac00 && unicode[i] <= 0xd7a0) || (unicode[i] >= 0x3131 && unicode[i] <= 0x3163))
 			cnt++;
 	}
+	return cnt;
+}
+int hancheck(int unicode) {
+	int i, cnt = 0;
+	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
+		cnt++;
 	return cnt;
 }

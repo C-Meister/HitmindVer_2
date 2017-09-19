@@ -58,16 +58,15 @@ int main(int argc, char *argv[])
 	int textinput = true; // 글자가 하나 더 입력되었는지 알려주는 불 변수
 	int enter = false; // 엔터가 입력되었는지 알려주는 불 변수
 	wchar_t wchar[2] = L""; // 한글자 한글자 입력에 쓰이는 배열
-	wchar_t wstr[64] = L"";// 지금까지 입력한 텍스트를 저장하는 배열
-	char euckr[128] = ""; // euckr 변환에 필요한 배열
-	char utf8[192] = ""; // utf8 변환에 필요한 배열
-	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
+	wchar_t wstr[256] = L"";// 지금까지 입력한 텍스트를 저장하는 배열
+	char euckr[512] = ""; // euckr 변환에 필요한 배열
+	char utf8[768] = ""; // utf8 변환에 필요한 배열
+	wchar_t unicode[256] = L""; // unicode 변환에 필요한 배열
+	int slice = 0;
 	SDL_Color color = { 0,0,0 ,0};
 	while (!quit)
 	{
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-		SDL_RenderClear(renderer);
-		if (SDL_PollEvent(&event)) {
+		if (SDL_PollEvent(&event)){
 			switch (event.type) {
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
 					if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
@@ -76,12 +75,17 @@ int main(int argc, char *argv[])
 						int sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 						wchar[0] = sum;
 						wcscat(wstr, wchar);
+						if (event.text.text[0] == -29)
+							slice = 1;
+						else
+							slice = 1+!((wchar[0]-0xac00)%28);
 					}
 					else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 						wcscpy(wchar, L"");
 						swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
 						wcscat(wstr, wchar);// 문자열 연결
 						hangeul = false;
+						slice = 0;
 					}
 					textinput = true;
 					break;
@@ -91,12 +95,13 @@ int main(int argc, char *argv[])
 							enter = true;
 						else {
 							strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
-							UTF82EUCKR(euckr, 128, utf8, 192);
+							UTF82EUCKR(euckr, 512, utf8, 768);
 							euckr[strlen(euckr)] = '\0';
 							han2unicode(euckr, unicode);
 							if (hannum(unicode, wcslen(unicode)) != hannum(wstr, wcslen(wstr))) {
 								strcpy(euckr, "[Error] invalid conversion");
 							}
+							// euckr을 DB에 올리면 됨
 							strcpy(utf8, "");
 							wcscpy(wstr, L"");
 							wcscpy(unicode, L"");
@@ -109,18 +114,27 @@ int main(int argc, char *argv[])
 						hanyeong = !(hanyeong);
 					else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(wstr) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
 					{
-						wstr[wcslen(wstr) - 1] = '\0';// 마지막문자를 널문자로 바꿈
-						textinput = true;
+						if (slice == 0) {
+							wstr[wcslen(wstr) - 1] = '\0';// 마지막문자를 널문자로 바꿈
+							textinput = true;
+						}
+						else {
+							slice--;
+						}
 					}
 					else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 						strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
 						SDL_SetClipboardText(utf8);// 클립보드에 넣음
 					}
-					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL)// 컨트롤 모드이고 v를 눌렀다면
-						wcscpy(wstr, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
-					else
+					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+						wcscat(wstr, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴				
+						hangeul = false;
+						textinput = true;
+					}
+					else {
 						hangeul = true;
-					textinput = true;
+						slice++;
+					}
 					break;
 				case SDL_QUIT :
 					quit = true;
@@ -143,13 +157,16 @@ int main(int argc, char *argv[])
 			}
 		}
 		if (textinput == true) {
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+			SDL_RenderClear(renderer);
+			PutText_Unicode(renderer,wstr,0,0,30,color);
+			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+			RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
+			RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+			SDL_RenderPresent(renderer);
+
 			textinput = false;
 		}
-		PutText_Unicode(renderer, wstr, 0, 0, 30, color);
-		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-		RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
