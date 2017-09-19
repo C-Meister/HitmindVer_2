@@ -50,6 +50,7 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 
 //struct 구조체
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
+	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
@@ -60,6 +61,16 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+typedef struct Warning_Message {
+	int ison;
+	char message[128];
+	int x;
+	int y;
+	int size;
+	int r;
+	int g;
+	int b;
+}Warning_M;
 
 /*
 	변수에 대한 설명:
@@ -89,7 +100,7 @@ void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rec
 SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
-
+int hancheck(int unicode);
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);

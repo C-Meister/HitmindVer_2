@@ -28,7 +28,7 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
-	SDL_PollEvent(event);
+	
 	if (event->type == SDL_MOUSEBUTTONDOWN)
 		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
 			return 1;
@@ -49,7 +49,7 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,i
 {
 	SDL_Color color = { r, g, b };
 	int plussize = 0;		//마우스를 가져다될때 커지는 사이즈
-	SDL_PollEvent(event);	//SDL에서 이벤트를 꺼냄
+	
 	if (event->type == SDL_MOUSEBUTTONDOWN)	//클릭 되었을때
 		if (event->button.x > x && event->button.y > y && event->button.x < (x + (signed int)strlen(sentence) * (size / 2)) && event->button.y < y + size + 5)
 		{	//마우스가 해당 글씨위에 클릭하면
@@ -320,8 +320,22 @@ int hannum(wchar_t unicode[], int len) {
 	return cnt;
 }
 int hancheck(int unicode) {
-	int i, cnt = 0;
+	int cnt = 0;
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
 		cnt++;
 	return cnt;
+}
+
+void fill_circle(SDL_Renderer *gRenderer, int radius, int cx, int cy, int r, int g, int b, int a)
+{
+
+	for (double dy = 1; dy <= radius; dy += 1.0)
+	{
+		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
+		int x = cx - dx;
+		SDL_SetRenderDrawColor(gRenderer, r, g, b, a);
+		SDL_RenderDrawLine(gRenderer, cx - dx, cy + dy - radius, cx + dx, cy + dy - radius);
+		if (dy != circle.radius)
+			SDL_RenderDrawLine(gRenderer, cx - dx, cy - dy + radius, cx + dx, cy - dy + radius);
+	}
 }

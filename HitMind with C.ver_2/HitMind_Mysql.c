@@ -72,6 +72,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 			rows[5] = 돈
 			rows[6] = auto_login (ip를 저장함)
 		*/
+		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
 		strcpy(My_User->name, rows[1]);
 		My_User->level = atoi(rows[4]);
@@ -95,7 +96,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 	rows = mysql_fetch_row(mysql_store_result(cons));
 	if (rows == 0)		//없으면
 	{
-		return 0;		//0을 리턴함
+		return -1;		//0을 리턴함
 	}
 	sprintf(query, "select * from User where id = '%s' and password = password('%s')", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
 	mysql_query(cons, query);
@@ -113,7 +114,9 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 			rows[3] = password (로그인 비밀번호)
 			rows[4] = 레벨
 			rows[5] = 돈
-		*/
+			rows[6] = auto_login (ip를 저장함)
+		*/ 
+		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
 		strcpy(My_User->name, rows[1]);
 		My_User->level = atoi(rows[4]);
