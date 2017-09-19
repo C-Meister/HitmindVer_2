@@ -54,6 +54,7 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
+	char ownip[30];
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
@@ -69,7 +70,8 @@ static double Display_X = 1920;	//해상도 - X
 static double Display_Y = 1080;	//해상도 - Y
 
 //---------------콘솔 함수----------------
-
+//나의 IP를 받아옴
+char * GetDefaultMyIP();
 
 
 //---------------그래픽 함수--------------
@@ -102,7 +104,7 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
-void Thread_MySQL(MYSQL *cons);
+void Thread_MySQL(Connect_status *type);
 //처음 MySQL에 연결함
 MYSQL * Mysql_Connect(char *ip); 
 //주제중에 랜덤으로 하나를 불러와 문자열로 반환
