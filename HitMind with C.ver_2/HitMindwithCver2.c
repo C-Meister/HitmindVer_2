@@ -59,11 +59,6 @@ int main(int argc, char *argv[])
 	char utf8[768] = ""; // utf8 변환에 필요한 배열
 	wchar_t unicode[256] = L""; // unicode 변환에 필요한 배열
 	int slice = 0;
-	SDL_Color color = { 0,0,0 ,0};
-	wchar_t wstr[64] = L"";// 지금까지 입력한 텍스트를 저장하는 배열
-	char euckr[128] = ""; // euckr 변환에 필요한 배열
-	char utf8[192] = ""; // utf8 변환에 필요한 배열
-	wchar_t unicode[64] = L""; // unicode 변환에 필요한 배열
 	SDL_Color color = { 0,0,0 ,0 };
 	_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, NULL, 0);
 	while (!quit)
@@ -161,21 +156,16 @@ int main(int argc, char *argv[])
 		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
 		RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
 		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-		
 		if (status.ishappen == false)
 			RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 	//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
 		if (textinput == true) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-			SDL_RenderClear(renderer);
 			PutText_Unicode(renderer,wstr,0,0,30,color);
 			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
-			RenderTextureXYWH(renderer, TitleText, Display_X / 3, Display_Y / 10, Display_X / 3, Display_Y / 3);
-			RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-			SDL_RenderPresent(renderer);
-
 			textinput = false;
 		}
+	//	DrawRoundRect(renderer, color, 100,100,500,500,50,10);
+		SDL_RenderPresent(renderer);
 	}
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);

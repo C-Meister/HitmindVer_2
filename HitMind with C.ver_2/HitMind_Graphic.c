@@ -173,11 +173,39 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_Point center;
 	center.x = (Rect->w / 2);
 	center.y = (Rect->h / 2);
-
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius,int strong) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	for (float angle = 90; angle <= 180; angle++) {
+		SDL_RenderDrawPoint(Renderer, Rect->x + radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));	
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + radius, Rect->y, Rect->x + Rect->w - radius, Rect->y);
+	for (float angle = 0; angle <= 90; angle++) {
+		SDL_RenderDrawPoint(Renderer,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w, Rect->y + radius, Rect->x + Rect->w, Rect->y + Rect->h - radius);
+	for (float angle = 270; angle <= 360; angle++) {
+		SDL_RenderDrawPoint(Renderer,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w - radius, Rect->y + Rect->h, Rect->x + radius, Rect->y + Rect->h);
+	for (float angle = 180; angle <= 270; angle++) {
+		SDL_RenderDrawPoint(Renderer, Rect->x + radius + radius*cos(M_PI / 180 * angle),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle));
+	}
+	SDL_RenderDrawLine(Renderer, Rect->x, Rect->y + Rect->h - radius, Rect->x, Rect->y + radius);
+}
 
+void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
+	SDL_Rect rect = { x-strong/2,y-strong/2,w+2*strong,h+2*strong };
+	for (int i = 0; i < strong; i++) {
+		SDL_DrawRoundRect(Renderer,&rect,color,radius,strong);
+		rect.x++;
+		rect.y++;
+		rect.w -= 2;
+		rect.h -= 2;
+	}
+}
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
