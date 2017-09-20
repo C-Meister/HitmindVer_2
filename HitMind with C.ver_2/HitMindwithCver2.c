@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	int loginsuccess = false; //로그인 성공 상태
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
+	int i;
 	int hangeul = false; // 현재 입력하고 있는 글자가 한글인지 아닌지 식별해주는 불 변수
 	int textinput = true; // 글자가 하나 더 입력되었는지 알려주는 불 변수
 	int enter = false; // 엔터가 입력되었는지 알려주는 불 변수
@@ -267,8 +268,28 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 										}
-										else
-											loginsuccess = true;
+										else {
+											if (autologin_checking == 1) {
+												sprintf(query, "update user set auto_login = '%s' where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
+												if (mysql_query(cons, query) == 0)
+													loginsuccess = true;
+												else
+												{
+													printf("\n자동 로그인 오류");
+													warning.ison = 1;
+													strcpy(warning.message, "자동 로그인 등록 실패");
+													warning.size = 15;
+													warning.x = Display_X / 3 + 220;
+													warning.y = Display_Y / 3 + 290;
+													warning.r = 255;
+													warning.g = 0;
+													warning.b = 0;
+
+												}
+											}
+											else
+												loginsuccess = true;
+										}
 										enter = false;
 										textinput = true;
 									}
@@ -401,8 +422,8 @@ int main(int argc, char *argv[])
 										warning.ison = 1;
 										strcpy(warning.message, "자동 로그인 등록 실패");
 										warning.size = 15;
-										warning.x = Display_X / 3 + 180;
-										warning.y = Display_Y / 3 + 280;
+										warning.x = Display_X / 3 + 220;
+										warning.y = Display_Y / 3 + 290;
 										warning.r = 255;
 										warning.g = 0;
 										warning.b = 0;
@@ -428,7 +449,7 @@ int main(int argc, char *argv[])
 						}
 						if (PutButtonImage(renderer, login_signup_noclick, login_signup_click, Display_X / 3 + 85, Display_Y / 3 + 335, 182, 71, &event))
 						{
-
+							
 						}
 						if (PutButtonImage(renderer, login_findpassword_noclick, login_findpassword_click, Display_X / 3 + 305, Display_Y / 3 + 335, 269, 71, &event))
 						{
@@ -436,7 +457,11 @@ int main(int argc, char *argv[])
 						}
 
 						PutText_Unicode(renderer, ID_put, Display_X / 3 + 35, Display_Y / 3 + 117, 30, color);
-						PutText_Unicode(renderer, Password_put, Display_X / 3 + 35, Display_Y / 3 + 215, 30, color);
+						for (i = 0; i < wcslen(Password_put); i++)
+							query[i] = '*';
+						query[i] = 0;
+						PutText(renderer, query, Display_X / 3 + 35, Display_Y / 3 + 215, 30, 0, 0, 0);
+						
 						textinput = false;
 						if (warning.ison == 1)
 						{

@@ -29,9 +29,7 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
 	
-	if (event->type == SDL_MOUSEBUTTONDOWN)
-		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
-			return 1;
+	
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
 
@@ -43,6 +41,9 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	
 	}
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
 	return 0;
 }
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
@@ -260,7 +261,7 @@ void fill_circle(SDL_Renderer *gRenderer, int radius, int cx, int cy, int r, int
 		int x = cx - dx;
 		SDL_SetRenderDrawColor(gRenderer, r, g, b, a);
 		SDL_RenderDrawLine(gRenderer, cx - dx, cy + dy - radius, cx + dx, cy + dy - radius);
-		if (dy != circle.radius)
+		if (dy != radius)
 			SDL_RenderDrawLine(gRenderer, cx - dx, cy - dy + radius, cx + dx, cy - dy + radius);
 	}
 }
