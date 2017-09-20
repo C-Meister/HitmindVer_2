@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 		getchar();
 	}
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
-	Window = SDL_CreateWindow("HitMind_2", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
+	Window = SDL_CreateWindow("HitMind_2", 300, 200, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI  | SDL_WINDOW_FULLSCREEN);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	int i;
+	int pass_reset_mode = 1;
 	int hangeul = false; // 현재 입력하고 있는 글자가 한글인지 아닌지 식별해주는 불 변수
 	int textinput = true; // 글자가 하나 더 입력되었는지 알려주는 불 변수
 	int enter = false; // 엔터가 입력되었는지 알려주는 불 변수
@@ -186,8 +187,8 @@ int main(int argc, char *argv[])
 				SDL_Texture * login_button_id_noclick = LoadTexture(renderer, ".\\login\\loginbutton1.png");
 				SDL_Texture * login_button_id_click = LoadTexture(renderer, ".\\login\\loginbutton2.png");
 				SDL_Texture * autologin_check = LoadTexture(renderer, ".\\login\\loginbuttonup.png");
-				SDL_Texture * login_findpassword_noclick = LoadTexture(renderer, ".\\login\\searchPW1.png");
-				SDL_Texture * login_findpassword_click = LoadTexture(renderer, ".\\login\\searchPW2.png");
+				SDL_Texture * login_findpassword_noclick = LoadTexture(renderer, ".\\login\\repassword1.png");
+				SDL_Texture * login_findpassword_click = LoadTexture(renderer, ".\\login\\repassword2.png");
 				SDL_Texture * login_signup_noclick = LoadTexture(renderer, ".\\login\\signup1.png");
 				SDL_Texture * login_signup_click = LoadTexture(renderer, ".\\login\\signup2.png");
 
@@ -314,7 +315,7 @@ int main(int argc, char *argv[])
 								}
 							}
 							else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
-								if (ID_INPUT == 1)
+								if (ID_INPUT)
 								{
 									strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 									SDL_SetClipboardText(utf8);// 클립보드에 넣음
@@ -455,11 +456,14 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, login_findpassword_noclick, login_findpassword_click, Display_X / 3 + 305, Display_Y / 3 + 335, 269, 71, &event))
 						{
 							find_password_status = 1;
-							SDL_Texture * find_back = LoadTexture(renderer, ".\\login\\searchPWbase.png");
+							pass_reset_mode = 1;
+							SDL_Texture * find_back = LoadTexture(renderer, ".\\login\\repasswordbase.png");
 							SDL_Texture * find_ID_noclick = LoadTexture(renderer, ".\\login\\ID1.png");
 							SDL_Texture * find_ID_click = LoadTexture(renderer, ".\\login\\ID2.png");
-							SDL_Texture * find_button_noclick = LoadTexture(renderer, ".\\login\\searchbotten1.png");
-							SDL_Texture * find_button_click = LoadTexture(renderer, ".\\login\\searchbutton2.png");
+							SDL_Texture * find_button_noclick = LoadTexture(renderer, ".\\login\\resetting1.png");
+							SDL_Texture * find_button_click = LoadTexture(renderer, ".\\login\\resetting2.png");
+							SDL_Texture * find_father_noclick = LoadTexture(renderer, ".\\login\\fathername1.png");
+							SDL_Texture * find_father_click = LoadTexture(renderer, ".\\login\\fathername2.png");
 							while (find_password_status)
 							{
 								if (SDL_PollEvent(&event))
@@ -487,10 +491,39 @@ int main(int argc, char *argv[])
 										}
 									}
 								}
-								RenderTextureXYWH(renderer, find_back, Display_X / 3, Display_Y / 3, 666, 302);
+								RenderTextureXYWH(renderer, find_back, Display_X / 3, Display_Y / 3, 666, 484);
+								if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X / 3 + 565, Display_Y / 3, 101, 83, &event))
+									find_password_status = false;
+								if (PutButtonImage(renderer, find_button_noclick, find_button_click, Display_X / 3 + 480, Display_Y / 3 + 400, 161, 71, &event));
+								for (i = 1; i <= 3; i++)
+								{
+									if (pass_reset_mode != i) {
+										if (PutButtonImage(renderer, find_ID_noclick, find_ID_noclick, Display_X / 3 + 22, Display_Y / 3 + 15+ (95 * i), 617, 63, &event))
+										{
+											pass_reset_mode = i;
+										}
+									}
+									else {
+										RenderTextureXYWH(renderer, find_ID_click, Display_X / 3 + 22 , Display_Y / 3 + 15 + (95 * i), 617, 63);
+									}
+								}
+								if (pass_reset_mode != 4)
+								{
+									if (PutButtonImage(renderer, find_father_noclick, find_father_noclick, Display_X / 3 + 25, Display_Y / 3 + 395, 428, 64, &event))
+										pass_reset_mode = 4;
+								}
+								else
+								{
+									RenderTextureXYWH(renderer, find_father_click, Display_X / 3 + 25, Display_Y / 3 + 395, 428, 64);
+								}
 								SDL_RenderPresent(renderer);
 
 							}
+							SDL_DestroyTexture(find_back);
+							SDL_DestroyTexture(find_ID_click);
+							SDL_DestroyTexture(find_ID_noclick);
+							SDL_DestroyTexture(find_button_click);
+							SDL_DestroyTexture(find_button_noclick);
 						}
 
 						PutText_Unicode(renderer, ID_put, Display_X / 3 + 35, Display_Y / 3 + 117, 30, color);

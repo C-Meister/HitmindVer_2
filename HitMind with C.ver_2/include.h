@@ -26,7 +26,10 @@
 #include "SDL/SDL_mixer.h"		//SDL - 사운드 헤더파일
 //#include "vld/vld.h"
 
-
+//오류 무시
+#pragma warning (disable : 4244)
+#pragma warning (disable : 4047)
+#pragma warning (disable : 4267)
 
 #pragma comment (lib, "lib/libiconv.lib")
 #pragma comment (lib, "lib/SDL2")			//그래픽 라이브러리 1
@@ -77,7 +80,7 @@ typedef struct Warning_Message {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static double Display_X = 1920;	//해상도 - X	
+static double Display_X = 1920;	//해상도 - X
 static double Display_Y = 1080;	//해상도 - Y
 
 //---------------콘솔 함수----------------
@@ -108,12 +111,13 @@ int hannum(wchar_t unicode[], int len);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,int radius,int strong);
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
+
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
 void Thread_MySQL(Connect_status *type);
 //처음 MySQL에 연결함
