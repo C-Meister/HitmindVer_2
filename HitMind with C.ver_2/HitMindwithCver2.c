@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 	int quit = false; // while문 조건문에 쓰이는 불 변수
 	int loginpopup = false; //로그인 팝업 반복문 상태
 	int loginsuccess = false; //로그인 성공 상태
+	int find_password_status = false;
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	int i;
@@ -453,7 +454,43 @@ int main(int argc, char *argv[])
 						}
 						if (PutButtonImage(renderer, login_findpassword_noclick, login_findpassword_click, Display_X / 3 + 305, Display_Y / 3 + 335, 269, 71, &event))
 						{
+							find_password_status = 1;
+							SDL_Texture * find_back = LoadTexture(renderer, ".\\login\\searchPWbase.png");
+							SDL_Texture * find_ID_noclick = LoadTexture(renderer, ".\\login\\ID1.png");
+							SDL_Texture * find_ID_click = LoadTexture(renderer, ".\\login\\ID2.png");
+							SDL_Texture * find_button_noclick = LoadTexture(renderer, ".\\login\\searchbotten1.png");
+							SDL_Texture * find_button_click = LoadTexture(renderer, ".\\login\\searchbutton2.png");
+							while (find_password_status)
+							{
+								if (SDL_PollEvent(&event))
+								{
+									switch (event.type)
+									{
+									case SDL_QUIT:
+										quit = true;
+										break;
+									case SDL_WINDOWEVENT:
+										switch (event.window.event) {
+										case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+											find_password_status = false;// 팝업창을 닫음
+											Sleep(100);
+											break;// 브레이크
+										case SDL_WINDOWEVENT_ENTER:// 윈도우
+											SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+											break;
+										case SDL_WINDOWEVENT_LEAVE:
+											//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+											break;
+										case SDL_WINDOWEVENT_FOCUS_GAINED:
+											break;
 
+										}
+									}
+								}
+								RenderTextureXYWH(renderer, find_back, Display_X / 3, Display_Y / 3, 666, 302);
+								SDL_RenderPresent(renderer);
+
+							}
 						}
 
 						PutText_Unicode(renderer, ID_put, Display_X / 3 + 35, Display_Y / 3 + 117, 30, color);
