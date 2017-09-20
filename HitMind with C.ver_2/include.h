@@ -15,7 +15,7 @@
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
-#include "mysql/mysql.h"//MySQL 함수들
+#include "mysql/mysql.h"		//MySQL 함수들
 
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
 #include "SDL/SDL_image.h"		//SDL - 이미지 헤더파일
@@ -40,6 +40,7 @@
 #define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //콘솔 출력 글씨 설정
 #define RESET(X) ZeroMemory(X, sizeof(X))	//초기화 memset()이랑 같음
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
+#define PORT 5555
 //MouseUp_Wait = PutMenu를 사용할때 마우스 버튼을 클릭하자말자 넘어가기 때문에 방지를 해줌.
 
 //typedef
@@ -61,6 +62,16 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 */
 static int Display_X = 1920;	//해상도 - X	
 static int Display_Y = 1080;	//해상도 - Y
+// 소켓용 전역변수
+static WSADATA wsaData;			
+static SOCKET Slisten_socket, Sconnect_socket[8];
+static SOCKET Clisten_socket, Cconnect_socket;
+static SOCKADDR_IN listen_addr, connect_addr;
+static int sockaddr_in_size;
+static char message[200];
+static uintptr_t Serverthread[8];
+static uintptr_t Clientthread;
+static char playerinfo[8][30];
 								
 //---------------콘솔 함수----------------
 
@@ -87,3 +98,14 @@ char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불�
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	//아이디와 패스워드로 로그인함
 
 //---------------Socket 함수--------------
+void OpenServer();
+// 서버전용 - 방(서버)를 연다
+void connectServer(char *serverIP);
+// 클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
+void HandleClient(int num);
+// 쓰레드,서버전용 - 클라이언트에게서 데이터를 계속 받아온다 인자값 : 클라이언트 번호 
+void sendall(char *lmessage, int c);
+// 서버전용 - 모든 클라이언트에게 데이터를 보낸다 인자값 : 전송할 데이터, 서버의 클라이언트 번호
+// 서버의 클라이언트 번호는 sendall 할때 자기 자신에게는 보내지 않기 위해 만든것
+void Clientrecv();
+// 쓰레드,클라이언트 전용 - 서버에게서 데이터를 받아온다
