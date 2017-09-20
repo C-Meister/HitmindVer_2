@@ -82,6 +82,35 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		return My_User;		//∏Æ≈œ
 	}
 }
+int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t answer)
+{
+	char char_id[128] = "";
+	char query[256];
+	char char_password[128] = "";
+	char char_answer[128] = "";
+	char char_nickname[128] = "";
+	strcpy(query, UNICODE2UTF8(id, wcslen(id)));
+	UTF82EUCKR(char_id, 128, query, 384);
+	char_id[strlen(char_id)] = '\0';
+	MYSQL_ROW rows;
+
+	strcpy(query, UNICODE2UTF8(password, wcslen(password)));
+	UTF82EUCKR(char_password, 128, query, 384);
+	char_password[strlen(char_password)] = '\0';
+	strcpy(query, UNICODE2UTF8(answer, wcslen(answer)));
+	UTF82EUCKR(char_answer, 128, query, 384);
+	char_answer[strlen(char_answer)] = '\0';
+	strcpy(query, UNICODE2UTF8(nickname, wcslen(nickname)));
+	UTF82EUCKR(char_nickname, 128, query, 384);
+	char_nickname[strlen(char_nickname)] = 0;
+	
+	sprintf(query, "insert into user (name, id, password, pass_find) values ('%s', '%s', '%s', '%s')", char_nickname, char_id, char_password, char_answer);
+	if (mysql_query(cons, query) != 0)
+	{
+		return -1;
+	}
+	return 1;
+}
 int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer) {
 	char char_id[128] = "";
 	char query[256];

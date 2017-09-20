@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 							textinput = true;
 							break;
 						case SDL_KEYDOWN:
-							if (event.key.keysym.sym == SDLK_RETURN) {
+							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 								if (hangeul == true && enter == false)
 									enter = true;
 								else {
