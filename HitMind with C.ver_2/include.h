@@ -89,6 +89,8 @@ char * GetDefaultMyIP();
 
 
 //---------------그래픽 함수--------------
+//UNICODE2EUCKR unicode를 euckr로 바꿔서 리턴
+int UNICODE2EUCKR(char *buffer, wchar_t *wstr);
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
@@ -118,6 +120,8 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
 
+//Password_Change 비밀번호를 변경하는데 필요한 함수. 아이디 잘못되면 -1, 답변 잘못되면 0 업데이트실패 -2 성공 1
+int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer);
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
 void Thread_MySQL(Connect_status *type);
 //처음 MySQL에 연결함

@@ -240,7 +240,10 @@ void SDL_DrawRoundLine(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 		SDL_RenderDrawLine(Renderer, x1 + Rect->x+Rect->w/2, y1 + Rect->y + Rect->h / 2, x2 + Rect->x + Rect->w / 2, y2 + Rect->y + Rect->h / 2);
 	}
 }
-
+int UNICODE2EUCKR(char *buffer, wchar_t *wstr)
+{
+	UTF82EUCKR(buffer, 128, UNICODE2UTF8(wstr, wcslen(wstr)), 384);
+}
 void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
 	SDL_Rect rect = { x-strong/2,y-strong/2,w+strong,h+strong };
 	SDL_DrawRoundLine( Renderer, &rect,color,radius,strong);

@@ -82,10 +82,46 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		return My_User;		//리턴
 	}
 }
+int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer) {
+	char char_id[128] = "";
+	char query[256];
+	char char_password[128] = "";
+	char char_answer[128] = "";
+	strcpy(query, UNICODE2UTF8(id, wcslen(id)));
+	UTF82EUCKR(char_id, 128, query, 384);
+	char_id[strlen(char_id)] = '\0';
+	MYSQL_ROW rows;
+
+	strcpy(query, UNICODE2UTF8(newpassword, wcslen(newpassword)));
+	UTF82EUCKR(char_password, 128, query, 384);
+	char_password[strlen(char_password)] = '\0';
+	strcpy(query, UNICODE2UTF8(answer, wcslen(answer)));
+	UTF82EUCKR(char_answer, 128, query, 384);
+	char_answer[strlen(char_answer)] = '\0';
+
+	sprintf(query, "select * from user where id = '%s'", char_id);
+	mysql_query(cons, query);
+	rows = mysql_fetch_row(mysql_store_result(cons));
+	if (rows == 0)
+	{
+		return -1;
+	}
+	sprintf(query, "select * from user where id = '%s' and pass_find = '%s'", char_id, char_answer);
+	mysql_query(cons, query);
+	rows = mysql_fetch_row(mysql_store_result(cons));
+	if (rows == 0)
+	{
+		return 0;
+	}
+	sprintf(query, "update user set password = PASSWORD('%s') where id = '%s' and pass_find = '%s'", char_password, char_id, char_answer);
+	if (mysql_query(cons, query) != 0)
+		return  -2;
+	return 1;
+}
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
 {
 	/*
-	반환값 
+	반환값
 	Hit_User 정보 = 성공
 	0 = 로그인 실패
 	*/
@@ -115,7 +151,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 			rows[4] = 레벨
 			rows[5] = 돈
 			rows[6] = auto_login (ip를 저장함)
-		*/ 
+		*/
 		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
 		strcpy(My_User->name, rows[1]);
