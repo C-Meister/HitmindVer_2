@@ -5,6 +5,7 @@
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 //헤더파일
+#include <math.h>
 #include <stdio.h>				//Standard Input/Output
 #include <stdlib.h>				//malloc 사용
 #include <math.h>				//수학 관련 함수
@@ -49,6 +50,7 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 
 //struct 구조체
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
+	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
@@ -59,6 +61,16 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+typedef struct Warning_Message {
+	int ison;
+	char message[128];
+	int x;
+	int y;
+	int size;
+	int r;
+	int g;
+	int b;
+}Warning_M;
 
 /*
 	변수에 대한 설명:
@@ -88,7 +100,7 @@ void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rec
 SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
-
+int hancheck(int unicode);
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
@@ -96,6 +108,8 @@ int hannum(wchar_t unicode[], int len);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,int radius,int strong);
+void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
