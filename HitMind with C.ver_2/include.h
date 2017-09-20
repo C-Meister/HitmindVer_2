@@ -5,6 +5,7 @@
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 //헤더파일
+#include <math.h>
 #include <stdio.h>				//Standard Input/Output
 #include <stdlib.h>				//malloc 사용
 #include <math.h>				//수학 관련 함수
@@ -15,8 +16,9 @@
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
-#include "mysql/mysql.h"		//MySQL 함수들
-
+#include "mysql/mysql.h"//MySQL 함수들
+#include <tchar.h>
+#include "lib//iconv.h"
 #include "SDL/SDL.h"			//SDL - 기본 헤더파일
 #include "SDL/SDL_image.h"		//SDL - 이미지 헤더파일
 #include "SDL/SDL_ttf.h"		//SDL - 폰트(텍스트) 헤더파일
@@ -24,8 +26,12 @@
 #include "SDL/SDL_mixer.h"		//SDL - 사운드 헤더파일
 //#include "vld/vld.h"
 
+//오류 무시
+#pragma warning (disable : 4244)
+#pragma warning (disable : 4047)
+#pragma warning (disable : 4267)
 
-
+#pragma comment (lib, "lib/libiconv.lib")
 #pragma comment (lib, "lib/SDL2")			//그래픽 라이브러리 1
 #pragma comment (lib, "lib/SDL2main")		//그래픽 라이브러리 2 
 #pragma comment (lib, "lib/SDL2_image")		//그래픽 라이브러리 3
@@ -48,12 +54,27 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 
 //struct 구조체
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
+	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
+	char ownip[30];
 }Hit_User;
-
+typedef struct Connect_Status {
+	void * arg;
+	bool ishappen;
+}Connect_status;
+typedef struct Warning_Message {
+	int ison;
+	char message[128];
+	int x;
+	int y;
+	int size;
+	int r;
+	int g;
+	int b;
+}Warning_M;
 
 /*
 	변수에 대한 설명:
@@ -74,29 +95,52 @@ static uintptr_t Clientthread;
 static char playerinfo[8][30];
 								
 //---------------콘솔 함수----------------
-
+//나의 IP를 받아옴
+char * GetDefaultMyIP();
 
 
 //---------------그래픽 함수--------------
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y);		//SDL - 텍스트를 출력하는함수
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, SDL_Event * event);
+//SDL - 텍스트를 출력하는함수
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size);
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutText 텍스트를 출력함.
-SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
 //SDL - LoadTexture 이미지를 불러옴 인자값 : 렌더러, 파일 경로
-void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
+SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 //SDL - RenderTexture 이미지를 렌더러에 출력함 Rect로 x, y, h, w를 설정 가능
-SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
+void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
 //SDL -  LoadTextureEx 이미지를 특별하게 불러옴 인자값 : 렌더러, 파일 경로, r, g, b 해당 색깔을 없앰
-void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
+SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
-
+void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
+int hancheck(int unicode);
+char* UNICODE2UTF8(wchar_t* unicode, int len);
+wchar_t* UTF82UNICODE(char* UTF8, int len);
+int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
+int hannum(wchar_t unicode[], int len);
+//SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
+//SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
+void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
+//SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
+int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	//아이디와 패스워드로 로그인함
 
+//_beginthreadex용 함수. 쓰레드로 mysql에 연결함
+void Thread_MySQL(Connect_status *type);
+//처음 MySQL에 연결함
+MYSQL * Mysql_Connect(char *ip); 
+//주제중에 랜덤으로 하나를 불러와 문자열로 반환
+char * Get_Random_Topic(MYSQL *cons);	
+//아이디와 패스워드로 로그인함
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
+//---------------Socket 함수--------------
 //---------------Socket 함수--------------
 void OpenServer();
 // 서버전용 - 방(서버)를 연다
