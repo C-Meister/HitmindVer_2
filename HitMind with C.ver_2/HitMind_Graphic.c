@@ -259,7 +259,23 @@ void FillRoundRect(SDL_Renderer* Renderer, int r,int g,int b, int x, int y, int 
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
-
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b,int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event)
+{
+	
+	if (event->motion.x > x && event->motion.y && event->motion.x < x + w && event->motion.y < y + h)
+	{
+		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
+		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+		
+	}
+	FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
+	DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
+		if (event->button.x > x && event->button.y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+	}
+	return 0;
+}
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
