@@ -75,8 +75,7 @@ int main(int argc, char *argv[])
 	SDL_Color color = { 0,0,0 ,0 };
 
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
-	while (!quit && !loginsuccess)
-	{
+	while (!quit && !loginsuccess){
 		if (SDL_PollEvent(&event)) {
 			switch (event.type) {/*
 			case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -1114,18 +1113,13 @@ int main(int argc, char *argv[])
 
 			}
 		//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
-		/*if (textinput == true) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-			SDL_RenderClear(renderer);
-			PutText_Unicode(renderer, wstr, 0, 0, 30, color);
-
-
-
-			textinput = false;
-		}*/
 			SDL_RenderPresent(renderer);
 		//SDL_WaitEvent(&event);
 	}
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
+
 	while (loginsuccess)	//로그인 성공 후 대기창
 	{
 		if (SDL_PollEvent(&event))
@@ -1153,9 +1147,6 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-		SDL_RenderClear(renderer);
-		
 		SDL_RenderPresent(renderer);
 	}
 
