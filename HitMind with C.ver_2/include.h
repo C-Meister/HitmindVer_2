@@ -113,9 +113,12 @@ int hannum(wchar_t unicode[], int len);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
+void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
+void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
 void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
+float DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, int x, int y, int length, float start, float end);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
