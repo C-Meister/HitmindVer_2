@@ -8,7 +8,6 @@ void Thread_MySQL(Connect_status *type)
 	(MYSQL *)type->arg = Mysql_Connect("10.80.162.92");
 	type->ishappen = true;
 }
-
 MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL구조체
 {
 	/*
@@ -51,7 +50,7 @@ char * Get_Random_Topic(MYSQL *cons)
 Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
-	sprintf(query, "select name from User where auto_login = '%s'", GetDefaultMyIP());	//해당 id의 이름을 찾는다
+	sprintf(query, "select name from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -82,10 +81,10 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		return My_User;		//리턴
 	}
 }
-int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t answer)
+int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t* answer)
 {
 	char char_id[128] = "";
-	char query[256];
+	char query[384];
 	char char_password[128] = "";
 	char char_answer[128] = "";
 	char char_nickname[128] = "";
@@ -103,8 +102,16 @@ int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickn
 	strcpy(query, UNICODE2UTF8(nickname, wcslen(nickname)));
 	UTF82EUCKR(char_nickname, 128, query, 384);
 	char_nickname[strlen(char_nickname)] = 0;
-	
-	sprintf(query, "insert into user (name, id, password, pass_find) values ('%s', '%s', '%s', '%s')", char_nickname, char_id, char_password, char_answer);
+	if (User_Login_sql(cons, char_id, char_password) != -1)
+	{
+		return 0;
+	}
+	sprintf(query, "select * from User where name = '%s'", char_nickname);	//해당 id 와 password에 맞는 값을 찾아냄
+	mysql_query(cons, query);
+	rows = mysql_fetch_row(mysql_store_result(cons));
+	if (rows != 0)	//값이 없으면 0을 리턴
+		return -2;
+	sprintf(query, "insert into user (name, id, password, pass_find) values ('%s', '%s', PASSWORD('%s'), '%s')", char_nickname, char_id, char_password, char_answer);
 	if (mysql_query(cons, query) != 0)
 	{
 		return -1;
@@ -113,14 +120,13 @@ int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickn
 }
 int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer) {
 	char char_id[128] = "";
-	char query[256];
+	char query[384];
 	char char_password[128] = "";
 	char char_answer[128] = "";
 	strcpy(query, UNICODE2UTF8(id, wcslen(id)));
 	UTF82EUCKR(char_id, 128, query, 384);
 	char_id[strlen(char_id)] = '\0';
 	MYSQL_ROW rows;
-
 	strcpy(query, UNICODE2UTF8(newpassword, wcslen(newpassword)));
 	UTF82EUCKR(char_password, 128, query, 384);
 	char_password[strlen(char_password)] = '\0';
@@ -161,7 +167,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 	rows = mysql_fetch_row(mysql_store_result(cons));
 	if (rows == 0)		//없으면
 	{
-		return -1;		//0을 리턴함
+		return -1;		//-1을 리턴함
 	}
 	sprintf(query, "select * from User where id = '%s' and password = password('%s')", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
 	mysql_query(cons, query);
