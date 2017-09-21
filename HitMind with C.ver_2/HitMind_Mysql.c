@@ -155,6 +155,7 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 }
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
 {
+
 	/*
 	반환값
 	Hit_User 정보 = 성공
