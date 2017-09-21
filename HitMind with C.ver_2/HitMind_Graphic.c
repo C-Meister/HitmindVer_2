@@ -221,28 +221,30 @@ void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, 
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y)), Center_y + y);
 	}
 }
-void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
+void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	int out_x, out_y;
 	int left_x, left_y;
 	double x, y;
-	double Center_x = Rect->x + radius, Center_y = Rect->y + radius;
+	double Center_x, Center_y;
 	Center_x = Rect->x + Rect->w - radius;
-	for (y=0; y < radius + strong;y++) {
-		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt((radius + strong)*(radius + strong) - y*y));
+	Center_y = Rect->y + radius;
+	for (y = 0; y < radius; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius- y*y));
 		left_y = Center_y - y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y)), Center_y - y);
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius  - y*y)), Center_y - y);
 	}
 	Center_x = Rect->x + radius;
 	Center_y = Rect->y + Rect->h - radius;
-	for (y=0; y < radius + strong;y++) {
-		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt((radius + strong)*(radius + strong) - y*y));
+	for (y=0; y < radius;y++) {
+		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt(radius*radius - y*y));
 		left_y = Center_y + y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y)), Center_y + y);
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius  - y*y)), Center_y + y);
 	}
 }
-void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
+void DrawRoundRect(SDL_Renderer* Renderer,int r, int g,int b,int x, int y, int w, int h, int radius, int strong) {
 	SDL_Rect rect = { x+ strong,y+ strong,w-2*strong,h-2*strong };
+	SDL_Color color = { r,g,b,0 };
 	SDL_DrawRoundRect(Renderer, &rect, color, radius,strong);
 	rect.x = x; rect.w = strong; rect.y = y + strong+ radius-1 ; rect.h = h - 2 * (strong + radius)+2 ;
 	SDL_RenderFillRect(Renderer, &rect);
@@ -250,10 +252,11 @@ void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, i
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
-void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong) {
-	SDL_Rect rect = { x + strong,y + strong ,w - 2*strong,h - 2*strong };
-	SDL_FillRoundRect(Renderer, &rect, color, radius, strong);
-	rect.x = x; rect.y = y +strong+radius-1; rect.w = w; rect.h = h - 2 * (strong+radius)+2;
+void FillRoundRect(SDL_Renderer* Renderer, int r,int g,int b, int x, int y, int w, int h, int radius) {
+	SDL_Rect rect = { x,y  ,w,h  };
+	SDL_Color color = { r,g,b, 0 };
+	SDL_FillRoundRect(Renderer, &rect, color, radius);
+	rect.x = x; rect.y = y+radius-1; rect.w = w; rect.h = h - 2 * radius+2;
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
