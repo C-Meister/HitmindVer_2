@@ -24,31 +24,3 @@ char * GetDefaultMyIP()
 	}
 	return inet_ntoa(addr);
 }
-
-void settings(int *x, int *y, int *music, int *sound, int *full) {
-	int a,b,c,d;
-	FILE *set = fopen("setting.txt", "rt");
-	fscanf(set, "<HitMid_Setting>\n");
-	fscanf(set, "배경음악 : %d\n", music);
-	fscanf(set, "효과음 : %d\n", sound);
-	fscanf(set, "Display_X : %d\n", x);
-	fscanf(set, "Display_Y : %d\n", y);
-	fscanf(set, "fullscreen : %d\n", full);
-}
-
-void changesetting(int bgmusic, int sound, int x, int y) {
-	
-	Display_X = x;
-	Display_Y = y;
-	Sound = sound;
-	BGmusic = bgmusic;
-
-	FILE *set = fopen("setting.txt", "wt");
-	fprintf(set, "<HitMid_Setting>\n");
-	fprintf(set,"배경음악 : %d\n", bgmusic);
-	fprintf(set,"효과음 : %d\n", sound);
-	fprintf(set,"Display_X : %d\n", x);
-	fprintf(set,"Display_Y : %d\n", y);
-	fprintf(set, "fullscreen : %d\n", Full);
-		
-}
