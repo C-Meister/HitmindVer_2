@@ -80,8 +80,8 @@ typedef struct Warning_Message {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static double Display_X = 1920;	//해상도 - X
-static double Display_Y = 1080;	//해상도 - Y
+static double Display_X = 1280;	//해상도 - X
+static double Display_Y = 720;	//해상도 - Y
 
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴
@@ -113,8 +113,8 @@ void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx,
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
 void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
-void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
-void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
+void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
+void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 float DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, int x, int y, int length, float start, float end);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
