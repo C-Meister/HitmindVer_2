@@ -259,7 +259,7 @@ void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w,
 }
 
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
-	static wchar_t wstr[256] = L"";
+	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
 	int temp;
 	int i;
@@ -281,10 +281,10 @@ wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	return wstr;
 }
 char* UNICODE2UTF8(wchar_t* unicode, int len) {
-	static char str[192] = "";
+	char str[192] = "";
 	int i = 0, j = 0;
 	for (i = 0; j < len; j++) {
-		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \'로 입력해야하므로 예외 처리를 해준다
+		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \"로 입력해야하므로 예외 처리를 해준다
 			str[i] = 92;
 			str[i + 1] = unicode[j];
 			i += 2;
