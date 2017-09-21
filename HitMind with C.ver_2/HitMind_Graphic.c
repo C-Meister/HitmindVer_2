@@ -29,9 +29,7 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
 	
-	if (event->type == SDL_MOUSEBUTTONDOWN)
-		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
-			return 1;
+	
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
 
@@ -43,6 +41,9 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	
 	}
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
 	return 0;
 }
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
@@ -240,7 +241,6 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y)), Center_y + y);
 	}
 }
-
 void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
 	SDL_Rect rect = { x+ strong,y+ strong,w-2*strong,h-2*strong };
 	SDL_DrawRoundRect(Renderer, &rect, color, radius,strong);
@@ -258,7 +258,7 @@ void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w,
 	return;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
-	wchar_t wstr[256] = L"";
+	static wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
 	int temp;
 	int i;
@@ -280,7 +280,7 @@ wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	return wstr;
 }
 char* UNICODE2UTF8(wchar_t* unicode, int len) {
-	char str[192] = "";
+	static char str[192] = "";
 	int i = 0, j = 0;
 	for (i = 0; j < len; j++) {
 		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \'로 입력해야하므로 예외 처리를 해준다
@@ -335,10 +335,10 @@ void fill_circle(SDL_Renderer *gRenderer, int radius, int cx, int cy, int r, int
 	for (double dy = 1; dy <= radius; dy += 1.0)
 	{
 		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
-		int x = cx - dx;
+		int x = (int)(cx - dx);
 		SDL_SetRenderDrawColor(gRenderer, r, g, b, a);
 		SDL_RenderDrawLine(gRenderer, cx - dx, cy + dy - radius, cx + dx, cy + dy - radius);
-	//	if (dy != circle.radius)
+		if (dy != radius)
 			SDL_RenderDrawLine(gRenderer, cx - dx, cy - dy + radius, cx + dx, cy - dy + radius);
 	}
 } 
