@@ -86,14 +86,19 @@ typedef struct SDL_Slider {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static double Display_X = 1920;	//해상도 - X
-static double Display_Y = 1080;	//해상도 - Y
+static int Display_X = 1920;	//해상도 - X
+static int Display_Y = 1080;	//해상도 - Y
+static int BGmusic = 30;     //배경음악 크기
+static int Sound = 30;       //효과음
+static int Full = 0;
 
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴
 char * GetDefaultMyIP();
-
-
+//초기 설정값에 맞게 프로그램을 실행 함
+void settings(int *x, int *y, int *music, int *sound, int *full);
+//설정변경
+void changesetting(int bgmusic, int sound, int x, int y);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		

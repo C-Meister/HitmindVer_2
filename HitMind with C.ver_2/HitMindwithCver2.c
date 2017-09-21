@@ -26,6 +26,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
+	
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -42,8 +43,10 @@ int main(int argc, char *argv[])
 		printf("error");
 		getchar();
 	}
+	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
+	printf("\n\n\n%d %d\n\n\n", Display_X, Display_Y);
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
-	Window = SDL_CreateWindow("HitMind_2", 0, 0, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
+	Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -74,6 +77,8 @@ int main(int argc, char *argv[])
 	int slice = 0;
 	SDL_Color color = { 0,0,0 ,0 };
 
+	
+	//changesetting(30, 30, 1080, 720);
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	while (!quit && !loginsuccess)
 	{
