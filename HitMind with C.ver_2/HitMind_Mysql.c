@@ -50,7 +50,7 @@ char * Get_Random_Topic(MYSQL *cons)
 Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
-	sprintf(query, "select name from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
+	sprintf(query, "select * from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -73,6 +73,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		*/
 		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
+		strcpy(My_User->password, rows[3]);
 		strcpy(My_User->name, rows[1]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
@@ -191,6 +192,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
 		strcpy(My_User->name, rows[1]);
+		strcpy(My_User->password, rows[3]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
 		strcpy(My_User->ownip, rows[6]);

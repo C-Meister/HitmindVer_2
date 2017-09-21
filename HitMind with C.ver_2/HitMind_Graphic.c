@@ -378,6 +378,7 @@ int UpdateSlider(Slider* Slider, int x, int y,int flag) {
 		else
 			return 0;
 	}
+	return 0;
 }
 
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
