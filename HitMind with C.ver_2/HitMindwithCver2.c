@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	printf("\n\n\n%d %d\n\n\n", Display_X, Display_Y);
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
-	Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
+	Window = SDL_CreateWindow("HitMind_2", 0, 0, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -1176,10 +1176,10 @@ int main(int argc, char *argv[])
 
 
 			textinput = false;
-		}*/
+		
 			SDL_RenderPresent(renderer);
 		//SDL_WaitEvent(&event);
-	}
+	
 	SDL_DestroyTexture(LoadingBar);
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
