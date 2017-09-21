@@ -86,14 +86,19 @@ typedef struct SDL_Slider {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static double Display_X = 1280;	//해상도 - X
-static double Display_Y = 720;	//해상도 - Y
+static int Display_X = 1920;	//해상도 - X
+static int Display_Y = 1080;	//해상도 - Y
+static int BGmusic = 30;     //배경음악 크기
+static int Sound = 30;       //효과음
+static int Full = 0;
 
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴
 char * GetDefaultMyIP();
-
-
+//초기 설정값에 맞게 프로그램을 실행 함
+void settings(int *x, int *y, int *music, int *sound, int *full);
+//설정변경
+void changesetting(int bgmusic, int sound, int x, int y);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
@@ -123,6 +128,10 @@ void FillRoundRect(SDL_Renderer* Renderer, int r,int g, int b, int x, int y, int
 void DrawRoundRect(SDL_Renderer* Renderer, int r, int g ,int b, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 void InitSlider(Slider * Slider,int Bar_x, int Bar_y,int Bar_w, int Bar_h, int Box_w,int Box_h, float Start, float End);
+void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
+void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
+void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
+void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 float DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, int x, int y, int length, float start, float end);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);

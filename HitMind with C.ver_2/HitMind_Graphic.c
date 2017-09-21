@@ -224,7 +224,7 @@ void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, 
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	int left_x, left_y;
-	double x, y;
+	double y;
 	double Center_x, Center_y;
 	Center_x = Rect->x + Rect->w - radius;
 	Center_y = Rect->y + radius;
@@ -233,6 +233,7 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 		left_y = Center_y - y;
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius  - y*y)), Center_y - y);
 	}
+
 	Center_x = Rect->x + radius;
 	Center_y = Rect->y + Rect->h - radius;
 	for (y=0; y < radius;y++) {
@@ -259,22 +260,64 @@ void FillRoundRect(SDL_Renderer* Renderer, int r,int g,int b, int x, int y, int 
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
-int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b,int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event)
-{
-	
-	if (event->motion.x > x && event->motion.y && event->motion.x < x + w && event->motion.y < y + h)
-	{
-		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
-		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
-		
+void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int out_x, out_y;
+	int left_x, left_y;
+	double y;
+	double Center_x = Rect->x + radius, Center_y = Rect->y + radius;
+	for (y = 0; y < radius;) {
+		out_x = floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y - y);
 	}
-	FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
-	DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
-	if (event->type == SDL_MOUSEBUTTONDOWN) {
-		if (event->button.x > x && event->button.y && event->button.x < x + w && event->button.y < y + h)
-			return 1;
+	Center_x = Rect->x + Rect->w - radius;
+	for (y = 0; y < radius; ) {
+		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
-	return 0;
+	for (; y < radius + strong; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt((radius + strong)*(radius + strong) - y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y)), Center_y - y);
+	}
+}
+void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int left_x, left_y;
+	double y;
+	double Center_x, Center_y;
+	Center_x = Rect->x + Rect->w - radius;
+	Center_y = Rect->y + radius;
+	for (y = 0; y < radius; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius - y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+	}
+}
+void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius) {
+	SDL_Rect rect = { x,y  ,w,h };
+	SDL_Color color = { r,g,b, 0 };
+	SDL_FillUpRoundRect(Renderer, &rect, color, radius);
+	rect.x = x; rect.y = y + radius - 1; rect.w = w; rect.h = h - radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	return;
+}
+void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong) {
+	SDL_Rect rect = { x + strong,y + strong,w - 2 * strong,h - 2 * strong };
+	SDL_Color color = { r,g,b,0 };
+	SDL_DrawUpRoundRect(Renderer, &rect, color, radius, strong);
+	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	rect.x = x; rect.y = y + h - strong; rect.w = w; rect.h = strong;
+	SDL_RenderFillRect(Renderer, &rect);
+
+	return;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
