@@ -1,5 +1,7 @@
 ﻿#include "include.h"
-
+#define MOTION 0
+#define BUTTONDOWN 1
+#define BUTTONUP 2
 //그래픽 관련 함수들
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
 
@@ -228,7 +230,7 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 	double Center_x, Center_y;
 	Center_x = Rect->x + Rect->w - radius;
 	Center_y = Rect->y + radius;
-	for (y = 0; y < radius; y++) {
+	for (y = 0; y <= radius; y++) {
 		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius- y*y));
 		left_y = Center_y - y;
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius  - y*y)), Center_y - y);
@@ -236,7 +238,7 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 
 	Center_x = Rect->x + radius;
 	Center_y = Rect->y + Rect->h - radius;
-	for (y=0; y < radius;y++) {
+	for (y=0; y <= radius;y++) {
 		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt(radius*radius - y*y));
 		left_y = Center_y + y;
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius  - y*y)), Center_y + y);
@@ -301,16 +303,18 @@ void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color colo
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event)
 {
 
-	if (event->motion.x > x && event->motion.y && event->motion.x < x + w && event->motion.y < y + h)
+	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->motion.y < y + h)
 	{
 		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
 
 	}
-	FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
-	DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+	else {
+		FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
+		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
-		if (event->button.x > x && event->button.y && event->button.x < x + w && event->button.y < y + h)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
 			return 1;
 	}
 	return 0;
@@ -336,6 +340,46 @@ void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, 
 
 	return;
 }
+void CreateSlider(Slider * Slider, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, float Start, float End, float Default) {
+	Slider->Bar.x = Bar_x;
+	Slider->Bar.y = Bar_y;
+	Slider->Bar.w = Bar_w;
+	Slider->Bar.h = Bar_h;
+	Slider->Box.x = floor(Bar_w*Default/(End - Start)-Box_w/2.0);
+	Slider->Box.y = floor(Bar_y + Bar_h / 2.0 - Box_h / 2.0);
+	Slider->Box.w = Box_w;
+	Slider->Box.h = Box_h;
+	return;
+}
+void DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, Slider * Slider) {
+	RenderTexture(Renderer,BarTexture,&Slider->Bar);
+	RenderTexture(Renderer, BoxTexture, &Slider->Box);
+	return;
+}
+int UpdateSlider(Slider* Slider, int x, int y,int flag) {
+	if (flag == BUTTONUP) {
+		Slider->Click = false;
+		return 0;
+	}
+	else if (flag == BUTTONDOWN) {
+		if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
+			Slider->Box.x = x;
+			Slider->Click = true;
+			return 1;
+		}
+		else 
+			return 0;
+	}
+	else if (flag == MOTION) {
+		if (Slider->Click== true&&x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
+			Slider->Box.x = x;
+			return 1;
+		}
+		else
+			return 0;
+	}
+}
+
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
