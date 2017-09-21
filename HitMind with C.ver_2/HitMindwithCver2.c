@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	printf("\n\n\n%d %d\n\n\n", Display_X, Display_Y);
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
-	Window = SDL_CreateWindow("HitMind_2", 0, 0, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
+	Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -1210,28 +1210,68 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			SDL_SetRenderDrawColor(renderer, 216, 216, 216, 0);
-			SDL_RenderClear(renderer);
-			FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14, 0);
-			DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
-			FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14, 0);
-			DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+			/*
+			화면을 전체적으로 4등분함
 
+			                     |	   2번구역
+					1번구역		 |----------------
+								 |
+								 |    3번구역
+			---------------------|
+								 |-----------------
+					4번구역		 |
+								 |     5번구역
+								 |
+								 |
+			*/
+			
+			//1번구역
+			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);												
+			SDL_RenderClear(renderer);
+			FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+			DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+			FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);	
+			PutText(renderer, "방 목록", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+			//4번구역
+			FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
+			DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+			FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
+			PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+			//5번구역
 			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
 			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
+			FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.035, 14);
+			PutText(renderer, "내 정보", (Display_X * 0.83), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
+			//3번구역
+			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
+			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.11 - 1, Display_X * 0.275 + 2, Display_Y * 0.59 + 2, 14, 1);
+			FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.035, 14);
+			PutText(renderer, "접속자 명단", (Display_X * 0.815), Display_Y * 0.113, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
-			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.2, Display_X * 0.275, Display_Y * 0.5, 14);
-			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.2 - 1, Display_X * 0.275 + 2, Display_Y * 0.5 + 2, 14, 1);
+			//2번구역
+			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.1, 3);
+			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.1 + 2, 3, 1);
+			
+			
+			if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.04, Display_X / 11, Display_Y / 18, 8, 0, &event)) //방만들기 버튼
+			{
 
-			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.178, 3);
-			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.178 + 2, 3, 1);
+			}
+			if (PutRoundButton(renderer, 255, 0, 0, 240, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.04, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
+			{
 
-			if (PutRoundButton(renderer, 0, 176, 240, 5, 181, 245, 59, 127, 172, Display_X * 0.76, Display_Y * 0.93, Display_X * 0.08, Display_Y * 0.04, 8, 1, &event)) {
+			}
+			PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.045, 35 * ((float)Display_X) / 1920, 255, 255, 255);
+			PutText(renderer, "빠른시작", Display_X * 0.82+ 22, Display_Y * 0.045, 35 * ((float)Display_X) / 1920, 255, 255, 255);
+			if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.76, Display_Y * 0.93, Display_X * 0.08, Display_Y * 0.04, 8, 1, &event)) //로그아웃 버튼
+			{
 				roop = 1;
 				break;
 			}
-			PutText(renderer, "로그아웃", Display_X * 0.775, Display_Y * 0.94, 25 * ((float)Display_X / 1920), 255, 255, 255);
+			PutText(renderer, "로그아웃", Display_X * 0.775, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
 			//FillRoundRect(renderer, 0, 176, 255, Display_X / 13, Display_Y / 15, Display_X / 4, Display_Y / 8, 14, 0);
 			//FillRoundRect(renderer, 255, 0, 0, Display_X / 2.5, Display_Y / 15, Display_X / 4, Display_Y / 8, 15, 10);
 			SDL_RenderPresent(renderer);
