@@ -1123,8 +1123,7 @@ int main(int argc, char *argv[])
 
 			textinput = false;
 		}*/
-
-		SDL_RenderPresent(renderer);
+			SDL_RenderPresent(renderer);
 		//SDL_WaitEvent(&event);
 	}
 	while (loginsuccess)	//로그인 성공 후 대기창
