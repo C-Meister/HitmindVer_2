@@ -26,7 +26,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-	
+
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -1171,59 +1171,51 @@ int main(int argc, char *argv[])
 
 				}
 			}
-			//	PutButtonImage(renderer, WaitBar, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15, &event);
-			/*if (textinput == true) {
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-				SDL_RenderClear(renderer);
-				PutText_Unicode(renderer, wstr, 0, 0, 30, color);
 
 
 			textinput = false;
-		
+
 			SDL_RenderPresent(renderer);
-		//SDL_WaitEvent(&event);
-	
-	SDL_DestroyTexture(LoadingBar);
-	SDL_DestroyTexture(WaitBar);
-	SDL_DestroyTexture(TitleText);
-	SDL_DestroyTexture(TitleImage);
-	if (loginsuccess == 1)
-	{
-		
-	}
-	quit = 0;
-	while (loginsuccess && !quit)	//로그인 성공 후 대기창
-	{
-		if (SDL_PollEvent(&event))
+		}
+
+
+		if (loginsuccess == 1)
 		{
-			switch (event.type)
+
+		}
+		quit = 0;
+		while (loginsuccess && !quit)	//로그인 성공 후 대기창
+		{
+			if (SDL_PollEvent(&event))
 			{
-			case SDL_QUIT:
-				quit = true;
-				break;
-			case SDL_WINDOWEVENT:
-				switch (event.window.event) {
-				case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-					quit = true; 
-					Sleep(100);
-					break;// 브레이크
-				case SDL_WINDOWEVENT_ENTER:// 윈도우
-					SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+				switch (event.type)
+				{
+				case SDL_QUIT:
+					quit = true;
 					break;
-				case SDL_WINDOWEVENT_LEAVE:
-					//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					break;
+				case SDL_WINDOWEVENT:
+					switch (event.window.event) {
+					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+						quit = true;
+						Sleep(100);
+						break;// 브레이크
+					case SDL_WINDOWEVENT_ENTER:// 윈도우
+						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+						break;
+					case SDL_WINDOWEVENT_LEAVE:
+						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+						break;
+					case SDL_WINDOWEVENT_FOCUS_GAINED:
+						break;
+					}
 				}
 			}
-		}
-		SDL_SetRenderDrawColor(renderer, 216, 216, 216, 0);
-		SDL_RenderClear(renderer);
-		FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14, 0);
-		DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
-		FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14, 0);
-		DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 -1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+			SDL_SetRenderDrawColor(renderer, 216, 216, 216, 0);
+			SDL_RenderClear(renderer);
+			FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14, 0);
+			DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+			FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14, 0);
+			DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
 
 			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
 			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
@@ -1239,14 +1231,19 @@ int main(int argc, char *argv[])
 				roop = 1;
 				break;
 			}
+			PutText(renderer, "로그아웃", Display_X * 0.775, Display_Y * 0.94, 25 * ((float)Display_X / 1920), 255, 255, 255);
 			//FillRoundRect(renderer, 0, 176, 255, Display_X / 13, Display_Y / 15, Display_X / 4, Display_Y / 8, 14, 0);
 			//FillRoundRect(renderer, 255, 0, 0, Display_X / 2.5, Display_Y / 15, Display_X / 4, Display_Y / 8, 15, 10);
 			SDL_RenderPresent(renderer);
 		}
+
 	}
 	if (status.ishappen == 1)
 		mysql_close(status.arg);
-
+	SDL_DestroyTexture(LoadingBar);
+	SDL_DestroyTexture(WaitBar);
+	SDL_DestroyTexture(TitleText);
+	SDL_DestroyTexture(TitleImage);
 	SDL_DestroyTexture(LoadingBar);
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
