@@ -257,6 +257,7 @@ void FillRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w,
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
+
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
@@ -329,16 +330,3 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
-
-void fill_circle(SDL_Renderer *gRenderer, int radius, int cx, int cy, int r, int g, int b, int a)
-{
-	for (double dy = 1; dy <= radius; dy += 1.0)
-	{
-		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
-		int x = (int)(cx - dx);
-		SDL_SetRenderDrawColor(gRenderer, r, g, b, a);
-		SDL_RenderDrawLine(gRenderer, cx - dx, cy + dy - radius, cx + dx, cy + dy - radius);
-		if (dy != radius)
-			SDL_RenderDrawLine(gRenderer, cx - dx, cy - dy + radius, cx + dx, cy - dy + radius);
-	}
-} 
