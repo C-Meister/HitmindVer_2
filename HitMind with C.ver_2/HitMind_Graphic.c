@@ -1,7 +1,4 @@
 ﻿#include "include.h"
-#define MOTION 0
-#define BUTTONDOWN 1
-#define BUTTONUP 2
 //그래픽 관련 함수들
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
 
@@ -340,47 +337,99 @@ void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, 
 
 	return;
 }
-void CreateSlider(Slider * Slider, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, float Start, float End, float Default) {
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture,int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h,int * Value, float Start, float End, float Default,int Flag) {
+	Slider->BarTexture = BarTexture;
+	Slider->BoxTexture = BoxTexture;
 	Slider->Bar.x = Bar_x;
 	Slider->Bar.y = Bar_y;
 	Slider->Bar.w = Bar_w;
 	Slider->Bar.h = Bar_h;
-	Slider->Box.x = floor(Bar_w*Default/(End - Start)-Box_w/2.0);
-	Slider->Box.y = floor(Bar_y + Bar_h / 2.0 - Box_h / 2.0);
+	Slider->Flag = Flag;
+	Slider->End = End;
+	Slider->Start = Start;
+	if (Flag == HORIZONTAL) {
+		Slider->Box.x = floor(Bar_x + Bar_w * (Default-Start) / (End - Start) - Box_w / 2.0);
+		Slider->Box.y = floor(Bar_y + Bar_h / 2.0 - Box_h / 2.0);
+	}
+	else if (Flag == VERTICAL) {
+		Slider->Box.x = floor(Bar_x + Bar_w / 2.0 - Box_w / 2.0);
+		Slider->Box.y = floor(Bar_y + Bar_h * (Default - Start) / (End - Start) - Box_h / 2.0);
+	}
 	Slider->Box.w = Box_w;
 	Slider->Box.h = Box_h;
+	Slider->Value = Value;
+	*Value = Default;
+	Slider->Update = true;
+	Slider->Click = false;
 	return;
 }
-void DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, Slider * Slider) {
-	RenderTexture(Renderer,BarTexture,&Slider->Bar);
-	RenderTexture(Renderer, BoxTexture, &Slider->Box);
+void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
+	RenderTexture(Renderer,Slider->BarTexture,&Slider->Bar);
+	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
 	return;
 }
-int UpdateSlider(Slider* Slider, int x, int y,int flag) {
+void UpdateSlider(Slider* Slider, int x, int y,int flag) {
 	if (flag == BUTTONUP) {
 		Slider->Click = false;
-		return 0;
+		Slider->Update = false;
+		return;
 	}
 	else if (flag == BUTTONDOWN) {
-		if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
-			Slider->Box.x = x;
-			Slider->Click = true;
-			return 1;
+		if (Slider->Flag == HORIZONTAL) {
+			if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
+				Slider->Box.x = x - Slider->Box.w / 2.0;
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
+				Slider->Click = true;
+				Slider->Update = true;
+			}
+			else {
+				Slider->Update = false;
+			}
+			return;
 		}
-		else 
-			return 0;
+		else if (Slider->Flag == VERTICAL) {
+			if (y >= Slider->Bar.y&&y <= Slider->Bar.y + Slider->Bar.h&&x >= Slider->Box.x&&x <= Slider->Box.x + Slider->Box.w) {
+				Slider->Box.y = y - Slider->Box.h / 2.0;
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start)  + Slider->Start);
+				Slider->Click = true;
+				Slider->Update = true;
+			}
+			else {
+				Slider->Update = false;
+			}
+			return;
+		}
 	}
 	else if (flag == MOTION) {
-		if (Slider->Click== true&&x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
-			Slider->Box.x = x;
-			return 1;
+		if (Slider->Click== true) {
+			if (Slider->Flag == HORIZONTAL) {
+				if (x > Slider->Bar.x + Slider->Bar.w)
+					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2.0;
+				else if (x < Slider->Bar.x)
+					Slider->Box.x = Slider->Bar.x - Slider->Box.w / 2.0;
+				else {
+					Slider->Box.x = x - Slider->Box.w / 2.0;
+				}
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x)/ Slider->Bar.w*(Slider->End - Slider->Start)  + Slider->Start);
+			}
+			else if (Slider->Flag == VERTICAL) {
+				if (y > Slider->Bar.y + Slider->Bar.h)
+					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2.0;
+				else if (y < Slider->Bar.y)
+					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2.0;
+				else {
+					Slider->Box.y = y - Slider->Box.h / 2.0;
+				}
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start;
+			}
+			Slider->Update = true;
 		}
 		else
-			return 0;
+			Slider->Update = false;
+		return;
 	}
 	return 0;
 }
-
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
