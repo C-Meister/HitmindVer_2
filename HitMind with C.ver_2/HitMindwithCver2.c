@@ -1343,7 +1343,80 @@ int main(int argc, char *argv[])
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 240, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
 				{
+					
 
+					while (1) {
+
+						/*
+				화면을 전체적으로 4등분함
+
+									 |	 
+						1번구역		 |
+									 |
+									 |    2번구역
+									 |
+				---------------------|-----------------
+						3번구역		 |
+									 |     4번구역
+									 |
+									 |
+						*/
+						
+						if (SDL_PollEvent(&event))
+						{
+							switch (event.type)
+							{
+							case SDL_QUIT:
+								quit = true;
+								break;
+							case SDL_WINDOWEVENT:
+								switch (event.window.event) {
+								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+									quit = true;
+									Sleep(100);
+									break;// 브레이크
+								case SDL_WINDOWEVENT_ENTER:// 윈도우
+									SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+									break;
+								case SDL_WINDOWEVENT_LEAVE:
+									//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+									break;
+								case SDL_WINDOWEVENT_FOCUS_GAINED:
+									break;
+								}
+							}
+						}
+						//배경
+						SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
+						SDL_RenderClear(renderer);
+						
+						//1번구역
+						FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+						DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+						FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
+						PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+						
+						//2번구역
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
+						FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
+						PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+					
+
+						//3번구역
+						FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
+						DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+						FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
+						PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+						//4번구역
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
+
+
+
+						SDL_RenderPresent(renderer);
+					}
 				}
 				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
 				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
