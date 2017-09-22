@@ -141,11 +141,10 @@ char * Get_Random_Topic(MYSQL *cons);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
 //---------------Socket 함수--------------
-//---------------Socket 함수--------------
 void OpenServer();
-// 서버전용 - 방(서버)를 연다
+// 쓰레드,서버전용 - 방(서버)를 연다
 void connectServer(char *serverIP);
-// 클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
+// 쓰레드,클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
 void HandleClient(int num);
 // 쓰레드,서버전용 - 클라이언트에게서 데이터를 계속 받아온다 인자값 : 클라이언트 번호 
 void sendall(char *lmessage, int c);

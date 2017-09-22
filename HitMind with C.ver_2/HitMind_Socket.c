@@ -20,15 +20,11 @@ void OpenServer() {
 	
 	int idx = 0;
 	while (1) {
-		if (Sconnect_socket[idx] == 0) {
+		while (Sconnect_socket[idx] != 0)
 			idx++;
-			continue;
-		}
-		break;
+		Sconnect_socket[idx] = accept(Slisten_socket, (SOCKADDR*)&connect_addr, &sockaddr_in_size);
+		Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, idx, 0, 0);
 	}
-	Sconnect_socket[idx] = accept(Slisten_socket, (SOCKADDR*)&connect_addr, &sockaddr_in_size);
-	Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, idx, 0, 0);
-	
 	// 서버 켜짐
 }
 void connectServer(char *serverIP) {
@@ -50,7 +46,7 @@ void HandleClient(int num) {
 			if (strcmp(message, "player connect") == 0) {
 				send(Sconnect_socket[num], "playercheck start", 180, 0);
 				for (int i = 0; i < 8; i++) {
-					if (Serverthread[i] != 0) {
+					if (Sconnect_socket[i] != 0) {
 						sprintf(message, "%d online", i);
 						send(Sconnect_socket[num], message, 180, 0);
 					}
