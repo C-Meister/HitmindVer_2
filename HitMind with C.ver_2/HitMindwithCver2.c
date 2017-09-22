@@ -242,6 +242,7 @@ int main(int argc, char *argv[])
 				RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 				if (PressButton)	//계속하려면 클릭하세요 버튼을 누를때
 				{
+					warning.ison = 0;
 					cons = status.arg;
 					ID_INPUT = 1;
 					PASSWORD_INPUT = 0;
@@ -402,6 +403,18 @@ int main(int argc, char *argv[])
 										slice--;
 									}
 								}
+								else if (event.key.keysym.sym == SDLK_TAB)
+								{
+									if (hangeul == true && enter == false)
+										enter = true;
+									else {
+										if (ID_INPUT) {
+											ID_INPUT = 0;
+											PASSWORD_INPUT = 1;
+										}
+									}
+								}
+
 								else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 									if (ID_INPUT)
 									{
@@ -1230,7 +1243,7 @@ int main(int argc, char *argv[])
 
 			SDL_RenderPresent(renderer);
 		}
-
+		
 
 		if (loginsuccess == 1)
 		{
