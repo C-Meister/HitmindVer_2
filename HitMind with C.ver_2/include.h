@@ -111,7 +111,8 @@ static char message[200];
 static uintptr_t Serverthread[8];
 static uintptr_t Clientthread;
 static char playerinfo[8][30];
-								
+static int Display_X = 1920;
+static int Display_Y = 1080;
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;
@@ -158,6 +159,7 @@ int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int p
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);

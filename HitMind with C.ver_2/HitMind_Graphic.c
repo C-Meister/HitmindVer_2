@@ -502,3 +502,12 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h) {
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	SDL_RenderFillRect(renderer, &rect);
+		
+}

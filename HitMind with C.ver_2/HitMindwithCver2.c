@@ -1387,7 +1387,9 @@ int main(int argc, char *argv[])
 						{
 							setting_main = 0;
 						}
-
+						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.18, set_start_w * 0.94, set_start_h * 0.18, 20);
+						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.18 - 3, set_start_w * 0.94 + 6, set_start_h * 0.18 + 6, 20, 2);
+						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.1, set_start_y + set_start_h * 0.18, 5, set_start_h * 0.18);
 						SDL_RenderPresent(renderer);
 					}
 					SDL_DestroyTexture(Setting_back);
