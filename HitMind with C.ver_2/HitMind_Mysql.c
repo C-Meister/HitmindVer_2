@@ -60,7 +60,8 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 	}
 	else
 	{
-		Hit_User *My_User = (Hit_User *)calloc(1, sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
+		Hit_User *My_User = (Hit_User *)malloc(sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
+		memset(My_User, 0, sizeof(My_User));
 		//hitmind_2 DB에 User테이블 값
 		/*
 			rows[0] = ownnum (고유 번호) 사용자 마다 다름
@@ -77,7 +78,8 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		strcpy(My_User->name, rows[1]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
-		My_User->pass_length = atoi(rows[7]);
+		My_User->pass_length = atoi(rows[8]);
+
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
@@ -113,7 +115,7 @@ int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickn
 	rows = mysql_fetch_row(mysql_store_result(cons));
 	if (rows != 0)	//값이 없으면 0을 리턴
 		return -2;
-	sprintf(query, "insert into user (name, id, password, pass_find, password_length) values ('%s', '%s', PASSWORD('%s'), '%s', %d)", char_nickname, char_id, char_password, char_answer, strlen(char_password));
+	sprintf(query, "insert into user (name, id, password, pass_find, password_length) values ('%s', '%s', PASSWORD('%s'), '%s', %zd)", char_nickname, char_id, char_password, char_answer, strlen(char_password));
 	if (mysql_query(cons, query) != 0)
 	{
 		return -1;
@@ -153,7 +155,7 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 	sprintf(query, "update user set password = PASSWORD('%s') where id = '%s' and pass_find = '%s'", char_password, char_id, char_answer);
 	if (mysql_query(cons, query) != 0)
 		return  -2;
-	sprintf(query, "update user set password_length = %d where id = '%s' and pass_find = '%s'", strlen(char_password), char_id, char_answer);
+	sprintf(query, "update user set password_length = %zd where id = '%s' and pass_find = '%s'", strlen(char_password), char_id, char_answer);
 	if (mysql_query(cons, query) != 0)
 		return  -2;
 	return 1;
@@ -185,7 +187,8 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		return 0;
 	else
 	{
-		Hit_User *My_User = (Hit_User *)calloc(1, sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
+		Hit_User *My_User = (Hit_User *)malloc(sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
+		memset(My_User, 0, sizeof(My_User));
 		//hitmind_2 DB에 User테이블 값
 		/*
 			rows[0] = ownnum (고유 번호) 사용자 마다 다름
@@ -202,7 +205,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		strcpy(My_User->password, rows[3]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
-		My_User->pass_length = atoi(rows[7]);
+		My_User->pass_length = atoi(rows[8]);
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
