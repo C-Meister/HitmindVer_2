@@ -85,6 +85,23 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		return My_User;		//∏Æ≈œ
 	}
 }
+int getUesrStatus(MYSQL *cons, char arr[30][30])
+{
+	MYSQL_RES *sql_result;
+	MYSQL_ROW row;
+	memset(arr, 0, sizeof(arr));
+	mysql_query(cons, "select * from user where status != 0");
+	sql_result = mysql_store_result(cons);
+	int i = 0;
+	while ((row = mysql_fetch_row(sql_result)) != NULL)
+	{
+		strcpy(arr[i], row[1]);
+		*arr[27] = atoi(row[4]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}
 int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t* answer)
 {
 	char char_id[128] = "";

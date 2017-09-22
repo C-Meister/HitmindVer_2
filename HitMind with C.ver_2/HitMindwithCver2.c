@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
 	Unicode Password_put[256] = L"";
 	char db_id[256] = "";
 	char db_password[256] = "";
+	int setting_main = 0;
 	int pass_length = 0;
 	char query[128];
 	char utf8[256] = ""; // utf8 변환에 필요한 배열
@@ -266,7 +267,7 @@ int main(int argc, char *argv[])
 						pass_length = myuser->pass_length;
 						autologin_checking = 1;
 						myuser->password[strlen(myuser->password)] = 0;
-						printf("%s", myuser->password);
+						//printf("%s", myuser->password);
 
 						han2unicode(myuser->password, Password_put);
 					}
@@ -325,7 +326,7 @@ int main(int argc, char *argv[])
 											myuser = User_Login_sql(cons, db_id, db_password);
 											if (myuser == -1)
 											{
-												printf("\n아이디 오류");
+												//	printf("\n아이디 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "아이디가 틀립니다");
 												warning.size = 20;
@@ -338,7 +339,7 @@ int main(int argc, char *argv[])
 											}
 											else if (myuser == 0)
 											{
-												printf("\n비밀번호 오류");
+												//	printf("\n비밀번호 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "비밀번호가 틀립니다");
 												warning.size = 20;
@@ -379,7 +380,7 @@ int main(int argc, char *argv[])
 								else if (event.key.keysym.sym == SDLK_BACKSPACE && (ID_INPUT ? wcslen(ID_put) > 0 : (PASSWORD_INPUT ? wcslen(Password_put) > 0 : 0)))// 키보드 백스페이스고 배열의 길이가 1이상일때
 								{
 									if (slice == 0) {
-										printf("\nslice아니 상태");
+										//		printf("\nslice아니 상태");
 										if (ID_INPUT == 1)
 											ID_put[wcslen(ID_put) - 1] = '\0';
 										else if (PASSWORD_INPUT == 1)
@@ -387,7 +388,7 @@ int main(int argc, char *argv[])
 										textinput = true;
 									}
 									else {
-										printf("\nslice상태");
+										//		printf("\nslice상태");
 										slice--;
 									}
 								}
@@ -686,8 +687,12 @@ int main(int argc, char *argv[])
 											}
 											else if (event.key.keysym.sym == SDLK_TAB)
 											{
-												if (pass_reset_mode < 5)
-													pass_reset_mode += 1;
+												if (hangeul == true && enter == false)
+													enter = true;
+												else {
+													if (pass_reset_mode < 5)
+														pass_reset_mode += 1;
+												}
 											}
 											else if (event.key.keysym.sym == SDLK_RALT)
 												hanyeong = !(hanyeong);
@@ -1002,8 +1007,12 @@ int main(int argc, char *argv[])
 											}
 											else if (event.key.keysym.sym == SDLK_TAB)
 											{
-												if (pass_reset_mode < 4)
-													pass_reset_mode += 1;
+												if (hangeul == true && enter == false)
+													enter = true;
+												else {
+													if (pass_reset_mode < 4)
+														pass_reset_mode += 1;
+												}
 											}
 											else if (event.key.keysym.sym == SDLK_RALT)
 												hanyeong = !(hanyeong);
@@ -1227,114 +1236,175 @@ int main(int argc, char *argv[])
 
 			SDL_RenderPresent(renderer);
 		}
-		
 
-		if (loginsuccess == 1)
-		{
 
-		}
-		quit = 0;
-		while (loginsuccess && !quit)	//로그인 성공 후 대기창
+		if (loginsuccess)
 		{
-			if (SDL_PollEvent(&event))
+			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
+			mysql_query(cons, query);
+			char MemBerList[30][30] = { 0, };
+			int usercount = 0;
+			long long timer = SDL_GetTicks() % 1000;
+			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
+			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
+			quit = 0;
+			sprintf(query, "LV %d", myuser->level);
+			while (loginsuccess && !quit)	//로그인 성공 후 대기창
 			{
-				switch (event.type)
+				if (SDL_PollEvent(&event))
 				{
-				case SDL_QUIT:
-					quit = true;
-					break;
-				case SDL_WINDOWEVENT:
-					switch (event.window.event) {
-					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+					switch (event.type)
+					{
+					case SDL_QUIT:
 						quit = true;
-						Sleep(100);
-						break;// 브레이크
-					case SDL_WINDOWEVENT_ENTER:// 윈도우
-						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 						break;
-					case SDL_WINDOWEVENT_LEAVE:
-						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-						break;
-					case SDL_WINDOWEVENT_FOCUS_GAINED:
-						break;
+					case SDL_WINDOWEVENT:
+						switch (event.window.event) {
+						case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+							quit = true;
+							Sleep(100);
+							break;// 브레이크
+						case SDL_WINDOWEVENT_ENTER:// 윈도우
+							SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+							break;
+						case SDL_WINDOWEVENT_LEAVE:
+							//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+							break;
+						case SDL_WINDOWEVENT_FOCUS_GAINED:
+							break;
+						}
 					}
 				}
+				/*
+				화면을 전체적으로 4등분함
+
+									 |	   2번구역
+						1번구역		 |----------------
+									 |
+									 |    3번구역
+				---------------------|
+									 |-----------------
+						4번구역		 |
+									 |     5번구역
+									 |
+									 |
+				*/
+
+				//1번구역
+				SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
+				SDL_RenderClear(renderer);
+				FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+				DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+				FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
+				PutText(renderer, "방 목록", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+				//4번구역
+				FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
+				DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+				FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
+				PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+				//5번구역
+				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
+				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
+				FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.035, 14);
+				PutText(renderer, "내 정보", (Display_X * 0.83), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+				//3번구역
+				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
+				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.11 - 1, Display_X * 0.275 + 2, Display_Y * 0.59 + 2, 14, 1);
+				FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.035, 14);
+				PutText(renderer, "접속자 명단", (Display_X * 0.815), Display_Y * 0.113, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+				//2번구역
+				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.09, 3);
+				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
+
+				PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
+				PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
+
+				if (timer < SDL_GetTicks() % 1000)
+				{
+
+					timer = SDL_GetTicks() % 1000 + 1;
+					usercount = getUesrStatus(cons, MemBerList);
+				}
+				
+				for (i = 0; i < usercount; i++)
+				{
+					PutText(renderer, MemBerList[i], Display_X * 0.73, Display_Y * (0.20 + i * 0.05), 40 * ((float)Display_X / 1920), 0, 0, 0);
+				}
+				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //방만들기 버튼
+				{
+
+				}
+				if (PutRoundButton(renderer, 255, 0, 0, 240, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
+				{
+
+				}
+				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
+				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
+				if (PutButtonImage(renderer, WaitRoom_setting_noclick, WaitRoom_setting_click, Display_X * 0.92 + 10, Display_Y * 0.02, 86 * ((float)Display_X / 1920), 82 * ((float)Display_X / 1920), &event))//설정 버튼
+				{
+					setting_main = 1;
+					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
+					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
+					while (setting_main) {
+						if (SDL_PollEvent(&event))
+						{
+							switch (event.type)
+							{
+							case SDL_QUIT:
+								setting_main = false;
+								break;
+							case SDL_WINDOWEVENT:
+								switch (event.window.event) {
+								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+									setting_main = false;
+									Sleep(100);
+									break;// 브레이크
+								case SDL_WINDOWEVENT_ENTER:// 윈도우
+									SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+									break;
+								case SDL_WINDOWEVENT_LEAVE:
+									//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+									break;
+								case SDL_WINDOWEVENT_FOCUS_GAINED:
+									break;
+								}
+							}
+						}
+						RenderTextureXYWH(renderer, Setting_back, Display_X / 2 - (346 * ((float)Display_X / 1920)), Display_Y / 2 - (268 * ((float)Display_X / 1920)), 693 * ((float)Display_X / 1920), 537 * ((float)Display_X / 1920));
+					//	if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click,))
+						SDL_RenderPresent(renderer);
+					}
+					SDL_DestroyTexture(Setting_back);
+					SDL_DestroyTexture(Setting_Close_click);
+					SDL_DestroyTexture(Setting_Close_noclick);
+
+				}
+
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event)) //닉네임 변경 버튼
+				{
+					roop = 1;
+					break;
+				}
+				PutText(renderer, "닉네임 변경", Display_X * 0.75, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
+
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.86, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event)) //로그아웃 버튼
+				{
+					roop = 1;
+					break;
+				}
+				PutText(renderer, "로그아웃", Display_X * 0.88, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
+				SDL_RenderPresent(renderer);
+				SDL_WaitEventTimeout(&event, 1000);
 			}
-			/*
-			화면을 전체적으로 4등분함
-
-								 |	   2번구역
-					1번구역		 |----------------
-								 |
-								 |    3번구역
-			---------------------|
-								 |-----------------
-					4번구역		 |
-								 |     5번구역
-								 |
-								 |
-			*/
-
-			//1번구역
-			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
-			SDL_RenderClear(renderer);
-			FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
-			DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
-			FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
-			PutText(renderer, "방 목록", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-			//4번구역
-			FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
-			DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
-			FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
-			PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-			//5번구역
-			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
-			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
-			FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.035, 14);
-			PutText(renderer, "내 정보", (Display_X * 0.83), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-			//3번구역
-			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
-			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.11 - 1, Display_X * 0.275 + 2, Display_Y * 0.59 + 2, 14, 1);
-			FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.035, 14);
-			PutText(renderer, "접속자 명단", (Display_X * 0.815), Display_Y * 0.113, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-			//2번구역
-			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.09, 3);
-			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
-
-
-			if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.03, Display_X / 11, Display_Y / 18, 8, 0, &event)) //방만들기 버튼
-			{
-
-			}
-			if (PutRoundButton(renderer, 255, 0, 0, 240, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.03, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
-			{
-
-			}
-			PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.04, 35 * ((float)Display_X) / 1920, 255, 255, 255);
-			PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.04, 35 * ((float)Display_X) / 1920, 255, 255, 255);
-
-			
-			if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event)) //닉네임 변경 버튼
-			{
-				roop = 1;
-				break;
-			}
-			PutText(renderer, "닉네임 변경", Display_X * 0.75, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
-
-			if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.88, Display_Y * 0.93, Display_X * 0.09 , Display_Y * 0.04, 8, 1, &event)) //로그아웃 버튼
-			{
-				roop = 1;
-				break;
-			}
-			PutText(renderer, "로그아웃", Display_X * 0.9, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
-			//FillRoundRect(renderer, 0, 176, 255, Display_X / 13, Display_Y / 15, Display_X / 4, Display_Y / 8, 14, 0);
-			//FillRoundRect(renderer, 255, 0, 0, Display_X / 2.5, Display_Y / 15, Display_X / 4, Display_Y / 8, 15, 10);
-			SDL_RenderPresent(renderer);
+			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
+			mysql_query(cons, query);
 		}
+		
 	}
 	if (myuser != 0)
 		free(myuser);
