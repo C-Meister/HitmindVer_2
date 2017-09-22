@@ -4,6 +4,11 @@
 //전처리기
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define MOTION 0
+#define BUTTONDOWN 1
+#define BUTTONUP 2
+#define HORIZONTAL 1
+#define VERTICAL 2
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
@@ -55,11 +60,12 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
 	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
-	char password[40]; //password : 로그인할때 비밀번호
+	char password[42]; //password : 로그인할때 비밀번호
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
-	char ownip[30];
+	char ownip[42];
+	int pass_length;
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
@@ -76,11 +82,16 @@ typedef struct Warning_Message {
 	int b;
 }Warning_M;
 typedef struct SDL_Slider {
+	SDL_Texture * BoxTexture;
+	SDL_Texture * BarTexture;
 	SDL_Rect Box;
 	SDL_Rect Bar;
 	float Start;
 	float End;
+	int * Value;
 	int Click;
+	int Update;
+	int Flag;
 }Slider;
 
 /*
@@ -129,9 +140,9 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 void FillRoundRect(SDL_Renderer* Renderer, int r,int g, int b, int x, int y, int w, int h, int radius);
 void DrawRoundRect(SDL_Renderer* Renderer, int r, int g ,int b, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
-void CreateSlider(Slider * Slider,int Bar_x, int Bar_y,int Bar_w, int Bar_h, int Box_w,int Box_h, float Start, float End, float Default);
-void DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, Slider * Slider);
-int UpdateSlider(Slider* Slider, int x, int y, int flag);
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default,int Flag);
+void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
+void UpdateSlider(Slider* Slider, int x,int y, int flag);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);

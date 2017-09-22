@@ -70,15 +70,11 @@ int main(int argc, char *argv[])
 	Unicode Password_put[256] = L"";
 	char db_id[256] = "";
 	char db_password[256] = "";
+	int pass_length = 0;
 	char query[128];
 	char utf8[256] = ""; // utf8 변환에 필요한 배열
 	int slice = 0;
 	int sum;
-	//테스트 코드
-	int update = 0;
-	//	SDL_Texture * BoxTexture = LoadTexture();
-	//	SDL_Texture * BarTexture = LoadTexture();
-		//
 	SDL_Color color = { 0,0,0 ,0 };
 	int ID_INPUT;
 	int roop = 1;
@@ -253,12 +249,25 @@ int main(int argc, char *argv[])
 					SDL_Texture * login_findpassword_click = LoadTexture(renderer, ".\\login\\repassword2.png");
 					SDL_Texture * login_signup_noclick = LoadTexture(renderer, ".\\login\\signup1.png");
 					SDL_Texture * login_signup_click = LoadTexture(renderer, ".\\login\\signup2.png");
+					if (myuser != 0)
+					{
+						free(myuser);
+						myuser = 0;
+
+					}
 					memset(&ID_put, 0, sizeof(ID_put));
 					memset(&Password_put, 0, sizeof(Password_put));
 					myuser = IsAutoLogin(cons);
 					if (myuser != 0)
 					{
-						
+						myuser->id[strlen(myuser->id)] = 0;
+						han2unicode(myuser->id, ID_put);
+						pass_length = myuser->pass_length;
+						autologin_checking = 1;
+						myuser->password[strlen(myuser->password)] = 0;
+						printf("%s", myuser->password);
+
+						han2unicode(myuser->password, Password_put);
 					}
 					while (loginpopup && !loginsuccess)
 					{
@@ -399,10 +408,6 @@ int main(int argc, char *argv[])
 									hangeul = true;
 									slice++;
 								}
-								// 테스트 코드
-							case SDL_MOUSEBUTTONDOWN:
-								//					update = UpdateSlider(testSlider, event.button.x, event.button.y);
-								break;
 							case SDL_MOUSEBUTTONUP:
 								break;
 							case SDL_MOUSEMOTION:
@@ -453,7 +458,13 @@ int main(int argc, char *argv[])
 							}
 							else
 								RenderTextureXYWH(renderer, login_input_id_click, Display_X / 4 + 22, Display_Y / 4 + 208, 617, 63);
-
+							if (pass_length != 0)
+							{
+								if (autologin_checking == 1) {
+									ID_INPUT = 0;
+									PASSWORD_INPUT = 0;
+								}
+							}
 							if (PutButtonImage(renderer, login_button_id_noclick, login_button_id_click, Display_X / 4 + 489, Display_Y / 4 + 273, 147, 71, &event))	//로그인 버튼
 							{
 								strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
@@ -490,7 +501,7 @@ int main(int argc, char *argv[])
 								}
 								else {
 									if (autologin_checking == 1) {
-										sprintf(query, "update user set auto_login = '%s' where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
+										sprintf(query, "update user set auto_login = PASSWORD('%s') where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
 										if (mysql_query(cons, query) == 0)
 											loginsuccess = true;
 										else
@@ -517,6 +528,12 @@ int main(int argc, char *argv[])
 								MouseUP_Wait;
 								if (autologin_checking == 0)
 									autologin_checking = 1;
+								else if (pass_length > 0)
+								{
+									memset(&Password_put, 0, sizeof(Password_put));
+									autologin_checking = 0;
+									pass_length = 0;
+								}
 								else
 									autologin_checking = 0;
 							}
@@ -1156,8 +1173,12 @@ int main(int argc, char *argv[])
 							}
 
 							PutText_Unicode(renderer, ID_put, Display_X / 4 + 35, Display_Y / 4 + 117, 30, color);
-							for (i = 0; i < wcslen(Password_put); i++)
-								query[i] = '*';
+							if (pass_length == 0)
+								for (i = 0; i < wcslen(Password_put); i++)
+									query[i] = '*';
+							else
+								for (i = 0; i < pass_length; i++)
+									query[i] = '*';
 							query[i] = 0;
 							PutText(renderer, query, Display_X / 4 + 35, Display_Y / 4 + 215, 30, 0, 0, 0);
 
@@ -1302,6 +1323,8 @@ int main(int argc, char *argv[])
 			SDL_RenderPresent(renderer);
 		}
 	}
+	if (myuser != 0)
+		free(myuser);
 	if (status.ishappen == 1)
 		mysql_close(status.arg);
 	SDL_DestroyTexture(LoadingBar);
