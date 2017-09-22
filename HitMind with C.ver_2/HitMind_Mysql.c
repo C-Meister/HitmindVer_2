@@ -50,7 +50,7 @@ char * Get_Random_Topic(MYSQL *cons)
 Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
-	sprintf(query, "select name from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
+	sprintf(query, "select * from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -73,9 +73,11 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		*/
 		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
+		strcpy(My_User->password, rows[3]);
 		strcpy(My_User->name, rows[1]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
+		My_User->pass_length = atoi(rows[7]);
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
@@ -111,7 +113,7 @@ int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickn
 	rows = mysql_fetch_row(mysql_store_result(cons));
 	if (rows != 0)	//값이 없으면 0을 리턴
 		return -2;
-	sprintf(query, "insert into user (name, id, password, pass_find) values ('%s', '%s', PASSWORD('%s'), '%s')", char_nickname, char_id, char_password, char_answer);
+	sprintf(query, "insert into user (name, id, password, pass_find, password_length) values ('%s', '%s', PASSWORD('%s'), '%s', %d)", char_nickname, char_id, char_password, char_answer, strlen(char_password));
 	if (mysql_query(cons, query) != 0)
 	{
 		return -1;
@@ -151,6 +153,9 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 	sprintf(query, "update user set password = PASSWORD('%s') where id = '%s' and pass_find = '%s'", char_password, char_id, char_answer);
 	if (mysql_query(cons, query) != 0)
 		return  -2;
+	sprintf(query, "update user set password_length = %d where id = '%s' and pass_find = '%s'", strlen(char_password), char_id, char_answer);
+	if (mysql_query(cons, query) != 0)
+		return  -2;
 	return 1;
 }
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
@@ -170,6 +175,9 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 	{
 		return -1;		//-1을 리턴함
 	}
+	if (password[0] == '*')
+		sprintf(query, "select * from User where id = '%s' and password = '%s'", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
+	else
 	sprintf(query, "select * from User where id = '%s' and password = password('%s')", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
 	mysql_query(cons, query);
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -191,8 +199,10 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		My_User->ownnum = atoi(rows[0]);
 		strcpy(My_User->id, rows[2]);
 		strcpy(My_User->name, rows[1]);
+		strcpy(My_User->password, rows[3]);
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
+		My_User->pass_length = atoi(rows[7]);
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
