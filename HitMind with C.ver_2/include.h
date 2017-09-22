@@ -100,8 +100,7 @@ typedef struct SDL_Slider {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static int Display_X = 1920;	//해상도 - X	
-static int Display_Y = 1080;	//해상도 - Y
+
 // 소켓용 전역변수
 static WSADATA wsaData;			
 static SOCKET Slisten_socket, Sconnect_socket[8];
