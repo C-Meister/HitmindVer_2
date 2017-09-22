@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
 	Unicode Password_put[256] = L"";
 	char db_id[256] = "";
 	char db_password[256] = "";
+	int pass_length = 0;
 	char query[128];
 	char utf8[256] = ""; // utf8 변환에 필요한 배열
 	int slice = 0;
@@ -253,12 +254,23 @@ int main(int argc, char *argv[])
 					SDL_Texture * login_findpassword_click = LoadTexture(renderer, ".\\login\\repassword2.png");
 					SDL_Texture * login_signup_noclick = LoadTexture(renderer, ".\\login\\signup1.png");
 					SDL_Texture * login_signup_click = LoadTexture(renderer, ".\\login\\signup2.png");
+					if (myuser != 0)
+					{
+						myuser = 0;
+
+					}
 					memset(&ID_put, 0, sizeof(ID_put));
 					memset(&Password_put, 0, sizeof(Password_put));
 					myuser = IsAutoLogin(cons);
 					if (myuser != 0)
 					{
-						
+						myuser->id[strlen(myuser->id)] = 0;
+						han2unicode(myuser->id, ID_put);
+						pass_length = myuser->pass_length;
+						myuser->password[strlen(myuser->password)] = 0;
+						printf("%s", myuser->password);
+
+						han2unicode(myuser->password, Password_put);
 					}
 					while (loginpopup && !loginsuccess)
 					{
@@ -1156,8 +1168,12 @@ int main(int argc, char *argv[])
 							}
 
 							PutText_Unicode(renderer, ID_put, Display_X / 4 + 35, Display_Y / 4 + 117, 30, color);
-							for (i = 0; i < wcslen(Password_put); i++)
-								query[i] = '*';
+							if (pass_length != 0)
+								for (i = 0; i < wcslen(Password_put); i++)
+									query[i] = '*';
+							else
+								for (i = 0; i < pass_length; i++)
+									query[i] = '*';
 							query[i] = 0;
 							PutText(renderer, query, Display_X / 4 + 35, Display_Y / 4 + 215, 30, 0, 0, 0);
 

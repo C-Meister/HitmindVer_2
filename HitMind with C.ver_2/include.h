@@ -55,11 +55,12 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
 	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
-	char password[40]; //password : 로그인할때 비밀번호
+	char password[42]; //password : 로그인할때 비밀번호
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
 	char ownip[30];
+	int pass_length;
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
