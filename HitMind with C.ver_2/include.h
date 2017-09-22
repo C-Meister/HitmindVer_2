@@ -143,10 +143,6 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default,int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
 void UpdateSlider(Slider* Slider, int x,int y, int flag);
-
-void CreateSlider(Slider * Slider,int Bar_x, int Bar_y,int Bar_w, int Bar_h, int Box_w,int Box_h, float Start, float End, float Default);
-void DrawSlider(SDL_Renderer *Renderer, SDL_Texture *BoxTexture, SDL_Texture * BarTexture, Slider * Slider);
-int UpdateSlider(Slider* Slider, int x, int y, int flag);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);

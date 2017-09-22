@@ -420,7 +420,7 @@ void UpdateSlider(Slider* Slider, int x, int y,int flag) {
 				else {
 					Slider->Box.y = y - Slider->Box.h / 2.0;
 				}
-				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start;
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
 			}
 			Slider->Update = true;
 		}

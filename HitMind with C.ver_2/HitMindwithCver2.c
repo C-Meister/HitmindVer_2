@@ -75,18 +75,6 @@ int main(int argc, char *argv[])
 	char utf8[256] = ""; // utf8 변환에 필요한 배열
 	int slice = 0;
 	int sum;
-	//테스트 코드
-	//int update = 0;
-	//SDL_Texture * BoxTexture = LoadTextureEx(renderer,".//design//Box.png",255,255,255);
-	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//Track.png");
-	//Slider * testSlider = (Slider*)malloc(sizeof(Slider));
-	//Slider * testSlider2 = (Slider*)malloc(sizeof(Slider));
-	//int Volume;
-	//int Volume2;
-	//CreateSlider(testSlider,BoxTexture, BarTexture, 100, 100, 1000, 20, 50, 50, &Volume,0.0, 50.0, 25.0,HORIZONTAL);
-	//CreateSlider(testSlider2, BoxTexture, BarTexture, 100, 100, 20, 300, 100, 10, &Volume2, 0.0, 50.0, 25.0, VERTICAL);
-	//char itoa[10];
-	//
 	SDL_Color color = { 0,0,0 ,0 };
 	int ID_INPUT;
 	int roop = 1;
@@ -418,10 +406,6 @@ int main(int argc, char *argv[])
 									hangeul = true;
 									slice++;
 								}
-								// 테스트 코드
-							case SDL_MOUSEBUTTONDOWN:
-								//					update = UpdateSlider(testSlider, event.button.x, event.button.y);
-								break;
 							case SDL_MOUSEBUTTONUP:
 								break;
 							case SDL_MOUSEMOTION:
