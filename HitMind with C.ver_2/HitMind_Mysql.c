@@ -93,10 +93,11 @@ int getUesrStatus(MYSQL *cons, char arr[30][30])
 	mysql_query(cons, "select * from user where status != 0");
 	sql_result = mysql_store_result(cons);
 	int i = 0;
+	
 	while ((row = mysql_fetch_row(sql_result)) != NULL)
 	{
 		strcpy(arr[i], row[1]);
-		*arr[27] = atoi(row[4]);
+		arr[i][27] = atoi(row[4]);
 		i++;
 	}
 	mysql_free_result(sql_result);

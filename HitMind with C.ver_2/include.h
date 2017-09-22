@@ -112,8 +112,6 @@ static uintptr_t Serverthread[8];
 static uintptr_t Clientthread;
 static char playerinfo[8][30];
 								
-static int Display_X = 1920;	//해상도 - X
-static int Display_Y = 1080;	//해상도 - Y
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;

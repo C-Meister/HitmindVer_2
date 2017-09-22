@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 											ID_INPUT = 0;
 
 										}
-										else if (PASSWORD_INPUT == 1) {
+										else if (PASSWORD_INPUT == 1 || pass_length > 0) {
 											strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 											UTF82EUCKR(db_id, 512, utf8, 768);
 											db_id[strlen(db_id)] = '\0';
@@ -1249,6 +1249,7 @@ int main(int argc, char *argv[])
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
 			quit = 0;
 			sprintf(query, "LV %d", myuser->level);
+			
 			while (loginsuccess && !quit)	//로그인 성공 후 대기창
 			{
 				if (SDL_PollEvent(&event))
@@ -1326,13 +1327,15 @@ int main(int argc, char *argv[])
 				if (timer < SDL_GetTicks() % 1000)
 				{
 
-					timer = SDL_GetTicks() % 1000 + 1;
+					timer++;
 					usercount = getUesrStatus(cons, MemBerList);
 				}
 				
 				for (i = 0; i < usercount; i++)
 				{
-					PutText(renderer, MemBerList[i], Display_X * 0.73, Display_Y * (0.20 + i * 0.05), 40 * ((float)Display_X / 1920), 0, 0, 0);
+					sprintf(db_id, "LV:%d", MemBerList[i][27]);
+					PutText(renderer, db_id, Display_X * 0.73, Display_Y * (0.20 + i * 0.05), 40 * ((float)Display_X / 1920), 0, 0, 0);
+					PutText(renderer, MemBerList[i], Display_X * 0.79, Display_Y * (0.20 + i * 0.05), 40 * ((float)Display_X / 1920), 0, 0, 0);
 				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //방만들기 버튼
 				{
@@ -1423,6 +1426,10 @@ int main(int argc, char *argv[])
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
+					int set_start_x = Display_X / 2 - (346 * ((float)Display_X / 1920));
+					int set_start_y = Display_Y / 2 - (268 * ((float)Display_X / 1920));
+					int set_start_w = 693 * ((float)Display_X / 1920);
+					int set_start_h = 537 * ((float)Display_X / 1920);
 					while (setting_main) {
 						if (SDL_PollEvent(&event))
 						{
@@ -1448,8 +1455,12 @@ int main(int argc, char *argv[])
 								}
 							}
 						}
-						RenderTextureXYWH(renderer, Setting_back, Display_X / 2 - (346 * ((float)Display_X / 1920)), Display_Y / 2 - (268 * ((float)Display_X / 1920)), 693 * ((float)Display_X / 1920), 537 * ((float)Display_X / 1920));
-					//	if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click,))
+						RenderTextureXYWH(renderer, Setting_back, set_start_x, set_start_y, set_start_w, set_start_h);
+						if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event))
+						{
+							setting_main = 0;
+						}
+
 						SDL_RenderPresent(renderer);
 					}
 					SDL_DestroyTexture(Setting_back);
