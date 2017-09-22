@@ -1,5 +1,4 @@
 ﻿#include "include.h"
-
 //그래픽 관련 함수들
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
 
@@ -177,85 +176,262 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius) {
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius,int strong) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-	int old_x, old_y;
-	for (float angle = 90; angle < 180; angle++) {
-		old_x = Rect->x + radius + radius*cos(M_PI / 180 * angle);
-		old_y = Rect->y + radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, old_x, old_y, Rect->x + radius + radius*cos(M_PI / 180 * (angle+1)), Rect->y + radius - radius*sin(M_PI / 180 * (angle+1)));	
+	int out_x, out_y;
+	int left_x, left_y;
+	double y;
+	double Center_x=Rect->x+radius, Center_y=Rect->y+radius;
+	for (y = 0; y < radius;) {
+		out_x = floor(Center_x - sqrt((radius+strong)*(radius+strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer,out_x,out_y,floor(Center_x - sqrt(radius*radius - y*y)),Center_y - y);
 	}
-	SDL_RenderDrawLine(Renderer, Rect->x + radius, Rect->y, Rect->x + Rect->w - radius, Rect->y);
-	for (float angle = 0; angle <= 90; angle++) {
-		old_x = 1+Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle);
-		old_y = Rect->y + radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer,old_x,old_y,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * (angle+1)), Rect->y + radius - radius*sin(M_PI / 180 * (angle+1)));
+	Center_x = Rect->x+Rect->w-radius;
+	for (y = 0; y < radius; ) {
+		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer,out_x,out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
-	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w, Rect->y + radius, Rect->x + Rect->w, Rect->y + Rect->h - radius);
-	for (float angle = 270; angle <= 360; angle++) {
-		old_x = 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle);
-		old_y = 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer,old_x,old_y,1+ Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * (angle+1)),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * (angle+1)));
+	for (; y < radius + strong;y++) {
+		left_x = floor(Center_x-Rect->w+2*radius - sqrt((radius + strong)*(radius + strong) - y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius+strong)*(radius+strong) - y*y)), Center_y - y);
 	}
-	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w - radius, Rect->y + Rect->h, Rect->x + radius, Rect->y + Rect->h);
-	for (float angle = 180; angle <= 270; angle++) {
-		old_x = Rect->x + radius + radius*cos(M_PI / 180 * angle);
-		old_y = 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, old_x,old_y,Rect->x + radius + radius*cos(M_PI / 180 * (angle+1)),1+ Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * (angle+1)));
+	Center_y = Rect->y + Rect->h - radius;
+	for (y = 0; y < radius; ) {
+		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y + y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x,out_y,floor(Center_x + sqrt(radius*radius - y*y)), Center_y + y);
 	}
-	SDL_RenderDrawLine(Renderer, Rect->x, Rect->y + Rect->h - radius, Rect->x, Rect->y + radius);
-}
-void SDL_DrawRoundLine(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
-	/*SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-	int in_x, in_y;
-	for (float angle = 90; angle < 180; angle++) {
-		in_x = Rect->x+strong + radius + radius*cos(M_PI / 180 * angle);
-		in_y = Rect->y+strong + radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, in_x, in_y, Rect->x + radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle));
+	Center_x = Rect->x + radius;
+	for (y = 0; y < radius;) {
+		out_x = floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y + y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x,out_y,floor(Center_x - sqrt(radius*radius - y*y)), Center_y + y);
 	}
-	SDL_RenderDrawLine(Renderer, Rect->x + radius, Rect->y, Rect->x + Rect->w - radius, Rect->y);
-	for (float angle = 0; angle <= 90; angle++) {
-		in_x = 1 + Rect->x + strong + Rect->w - 2*strong - radius + radius*cos(M_PI / 180 * angle);
-		in_y = Rect->y + strong + radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, in_x, in_y, 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 * angle), Rect->y + radius - radius*sin(M_PI / 180 * angle ));
-	}
-	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w, Rect->y + radius, Rect->x + Rect->w, Rect->y + Rect->h - radius);
-	for (float angle = 270; angle <= 360; angle++) {
-		in_x = 1 + Rect->x + strong + Rect->w - 2*strong - radius + radius*cos(M_PI / 180 * angle);
-		in_y = 1 + Rect->y + strong + Rect->h - 2*strong - radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, in_x, in_y, 1 + Rect->x + Rect->w - radius + radius*cos(M_PI / 180 *angle), 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle ));
-	}
-	SDL_RenderDrawLine(Renderer, Rect->x + Rect->w - radius, Rect->y + Rect->h, Rect->x + radius, Rect->y + Rect->h);
-	for (float angle = 180; angle <= 270; angle++) {
-		in_x = Rect->x + strong + radius + radius*cos(M_PI / 180 * angle);
-		in_y = 1 + Rect->y + strong + Rect->h -2*strong- radius - radius*sin(M_PI / 180 * angle);
-		SDL_RenderDrawLine(Renderer, in_x, in_y, Rect->x + radius + radius*cos(M_PI / 180 * angle), 1 + Rect->y + Rect->h - radius - radius*sin(M_PI / 180 * angle ));
-	}
-	SDL_RenderDrawLine(Renderer, Rect->x, Rect->y + Rect->h - radius, Rect->x, Rect->y + radius);*/
-	for (int i = 0; i < 180; i++) {
-		int x1 = sin(3.14 / 180 * i)*radius;
-		int y1 = cos(3.14 / 180 * i)*radius;
-		int x2 = sin(3.14 / 180 * (360 - i))*(radius);
-		int y2 = cos(3.14 / 180 * (360 - i))*radius;
-		SDL_RenderDrawLine(Renderer, x1 + Rect->x+Rect->w/2, y1 + Rect->y + Rect->h / 2, x2 + Rect->x + Rect->w / 2, y2 + Rect->y + Rect->h / 2);
+	for (; y < radius + strong;y++) {
+		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt((radius + strong)*(radius + strong) - y*y));
+		left_y = Center_y + y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y)), Center_y + y);
 	}
 }
+void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int left_x, left_y;
+	double y;
+	double Center_x, Center_y;
+	Center_x = Rect->x + Rect->w - radius;
+	Center_y = Rect->y + radius;
+	for (y = 0; y <= radius; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius- y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius  - y*y)), Center_y - y);
+	}
 
-void DrawRoundRect(SDL_Renderer* Renderer,SDL_Color color,int x, int y, int w, int h, int radius, int strong) {
-	SDL_Rect rect = { x-strong/2,y-strong/2,w+strong,h+strong };
-	SDL_DrawRoundLine( Renderer, &rect,color,radius,strong);
-	for (int i = 0; i < strong; i++) {
-		SDL_DrawRoundRect(Renderer, &rect, color, radius);
-		for (int j = 0; j < 1; j++) {
-			rect.x++;
-			rect.y++;
-			rect.w -= 2;
-			rect.h -= 2;
+	Center_x = Rect->x + radius;
+	Center_y = Rect->y + Rect->h - radius;
+	for (y=0; y <= radius;y++) {
+		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt(radius*radius - y*y));
+		left_y = Center_y + y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius  - y*y)), Center_y + y);
+	}
+}
+void DrawRoundRect(SDL_Renderer* Renderer,int r, int g,int b,int x, int y, int w, int h, int radius, int strong) {
+	SDL_Rect rect = { x+ strong,y+ strong,w-2*strong,h-2*strong };
+	SDL_Color color = { r,g,b,0 };
+	SDL_DrawRoundRect(Renderer, &rect, color, radius,strong);
+	rect.x = x; rect.w = strong; rect.y = y + strong+ radius-1 ; rect.h = h - 2 * (strong + radius)+2 ;
+	SDL_RenderFillRect(Renderer, &rect);
+	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong+radius-1; rect.h = h - 2 *(strong + radius)+2;
+	SDL_RenderFillRect(Renderer, &rect);
+	return;
+}
+void FillRoundRect(SDL_Renderer* Renderer, int r,int g,int b, int x, int y, int w, int h, int radius) {
+	SDL_Rect rect = { x,y  ,w,h  };
+	SDL_Color color = { r,g,b, 0 };
+	SDL_FillRoundRect(Renderer, &rect, color, radius);
+	rect.x = x; rect.y = y+radius-1; rect.w = w; rect.h = h - 2 * radius+2;
+	SDL_RenderFillRect(Renderer, &rect);
+	return;
+}
+void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int out_x, out_y;
+	int left_x, left_y;
+	double y;
+	double Center_x = Rect->x + radius, Center_y = Rect->y + radius;
+	for (y = 0; y < radius;) {
+		out_x = floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y - y);
+	}
+	Center_x = Rect->x + Rect->w - radius;
+	for (y = 0; y < radius; ) {
+		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
+		out_y = Center_y - y;
+		y++;
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+	}
+	for (; y < radius + strong; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt((radius + strong)*(radius + strong) - y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y)), Center_y - y);
+	}
+}
+void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
+	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
+	int left_x, left_y;
+	double y;
+	double Center_x, Center_y;
+	Center_x = Rect->x + Rect->w - radius;
+	Center_y = Rect->y + radius;
+	for (y = 0; y < radius; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius - y*y));
+		left_y = Center_y - y;
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+	}
+}
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event)
+{
+
+	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->motion.y < y + h)
+	{
+		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
+		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+
+	}
+	else {
+		FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
+		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+	}
+	return 0;
+}
+void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius) {
+	SDL_Rect rect = { x,y  ,w,h };
+	SDL_Color color = { r,g,b, 0 };
+	SDL_FillUpRoundRect(Renderer, &rect, color, radius);
+	rect.x = x; rect.y = y + radius - 1; rect.w = w; rect.h = h - radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	return;
+}
+void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong) {
+	SDL_Rect rect = { x + strong,y + strong,w - 2 * strong,h - 2 * strong };
+	SDL_Color color = { r,g,b,0 };
+	SDL_DrawUpRoundRect(Renderer, &rect, color, radius, strong);
+	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	SDL_RenderFillRect(Renderer, &rect);
+	rect.x = x; rect.y = y + h - strong; rect.w = w; rect.h = strong;
+	SDL_RenderFillRect(Renderer, &rect);
+
+	return;
+}
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture,int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h,int * Value, float Start, float End, float Default,int Flag) {
+	Slider->BarTexture = BarTexture;
+	Slider->BoxTexture = BoxTexture;
+	Slider->Bar.x = Bar_x;
+	Slider->Bar.y = Bar_y;
+	Slider->Bar.w = Bar_w;
+	Slider->Bar.h = Bar_h;
+	Slider->Flag = Flag;
+	Slider->End = End;
+	Slider->Start = Start;
+	if (Flag == HORIZONTAL) {
+		Slider->Box.x = floor(Bar_x + Bar_w * (Default-Start) / (End - Start) - Box_w / 2.0);
+		Slider->Box.y = floor(Bar_y + Bar_h / 2.0 - Box_h / 2.0);
+	}
+	else if (Flag == VERTICAL) {
+		Slider->Box.x = floor(Bar_x + Bar_w / 2.0 - Box_w / 2.0);
+		Slider->Box.y = floor(Bar_y + Bar_h * (Default - Start) / (End - Start) - Box_h / 2.0);
+	}
+	Slider->Box.w = Box_w;
+	Slider->Box.h = Box_h;
+	Slider->Value = Value;
+	*Value = Default;
+	Slider->Update = true;
+	Slider->Click = false;
+	return;
+}
+void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
+	RenderTexture(Renderer,Slider->BarTexture,&Slider->Bar);
+	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
+	return;
+}
+void UpdateSlider(Slider* Slider, int x, int y,int flag) {
+	if (flag == BUTTONUP) {
+		Slider->Click = false;
+		Slider->Update = false;
+		return;
+	}
+	else if (flag == BUTTONDOWN) {
+		if (Slider->Flag == HORIZONTAL) {
+			if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
+				Slider->Box.x = x - Slider->Box.w / 2.0;
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
+				Slider->Click = true;
+				Slider->Update = true;
+			}
+			else {
+				Slider->Update = false;
+			}
+			return;
+		}
+		else if (Slider->Flag == VERTICAL) {
+			if (y >= Slider->Bar.y&&y <= Slider->Bar.y + Slider->Bar.h&&x >= Slider->Box.x&&x <= Slider->Box.x + Slider->Box.w) {
+				Slider->Box.y = y - Slider->Box.h / 2.0;
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start)  + Slider->Start);
+				Slider->Click = true;
+				Slider->Update = true;
+			}
+			else {
+				Slider->Update = false;
+			}
+			return;
 		}
 	}
+	else if (flag == MOTION) {
+		if (Slider->Click== true) {
+			if (Slider->Flag == HORIZONTAL) {
+				if (x > Slider->Bar.x + Slider->Bar.w)
+					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2.0;
+				else if (x < Slider->Bar.x)
+					Slider->Box.x = Slider->Bar.x - Slider->Box.w / 2.0;
+				else {
+					Slider->Box.x = x - Slider->Box.w / 2.0;
+				}
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x)/ Slider->Bar.w*(Slider->End - Slider->Start)  + Slider->Start);
+			}
+			else if (Slider->Flag == VERTICAL) {
+				if (y > Slider->Bar.y + Slider->Bar.h)
+					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2.0;
+				else if (y < Slider->Bar.y)
+					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2.0;
+				else {
+					Slider->Box.y = y - Slider->Box.h / 2.0;
+				}
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
+			}
+			Slider->Update = true;
+		}
+		else
+			Slider->Update = false;
+		return;
+	}
+	return;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
-	static wchar_t wstr[256] = L"";
+	wchar_t wstr[256] = L"";
 	wchar_t wchar[2] = L"";
 	int temp;
 	int i;
@@ -277,10 +453,10 @@ wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	return wstr;
 }
 char* UNICODE2UTF8(wchar_t* unicode, int len) {
-	static char str[192] = "";
+	char str[192] = "";
 	int i = 0, j = 0;
 	for (i = 0; j < len; j++) {
-		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \'로 입력해야하므로 예외 처리를 해준다
+		if (unicode[j] == 92 || unicode[j] == 39) {// 유니코드 92번(역슬래시)나 39번(작은따운표는) mysql에서 각각 \\, \"로 입력해야하므로 예외 처리를 해준다
 			str[i] = 92;
 			str[i + 1] = unicode[j];
 			i += 2;
@@ -325,18 +501,4 @@ int hancheck(int unicode) {
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
 		cnt++;
 	return cnt;
-}
-
-void fill_circle(SDL_Renderer *gRenderer, int radius, int cx, int cy, int r, int g, int b, int a)
-{
-
-	for (double dy = 1; dy <= radius; dy += 1.0)
-	{
-		double dx = floor(sqrt((2.0 * radius * dy) - (dy * dy)));
-		int x = (int)(cx - dx);
-		SDL_SetRenderDrawColor(gRenderer, r, g, b, a);
-		SDL_RenderDrawLine(gRenderer, cx - dx, cy + dy - radius, cx + dx, cy + dy - radius);
-		if (dy != radius)
-			SDL_RenderDrawLine(gRenderer, cx - dx, cy - dy + radius, cx + dx, cy - dy + radius);
-	}
 }

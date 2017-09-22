@@ -4,6 +4,11 @@
 //전처리기
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define MOTION 0
+#define BUTTONDOWN 1
+#define BUTTONUP 2
+#define HORIZONTAL 1
+#define VERTICAL 2
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
@@ -56,10 +61,12 @@ typedef unsigned short Unicode;	//han2unicode를 쓸때, unsigned short 형을 �
 typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
 	int ownnum;		//ownnum : 고유번호
 	char id[30];	//id :  로그인할때 id
+	char password[42]; //password : 로그인할때 비밀번호
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
-	char ownip[30];
+	char ownip[42];
+	int pass_length;
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
@@ -75,6 +82,18 @@ typedef struct Warning_Message {
 	int g;
 	int b;
 }Warning_M;
+typedef struct SDL_Slider {
+	SDL_Texture * BoxTexture;
+	SDL_Texture * BarTexture;
+	SDL_Rect Box;
+	SDL_Rect Bar;
+	float Start;
+	float End;
+	int * Value;
+	int Click;
+	int Update;
+	int Flag;
+}Slider;
 
 /*
 	변수에 대한 설명:
@@ -94,11 +113,19 @@ static uintptr_t Serverthread[8];
 static uintptr_t Clientthread;
 static char playerinfo[8][30];
 								
+static int Display_X = 1920;	//해상도 - X
+static int Display_Y = 1080;	//해상도 - Y
+static int BGmusic = 30;     //배경음악 크기
+static int Sound = 30;       //효과음
+static int Full = 0;
+
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴
 char * GetDefaultMyIP();
-
-
+//초기 설정값에 맞게 프로그램을 실행 함
+void settings(int *x, int *y, int *music, int *sound, int *full);
+//설정변경
+void changesetting(int bgmusic, int sound, int x, int y);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
@@ -122,20 +149,35 @@ int hannum(wchar_t unicode[], int len);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
-void DrawRoundRect(SDL_Renderer* Renderer, SDL_Color color, int x, int y, int w, int h, int radius, int strong);
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
+void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
+void FillRoundRect(SDL_Renderer* Renderer, int r,int g, int b, int x, int y, int w, int h, int radius);
+void DrawRoundRect(SDL_Renderer* Renderer, int r, int g ,int b, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default,int Flag);
+void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
+void UpdateSlider(Slider* Slider, int x,int y, int flag);
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
+void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
+void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
+void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
+void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
+//자동 로그인인지 체크하는 함수
+Hit_User *IsAutoLogin(MYSQL *cons);
 MYSQL * Mysql_Connect(char *ip); //처음 MySQL에 연결함
 char * Get_Random_Topic(MYSQL *cons);	//주제중에 랜덤으로 하나를 불러와 문자열로 반환
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	//아이디와 패스워드로 로그인함
 
+int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t *answer);
+//Password_Change 비밀번호를 변경하는데 필요한 함수. 아이디 잘못되면 -1, 답변 잘못되면 0 업데이트실패 -2 성공 1
+int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer);
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
 void Thread_MySQL(Connect_status *type);
 //처음 MySQL에 연결함
-MYSQL * Mysql_Connect(char *ip); 
+MYSQL * Mysql_Connect(char *ip);
 //주제중에 랜덤으로 하나를 불러와 문자열로 반환
 char * Get_Random_Topic(MYSQL *cons);	
 //아이디와 패스워드로 로그인함
