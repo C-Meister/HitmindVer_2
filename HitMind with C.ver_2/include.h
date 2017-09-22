@@ -64,7 +64,7 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정�
 	char name[30]; //name : 사용자의 이름
 	int level;		//level : 접속자의 레벨
 	int money;		//money : 접속자의 돈
-	char ownip[30];
+	char ownip[42];
 	int pass_length;
 }Hit_User;
 typedef struct Connect_Status {

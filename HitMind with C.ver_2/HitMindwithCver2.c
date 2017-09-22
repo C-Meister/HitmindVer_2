@@ -251,6 +251,7 @@ int main(int argc, char *argv[])
 					SDL_Texture * login_signup_click = LoadTexture(renderer, ".\\login\\signup2.png");
 					if (myuser != 0)
 					{
+						free(myuser);
 						myuser = 0;
 
 					}
@@ -262,6 +263,7 @@ int main(int argc, char *argv[])
 						myuser->id[strlen(myuser->id)] = 0;
 						han2unicode(myuser->id, ID_put);
 						pass_length = myuser->pass_length;
+						autologin_checking = 1;
 						myuser->password[strlen(myuser->password)] = 0;
 						printf("%s", myuser->password);
 
@@ -456,7 +458,13 @@ int main(int argc, char *argv[])
 							}
 							else
 								RenderTextureXYWH(renderer, login_input_id_click, Display_X / 4 + 22, Display_Y / 4 + 208, 617, 63);
-
+							if (pass_length != 0)
+							{
+								if (autologin_checking == 1) {
+									ID_INPUT = 0;
+									PASSWORD_INPUT = 0;
+								}
+							}
 							if (PutButtonImage(renderer, login_button_id_noclick, login_button_id_click, Display_X / 4 + 489, Display_Y / 4 + 273, 147, 71, &event))	//로그인 버튼
 							{
 								strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
@@ -493,7 +501,7 @@ int main(int argc, char *argv[])
 								}
 								else {
 									if (autologin_checking == 1) {
-										sprintf(query, "update user set auto_login = '%s' where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
+										sprintf(query, "update user set auto_login = PASSWORD('%s') where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
 										if (mysql_query(cons, query) == 0)
 											loginsuccess = true;
 										else
@@ -520,6 +528,12 @@ int main(int argc, char *argv[])
 								MouseUP_Wait;
 								if (autologin_checking == 0)
 									autologin_checking = 1;
+								else if (pass_length > 0)
+								{
+									memset(&Password_put, 0, sizeof(Password_put));
+									autologin_checking = 0;
+									pass_length = 0;
+								}
 								else
 									autologin_checking = 0;
 							}
@@ -1159,7 +1173,7 @@ int main(int argc, char *argv[])
 							}
 
 							PutText_Unicode(renderer, ID_put, Display_X / 4 + 35, Display_Y / 4 + 117, 30, color);
-							if (pass_length != 0)
+							if (pass_length == 0)
 								for (i = 0; i < wcslen(Password_put); i++)
 									query[i] = '*';
 							else
@@ -1309,6 +1323,8 @@ int main(int argc, char *argv[])
 			SDL_RenderPresent(renderer);
 		}
 	}
+	if (myuser != 0)
+		free(myuser);
 	if (status.ishappen == 1)
 		mysql_close(status.arg);
 	SDL_DestroyTexture(LoadingBar);
