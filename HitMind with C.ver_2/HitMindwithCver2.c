@@ -74,10 +74,16 @@ int main(int argc, char *argv[])
 	int slice = 0;
 	int sum;
 	//테스트 코드
-	int update = 0;
-	int ;
-	SDL_Texture * BoxTexture = LoadTexture();
-	SDL_Texture * BarTexture = LoadTexture();
+	//int update = 0;
+	//SDL_Texture * BoxTexture = LoadTextureEx(renderer,".//design//Box.png",255,255,255);
+	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//Track.png");
+	//Slider * testSlider = (Slider*)malloc(sizeof(Slider));
+	//Slider * testSlider2 = (Slider*)malloc(sizeof(Slider));
+	//int Volume;
+	//int Volume2;
+	//CreateSlider(testSlider,BoxTexture, BarTexture, 100, 100, 1000, 20, 50, 50, &Volume,0.0, 50.0, 25.0,HORIZONTAL);
+	//CreateSlider(testSlider2, BoxTexture, BarTexture, 100, 100, 20, 300, 100, 10, &Volume2, 0.0, 50.0, 25.0, VERTICAL);
+	//char itoa[10];
 	//
 	SDL_Color color = { 0,0,0 ,0 };
 	int ID_INPUT;
@@ -389,14 +395,6 @@ int main(int argc, char *argv[])
 								hangeul = true;
 								slice++;
 							}
-							// 테스트 코드
-						case SDL_MOUSEBUTTONDOWN:
-							update = UpdateSlider(testSlider, event.button.x, event.button.y);
-							break;
-						case SDL_MOUSEBUTTONUP:
-							break;
-						case SDL_MOUSEMOTION:
-							break;
 						case SDL_QUIT:
 							quit = true;
 							break;
@@ -1201,6 +1199,21 @@ int main(int argc, char *argv[])
 			case SDL_QUIT:
 				quit = true;
 				break;
+				//	
+				// 테스트 코드
+			/*case SDL_MOUSEBUTTONDOWN:
+				 UpdateSlider(testSlider, event.button.x, event.button.y, BUTTONDOWN);
+				 UpdateSlider(testSlider2, event.button.x, event.button.y, BUTTONDOWN);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				UpdateSlider(testSlider, event.button.x, event.button.y, BUTTONUP);
+				UpdateSlider(testSlider2, event.button.x, event.button.y, BUTTONUP);
+				break;
+			case SDL_MOUSEMOTION:
+				UpdateSlider(testSlider, event.motion.x, event.motion.y, MOTION);
+				UpdateSlider(testSlider2, event.motion.x, event.motion.y, MOTION);
+				break;*/
+				//
 			case SDL_WINDOWEVENT:
 				switch (event.window.event) {
 				case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
@@ -1237,6 +1250,14 @@ int main(int argc, char *argv[])
 
 		//FillRoundRect(renderer, 0, 176, 255, Display_X / 13, Display_Y / 15, Display_X / 4, Display_Y / 8, 14, 0);
 		//FillRoundRect(renderer, 255, 0, 0, Display_X / 2.5, Display_Y / 15, Display_X / 4, Display_Y / 8, 15, 10);
+		// 테스트코드
+		/*DrawSlider(renderer, testSlider);
+		_itoa(*testSlider->Value, itoa, 10);
+		PutText(renderer,itoa, 0, 0, 30, 0, 0, 0);
+		DrawSlider(renderer, testSlider2);
+		_itoa(*testSlider2->Value, itoa, 10);
+		PutText(renderer,itoa , 0,50, 30, 0, 0, 0);*/
+		////테스트코드
 		SDL_RenderPresent(renderer);
 	}
 
