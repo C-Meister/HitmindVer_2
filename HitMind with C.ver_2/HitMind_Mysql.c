@@ -230,3 +230,22 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 	}
 
 }
+int ReadChating_all(MYSQL *cons, Chating * chatings)
+{
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+
+	mysql_query(cons, "select * from all_chating limit 10");
+	sql_result = mysql_store_result(cons);
+}
+
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
+	char char_message[128];
+	char query[128];
+	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
+	UTF82EUCKR(char_message, 128, query, 384);
+	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
+	if (mysql_query(cons, query) != 0)
+		return 0;
+	return 1;
+}
