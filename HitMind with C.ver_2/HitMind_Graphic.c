@@ -356,7 +356,6 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Box.w = Box_w;
 	Slider->Box.h = Box_h;
 	Slider->Value = Value;
-	if (Default != 0)
 	*Value = Default;
 	Slider->Update = true;
 	Slider->Click = false;
@@ -569,4 +568,12 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
 		}
 		return 0;
 	}
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h) {
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	SDL_RenderFillRect(renderer, &rect);
+		
 }

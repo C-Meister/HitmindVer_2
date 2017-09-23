@@ -205,7 +205,6 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		return 0;
 	else
 	{
-		
 		Hit_User *My_User = (Hit_User *)malloc(sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
 		memset(My_User, 0, sizeof(My_User));
 		//hitmind_2 DB에 User테이블 값
