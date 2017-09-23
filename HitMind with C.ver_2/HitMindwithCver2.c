@@ -1595,18 +1595,14 @@ int main(int argc, char *argv[])
 
 							while (1)
 							{
-								
-
 								if (event.type == SDL_MOUSEBUTTONDOWN)
 								{
 									MouseUP_Wait;
 									break;
 								}
 								RenderTextureXYWH(renderer, Credit_Image, 0, 0, Display_X, Display_Y);
-
 								SDL_RenderPresent(renderer);
 								SDL_WaitEvent(&event);
-
 							}
 							SDL_DestroyTexture(Credit_Image);
 						}

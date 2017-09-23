@@ -106,6 +106,12 @@ typedef struct SDL_Slider {
 	int Update;
 	int Flag;
 }Slider;
+typedef struct MYSQL_CHATING {
+	int ownnum;
+	char name[30];
+	char message[50];
+	char time[30];
+}Chating;
 
 /*
 변수에 대한 설명:
