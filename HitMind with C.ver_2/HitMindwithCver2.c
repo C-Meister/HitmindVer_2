@@ -21,6 +21,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 2. "분기: master"아래에 페치를 클릭합니다.
 3. "분기: master"아래에 끌어오기를 클릭합니다.
 4. 끝
+https://mail.google.com/mail/u/1/?tab=wm#inbox?compose=15eae53190fd3249
 */
 
 #include "include.h"
@@ -1546,8 +1547,13 @@ int main(int argc, char *argv[])
 							qquit = true;
 						}
 
+						PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255);
+						PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255);    //방장일때는 시작하기
+
+
 						SDL_RenderPresent(renderer);
 					}
+					qquit = false;
 				}
 				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
 				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
