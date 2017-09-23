@@ -377,8 +377,9 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 		int y = event->button.y;
 		if (Slider->Flag == HORIZONTAL) {
 			if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
-				Slider->Box.x = x - Slider->Box.w / 2.0;
+				Slider->Box.x = x - Slider->Box.w / 2;
 				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
+
 				Slider->Click = true;
 				Slider->Update = true;
 			}
@@ -389,7 +390,7 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 		}
 		else if (Slider->Flag == VERTICAL) {
 			if (y >= Slider->Bar.y&&y <= Slider->Bar.y + Slider->Bar.h&&x >= Slider->Box.x&&x <= Slider->Box.x + Slider->Box.w) {
-				Slider->Box.y = y - Slider->Box.h / 2.0;
+				Slider->Box.y = y - Slider->Box.h / 2;
 				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start)  + Slider->Start);
 				Slider->Click = true;
 				Slider->Update = true;
@@ -407,21 +408,21 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 		if (Slider->Click== true) {
 			if (Slider->Flag == HORIZONTAL) {
 				if (x > Slider->Bar.x + Slider->Bar.w)
-					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2.0;
+					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2;
 				else if (x < Slider->Bar.x)
-					Slider->Box.x = Slider->Bar.x - Slider->Box.w / 2.0;
+					Slider->Box.x = Slider->Bar.x - Slider->Box.w / 2;
 				else {
-					Slider->Box.x = x - Slider->Box.w / 2.0;
+					Slider->Box.x = x - Slider->Box.w / 2;
 				}
 				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x)/ Slider->Bar.w*(Slider->End - Slider->Start)  + Slider->Start);
 			}
 			else if (Slider->Flag == VERTICAL) {
 				if (y > Slider->Bar.y + Slider->Bar.h)
-					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2.0;
+					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2;
 				else if (y < Slider->Bar.y)
-					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2.0;
+					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2;
 				else {
-					Slider->Box.y = y - Slider->Box.h / 2.0;
+					Slider->Box.y = y - Slider->Box.h / 2;
 				}
 				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
 			}
@@ -573,12 +574,13 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 		return 0;
 	}
 }
-void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h) {
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b) {
 	SDL_Rect rect;
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;
 	rect.h = h;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 	SDL_RenderFillRect(renderer, &rect);
 		
 }
