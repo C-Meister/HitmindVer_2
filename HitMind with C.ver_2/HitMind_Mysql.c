@@ -195,7 +195,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 	{
 		return -1;		//-1을 리턴함
 	}
-	if (password[0] == '*')
+	if (password[0] == '*') 
 		sprintf(query, "select * from User where id = '%s' and password = '%s'", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
 	else
 	sprintf(query, "select * from User where id = '%s' and password = password('%s')", id, password);	//해당 id 와 password에 맞는 값을 찾아냄
