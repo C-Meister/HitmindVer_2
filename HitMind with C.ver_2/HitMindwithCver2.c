@@ -21,7 +21,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 2. "분기: master"아래에 페치를 클릭합니다.
 3. "분기: master"아래에 끌어오기를 클릭합니다.
 4. 끝
-https://mail.google.com/mail/u/1/?tab=wm#inbox?compose=15eae53190fd3249
 */
 
 #include "include.h"
@@ -1384,7 +1383,7 @@ int main(int argc, char *argv[])
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
 				{
-
+					SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
 
 					while (!qquit) {
 
@@ -1439,9 +1438,11 @@ int main(int argc, char *argv[])
 
 						//2번구역
 						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
+						RenderTextureXYWH(renderer,can, Display_X * 0.7 + 22, Display_Y*0.042,Display_X*0.277,Display_Y*0.046); //앙
 						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
 						FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
 						PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+						
 
 
 						//3번구역
@@ -1590,7 +1591,7 @@ int main(int argc, char *argv[])
 						//고객문의 버튼
 						if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 0, 176, 240, set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 25 * ((float)Display_X / 1920), 0, &event))
 						{
-
+							system("start https://goo.gl/forms/tdCMgM3uRR1ZoNHO2");
 						}
 						//크래딧 버튼
 						if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 0, 176, 240, set_start_x + set_start_w * 0.36, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 25 * ((float)Display_X / 1920), 0, &event))
@@ -1615,7 +1616,7 @@ int main(int argc, char *argv[])
 						//설문조사 버튼
 						if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 0, 176, 240, set_start_x + set_start_w * 0.66, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 25 * ((float)Display_X / 1920), 0, &event))
 						{
-
+							system("start https://goo.gl/forms/guFd08v7sFrK6Pe93");
 						}
 						DrawSlider(renderer, slider_sound);
 						DrawSlider(renderer, slider_bgsound);
