@@ -234,9 +234,16 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 {
 	MYSQL_RES * sql_result;
 	MYSQL_ROW rows;
-
+	int i = 0;
 	mysql_query(cons, "select * from all_chating limit 10");
 	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0)
+	{
+		chatings[i].ownnum = atoi(rows[0]);
+		strcpy(chatings[i].name, rows[1]);
+		strcpy(chatings[i].message, rows[2]);
+		i++;
+	}
 }
 
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
