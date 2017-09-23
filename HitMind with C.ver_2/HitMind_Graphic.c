@@ -511,46 +511,46 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
 		if ((event->button.x >= RgbCode.x&&event->button.x <= RgbCode.x + RgbCode.w) && (event->button.y >= RgbCode.y&&event->button.y <= RgbCode.y + RgbCode.h)) {// RgbCode 이미지 안이면 if문 실행
 			int	alpha = (event->button.y - RgbCode.y) / (RgbCode.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
 			switch ((event->button.x - RgbCode.x) / (RgbCode.w / 13)) {// RgbCode안에서의 x축 계산
-				case 0:// 색 설정 코드
-					r = 255; g = 0; b = 0;
-					break;
-				case 1:
-					r = 255; g = 128; b = 0;
-					break;
-				case 2:
-					r = 255; g = 255; b = 0;
-					break;
-				case 3:
-					r = 128; g = 255; b = 0;
-					break;
-				case 4:
-					r = 0; g = 255; b = 0;
-					break;
-				case 5:
-					r = 0; g = 255; b = 128;
-					break;
-				case 6:
-					r = 0; g = 255; b = 255;
-					break;
-				case 7:
-					r = 0; g = 128; b = 255;
-					break;
-				case 8:
-					r = 0; g = 0; b = 255;
-					break;
-				case 9:
-					r = 127; g = 0; b = 255;
-					break;
-				case 10:
-					r = 255; g = 0; b = 255;
-					break;
-				case 11:
-					r = 255; g = 0; b = 127;
-					break;
-				case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
-					r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
-					alpha = 4;
-					break;
+			case 0:// 색 설정 코드
+				r = 255; g = 0; b = 0;
+				break;
+			case 1:
+				r = 255; g = 128; b = 0;
+				break;
+			case 2:
+				r = 255; g = 255; b = 0;
+				break;
+			case 3:
+				r = 128; g = 255; b = 0;
+				break;
+			case 4:
+				r = 0; g = 255; b = 0;
+				break;
+			case 5:
+				r = 0; g = 255; b = 128;
+				break;
+			case 6:
+				r = 0; g = 255; b = 255;
+				break;
+			case 7:
+				r = 0; g = 128; b = 255;
+				break;
+			case 8:
+				r = 0; g = 0; b = 255;
+				break;
+			case 9:
+				r = 127; g = 0; b = 255;
+				break;
+			case 10:
+				r = 255; g = 0; b = 255;
+				break;
+			case 11:
+				r = 255; g = 0; b = 127;
+				break;
+			case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
+				r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
+				alpha = 4;
+				break;
 			}
 			// 수식으로 rgb값 설정
 			if (alpha <= 4) {
@@ -568,12 +568,24 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
 		}
 		return 0;
 	}
-void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h) {
+}
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b) {
 	SDL_Rect rect;
 	rect.x = x;
 	rect.y = y;
 	rect.w = w;
 	rect.h = h;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 	SDL_RenderFillRect(renderer, &rect);
-		
+
+}
+
+void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
+{
+	if (isfull)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else {
+		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowSize(window, dis_x, dis_y);
+	}
 }
