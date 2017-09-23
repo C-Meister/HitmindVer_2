@@ -33,10 +33,9 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "Display_X : %d\n", x);
 	fscanf(set, "Display_Y : %d\n", y);
 	fscanf(set, "fullscreen : %d\n", full);
-	fclose(set);
 }
 
-void changesetting(int bgmusic, int sound, int x, int y, int full) {
+void changesetting(int bgmusic, int sound, int x, int y) {
 
 	Display_X = x;
 	Display_Y = y;
@@ -49,6 +48,6 @@ void changesetting(int bgmusic, int sound, int x, int y, int full) {
 	fprintf(set, "효과음 : %d\n", sound);
 	fprintf(set, "Display_X : %d\n", x);
 	fprintf(set, "Display_Y : %d\n", y);
-	fprintf(set, "fullscreen : %d\n", full);
-	fclose(set);
+	fprintf(set, "fullscreen : %d\n", Full);
+
 }
