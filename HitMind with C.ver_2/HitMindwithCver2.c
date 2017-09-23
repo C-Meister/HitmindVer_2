@@ -1248,7 +1248,7 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-
+			int isallchatting = 0;
 			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			char MemBerList[30][30] = { 0, };
@@ -1285,6 +1285,8 @@ int main(int argc, char *argv[])
 					case SDL_WINDOWEVENT_FOCUS_GAINED:
 						break;
 					}
+					break;
+				
 				}
 				//	}
 				/*
@@ -1447,6 +1449,7 @@ int main(int argc, char *argv[])
 
 					setting_main = 1;
 					int display_value = Display_X / 320;
+					
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -1463,7 +1466,7 @@ int main(int argc, char *argv[])
 					CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, 30, HORIZONTAL);
 					CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, 30, HORIZONTAL);
 					CreateSlider(slider_display, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.32, set_start_y + set_start_h * 0.58, set_start_w * 0.6, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &display_value, 3, 6, display_value, HORIZONTAL);
-
+					
 					while (setting_main) {
 						//	if (SDL_PollEvent(&event))
 						//	{
@@ -1526,6 +1529,7 @@ int main(int argc, char *argv[])
 						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.54, 6 * ((float)Display_X / 1920), set_start_h * 0.223, 91, 155, 213);
 						PutText(renderer, "해상도 설정", set_start_x + set_start_w * 0.04, set_start_y + set_start_h * 0.61, 30 * ((float)Display_X / 1920), 0, 0, 0);
 						sprintf(db_id, "%d X %d", 320 * display_value, 180 * display_value);
+
 						PutText(renderer, db_id, set_start_x + set_start_w * 0.35, set_start_y + set_start_h * 0.65, 30 * ((float)Display_X / 1920), 0, 0, 0);
 						if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 0, 176, 240, set_start_x + set_start_w * 0.7, set_start_y + set_start_h * 0.65, set_start_x * 0.2, set_start_h * 0.1, 25 * ((float)Display_X / 1920), 0, &event)) {
 							if (Full == 0)
@@ -1538,10 +1542,11 @@ int main(int argc, char *argv[])
 						{
 							PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 255, 255, 255);
 							display_value = 6;
-
+							slider_display->Box.x = slider_display->Bar.x + slider_display->Bar.w - slider_display->Box.w / 2;
 						}
 						else
 						{
+							PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 189, 189, 189);
 							UpdateSlider(slider_display, &event);
 						}
 						UpdateSlider(slider_sound, &event);
@@ -1564,7 +1569,7 @@ int main(int argc, char *argv[])
 
 							while (1)
 							{
-								SDL_WaitEvent(&event);
+								
 
 								if (event.type == SDL_MOUSEBUTTONDOWN)
 								{
@@ -1574,7 +1579,7 @@ int main(int argc, char *argv[])
 								RenderTextureXYWH(renderer, Credit_Image, 0, 0, Display_X, Display_Y);
 
 								SDL_RenderPresent(renderer);
-
+								SDL_WaitEvent(&event);
 
 							}
 							SDL_DestroyTexture(Credit_Image);
@@ -1630,6 +1635,12 @@ int main(int argc, char *argv[])
 		}
 
 	}
+
+
+
+
+
+
 	if (myuser != 0)
 		free(myuser);
 	if (status.ishappen == 1)
