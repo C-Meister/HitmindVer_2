@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
 
 	SDL_Texture * LoadingBar = LoadTexture(renderer, ".\\maintema\\loading.png");
+	int qquit = false;
 	int quit = false; // while문 조건문에 쓰이는 불 변수
 	int loginpopup = false; //로그인 팝업 반복문 상태
 	int create_password_status = false;
@@ -1318,8 +1319,8 @@ int main(int argc, char *argv[])
 				PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
 				//5번구역
-				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
-				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
+				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
+				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
 				FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.035, 14);
 				PutText(renderer, "내 정보", (Display_X * 0.83), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
@@ -1354,11 +1355,11 @@ int main(int argc, char *argv[])
 				{
 
 				}
-				if (PutRoundButton(renderer, 255, 0, 0, 240, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
+				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
 				{
 
 
-					while (1) {
+					while (!qquit) {
 
 						/*
 						화면을 전체적으로 4등분함
@@ -1380,12 +1381,12 @@ int main(int argc, char *argv[])
 							switch (event.type)
 							{
 							case SDL_QUIT:
-								quit = true;
+								qquit = true;
 								break;
 							case SDL_WINDOWEVENT:
 								switch (event.window.event) {
 								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-									quit = true;
+									qquit = true;
 									Sleep(100);
 									break;// 브레이크
 								case SDL_WINDOWEVENT_ENTER:// 윈도우
@@ -1423,8 +1424,19 @@ int main(int argc, char *argv[])
 						PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
 						//4번구역
-						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.275, 14);
-						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.275 + 2, 14, 1);
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
+
+
+						if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event)) //나가기 버튼 
+						{
+							qquit = true;
+						}
+
+						if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event)) //시작하기, 준비 버튼
+						{
+							qquit = true;
+						}
 
 						SDL_RenderPresent(renderer);
 					}
