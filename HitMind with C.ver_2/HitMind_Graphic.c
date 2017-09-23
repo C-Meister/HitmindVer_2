@@ -506,65 +506,69 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
-int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 	int r, g, b;
-	if (event->button.button == 1) {
-		if ((event->button.x >= RgbCode.x&&event->button.x <= RgbCode.x + RgbCode.w) && (event->button.y >= RgbCode.y&&event->button.y <= RgbCode.y + RgbCode.h)) {// RgbCode 이미지 안이면 if문 실행
-			int	alpha = (event->button.y - RgbCode.y) / (RgbCode.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
-			switch ((event->button.x - RgbCode.x) / (RgbCode.w / 13)) {// RgbCode안에서의 x축 계산
-			case 0:// 색 설정 코드
-				r = 255; g = 0; b = 0;
-				break;
-			case 1:
-				r = 255; g = 128; b = 0;
-				break;
-			case 2:
-				r = 255; g = 255; b = 0;
-				break;
-			case 3:
-				r = 128; g = 255; b = 0;
-				break;
-			case 4:
-				r = 0; g = 255; b = 0;
-				break;
-			case 5:
-				r = 0; g = 255; b = 128;
-				break;
-			case 6:
-				r = 0; g = 255; b = 255;
-				break;
-			case 7:
-				r = 0; g = 128; b = 255;
-				break;
-			case 8:
-				r = 0; g = 0; b = 255;
-				break;
-			case 9:
-				r = 127; g = 0; b = 255;
-				break;
-			case 10:
-				r = 255; g = 0; b = 255;
-				break;
-			case 11:
-				r = 255; g = 0; b = 127;
-				break;
-			case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
-				r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
-				alpha = 4;
-				break;
-			}
-			// 수식으로 rgb값 설정
-			if (alpha <= 4) {
-				color->r = r + r / 5 * (alpha - 4);
-				color->g = g + g / 5 * (alpha - 4);
-				color->b = b + b / 5 * (alpha - 4);
-				return 1;
-			}
-			else {
-				color->r = r + (255 - r) / 5 * (alpha - 4);
-				color->g = g + (255 - g) / 5 * (alpha - 4);
-				color->b = b + (255 - b) / 5 * (alpha - 4);
-				return 1;
+	if(event->type == SDL_MOUSEBUTTONDOWN){
+		if (event->button.button == 1) {
+			if ((event->button.x >= rect.x&&event->button.x <= rect.x + rect.w) && (event->button.y >= rect.y&&event->button.y <= rect.y + rect.h)) {// RgbCode 이미지 안이면 if문 실행
+				int	alpha = (event->button.y - rect.y) / (rect.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
+				switch ((event->button.x - rect.x) / (rect.w / 13)) {// RgbCode안에서의 x축 계산
+				case 0:// 색 설정 코드
+					r = 255; g = 0; b = 0;
+					break;
+				case 1:
+					r = 255; g = 128; b = 0;
+					break;
+				case 2:
+					r = 255; g = 255; b = 0;
+					break;
+				case 3:
+					r = 128; g = 255; b = 0;
+					break;
+				case 4:
+					r = 0; g = 255; b = 0;
+					break;
+				case 5:
+					r = 0; g = 255; b = 128;
+					break;
+				case 6:
+					r = 0; g = 255; b = 255;
+					break;
+				case 7:
+					r = 0; g = 128; b = 255;
+					break;
+				case 8:
+					r = 0; g = 0; b = 255;
+					break;
+				case 9:
+					r = 127; g = 0; b = 255;
+					break;
+				case 10:
+					r = 255; g = 0; b = 255;
+					break;
+				case 11:
+					r = 255; g = 0; b = 127;
+					break;
+				case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
+					r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
+					alpha = 4;
+					break;
+				default:
+					return 0;
+				}
+				// 수식으로 rgb값 설정
+				if (alpha <= 4) {
+					color->r = r + r / 5 * (alpha - 4);
+					color->g = g + g / 5 * (alpha - 4);
+					color->b = b + b / 5 * (alpha - 4);
+					return 1;
+				}
+				else {
+					color->r = r + (255 - r) / 5 * (alpha - 4);
+					color->g = g + (255 - g) / 5 * (alpha - 4);
+					color->b = b + (255 - b) / 5 * (alpha - 4);
+					return 1;
+				}
 			}
 		}
 		return 0;
@@ -578,9 +582,64 @@ void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r,
 	rect.h = h;
 	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 	SDL_RenderFillRect(renderer, &rect);
-
+		
 }
+void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, int h,int strong) {
+	Canvas->Click = false;
+	Canvas->Strong = strong;
+	Canvas->Color.r = 0; Canvas->Color.g = 0; Canvas->Color.b = 0; Canvas->Color.a = 0;
+	Canvas->Flag = PENCIL;
+	Canvas->Rect.x = x; Canvas->Rect.y = y; Canvas->Rect.w = w; Canvas->Rect.h = h;
+	Canvas->Renderer = Renderer;
+	return;
+}
+int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
+	if (event->type==SDL_MOUSEBUTTONDOWN) {
+		int x = event->button.x; int y = event->button.y;
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&Canvas->Rect.x + Canvas->Rect.y - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+			if (Canvas->Flag == PENCIL) {
+				SDL_SetRenderDrawColor(Canvas->Renderer,Canvas->Color.r, Canvas->Color.g, Canvas->Color.b,0);
+				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
+				SDL_RenderFillRect(Canvas->Renderer,&rect);
+				Canvas->Last.x = rect.x;
+				Canvas->Last.y = rect.y;
+			}
+			else if (Canvas->Flag == ERASER) {
+				FillRoundRect(Canvas->Renderer,255,255,255,x-Canvas->Strong/2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong,Canvas->Strong/2);
+				Canvas->Last.x = x - Canvas->Strong / 2;
+				Canvas->Last.y = y - Canvas->Strong / 2;
+			}
+			Canvas->Click = false;
+		}
+		else {
+			Canvas->Click= false;
+		}
+	}
+	else if (event->type == SDL_MOUSEMOTION) {
+		int x = event->motion.x; int y = event->motion.y;
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&Canvas->Rect.x + Canvas->Rect.y - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+			if (Canvas->Click == true) {
+				if (Canvas->Flag == PENCIL) {
 
+				}
+				else if (Canvas->Flag == ERASER) {
+
+				}
+			}
+		}
+		else {
+			Canvas->Click = false;
+		}
+	}
+	else if (event->type == SDL_MOUSEBUTTONUP) {
+		Canvas->Click = false;
+	}
+	else if (event->type == SDL_WINDOWEVENT) {
+		if (event->window.type == SDL_WINDOWEVENT_LEAVE) {
+			Canvas->Click = false;
+		}
+	}
+}
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
 {
 	if (isfull)

@@ -9,6 +9,8 @@
 #define BUTTONUP 2
 #define HORIZONTAL 1
 #define VERTICAL 2
+#define ERASER 1
+#define PENCIL 2
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
@@ -72,6 +74,7 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+
 typedef struct Warning_Message {
 	int ison;
 	char message[128];
@@ -82,6 +85,15 @@ typedef struct Warning_Message {
 	int g;
 	int b;
 }Warning_M;
+typedef struct Canvas {
+	SDL_Renderer * Renderer;
+	SDL_Color  Color;
+	SDL_Rect Rect;
+	int Strong;
+	int Flag;
+	int Click;
+	SDL_Point Last;
+}Canvas;
 typedef struct SDL_Slider {
 	SDL_Texture * BoxTexture;
 	SDL_Texture * BarTexture;
@@ -94,6 +106,12 @@ typedef struct SDL_Slider {
 	int Update;
 	int Flag;
 }Slider;
+typedef struct MYSQL_CHATING {
+	int ownnum;
+	char name[30];
+	char message[50];
+	char time[30];
+}Chating;
 
 /*
 변수에 대한 설명:
@@ -101,16 +119,16 @@ typedef struct SDL_Slider {
 그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
 
-// 소켓용 전역변수
-static WSADATA wsaData;
-static SOCKET Slisten_socket, Sconnect_socket[8];
-static SOCKET Clisten_socket, Cconnect_socket;
-static SOCKADDR_IN listen_addr, connect_addr;
-static int sockaddr_in_size;
-static char message[200];
-static uintptr_t Serverthread[8];
-static uintptr_t Clientthread;
-static char playerinfo[8][30];
+//// 소켓용 전역변수
+//static WSADATA wsaData;
+//static SOCKET Slisten_socket, Sconnect_socket[8];
+//static SOCKET Clisten_socket, Cconnect_socket;
+//static SOCKADDR_IN listen_addr, connect_addr;
+//static int sockaddr_in_size;
+//static char message[200];
+//static uintptr_t Serverthread[8];
+//static uintptr_t Clientthread;
+//static char playerinfo[8][30];
 
 static int Display_X = 1920;
 static int Display_Y = 1080;
@@ -155,12 +173,15 @@ void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, in
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
-void UpdateSlider(Slider* Slider, SDL_Event * event);
+void UpdateSlider(Slider* Slider, SDL_Event *event);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
+int ChangeColor(SDL_Event * event, SDL_Color * color,SDL_Rect rect);
+void CreateCanvas(Canvas * Canvas,SDL_Renderer * Renderer, int x, int y, int w, int h, int strong);
+int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
