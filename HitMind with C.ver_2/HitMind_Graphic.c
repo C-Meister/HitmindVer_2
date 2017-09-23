@@ -81,8 +81,7 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,i
 		{	//마우스가 해당 글씨위에 클릭하면
 			return 1;	//1을 반환
 		}
-	if (event->type == SDL_QUIT)	//종료하려고 하면
-		exit(1);		//종료 - 나중에 바꿔줘야함
+
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < (x + (signed int)strlen(sentence) * (size / 2)) && event->motion.y < y + size + 5)
 	{	//마우스의 위치가 글씨 위에 있으면
 		plussize = 5;	//커지는 효과
@@ -388,6 +387,11 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Update = true;
 	Slider->Click = false;
 	return;
+}
+void MoveSlider_value(Slider *Slider, int value) {
+	Slider->Box.x = floor(Slider->Bar.x + Slider->Bar.w / 2.0 - Slider->Box.w / 2.0);
+	Slider->Box.y = floor(Slider->Bar.y + Slider->Bar.h * (value - Slider->Start) / (Slider->End - Slider->Start) - Slider->Box.h / 2.0);
+	*Slider->Value = value;
 }
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer,Slider->BarTexture,&Slider->Bar);

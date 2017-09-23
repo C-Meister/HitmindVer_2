@@ -98,6 +98,7 @@ int getUesrStatus(MYSQL *cons, char arr[30][30])
 	{
 		strcpy(arr[i], row[1]);
 		arr[i][27] = atoi(row[4]);
+		arr[i][28] = atoi(row[9]);
 		i++;
 	}
 	mysql_free_result(sql_result);
@@ -236,7 +237,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	MYSQL_ROW rows;
 	memset(chatings, 0, sizeof(chatings));
 	int i = 0;
-	mysql_query(cons, "select * from all_chating limit 10");
+	mysql_query(cons, "select * from all_chating order by ownnum desc limit 12");
 	sql_result = mysql_store_result(cons);
 	while ((rows = mysql_fetch_row(sql_result)) != 0)
 	{
