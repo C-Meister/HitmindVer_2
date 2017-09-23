@@ -113,16 +113,16 @@ typedef struct SDL_Slider {
 그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
 
-// 소켓용 전역변수
-static WSADATA wsaData;
-static SOCKET Slisten_socket, Sconnect_socket[8];
-static SOCKET Clisten_socket, Cconnect_socket;
-static SOCKADDR_IN listen_addr, connect_addr;
-static int sockaddr_in_size;
-static char message[200];
-static uintptr_t Serverthread[8];
-static uintptr_t Clientthread;
-static char playerinfo[8][30];
+//// 소켓용 전역변수
+//static WSADATA wsaData;
+//static SOCKET Slisten_socket, Sconnect_socket[8];
+//static SOCKET Clisten_socket, Cconnect_socket;
+//static SOCKADDR_IN listen_addr, connect_addr;
+//static int sockaddr_in_size;
+//static char message[200];
+//static uintptr_t Serverthread[8];
+//static uintptr_t Clientthread;
+//static char playerinfo[8][30];
 
 static int Display_X = 1920;
 static int Display_Y = 1080;
