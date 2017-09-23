@@ -234,6 +234,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 {
 	MYSQL_RES * sql_result;
 	MYSQL_ROW rows;
+	memset(chatings, 0, sizeof(chatings));
 	int i = 0;
 	mysql_query(cons, "select * from all_chating limit 10");
 	sql_result = mysql_store_result(cons);
@@ -242,8 +243,11 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 		chatings[i].ownnum = atoi(rows[0]);
 		strcpy(chatings[i].name, rows[1]);
 		strcpy(chatings[i].message, rows[2]);
+		strcpy(chatings[i].time, rows[3]);
 		i++;
 	}
+	mysql_free_result(sql_result);
+	return i;
 }
 
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
@@ -251,6 +255,7 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
 	char query[128];
 	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
 	UTF82EUCKR(char_message, 128, query, 384);
+	char_message[strlen(char_message)] = '\0';
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)
 		return 0;
