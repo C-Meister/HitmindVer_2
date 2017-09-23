@@ -85,6 +85,24 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		return My_User;		//리턴
 	}
 }
+int getUesrStatus(MYSQL *cons, char arr[30][30])
+{
+	MYSQL_RES *sql_result;
+	MYSQL_ROW row;
+	memset(arr, 0, sizeof(arr));
+	mysql_query(cons, "select * from user where status != 0");
+	sql_result = mysql_store_result(cons);
+	int i = 0;
+	
+	while ((row = mysql_fetch_row(sql_result)) != NULL)
+	{
+		strcpy(arr[i], row[1]);
+		arr[i][27] = atoi(row[4]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}
 int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t* answer)
 {
 	char char_id[128] = "";
@@ -187,6 +205,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		return 0;
 	else
 	{
+		
 		Hit_User *My_User = (Hit_User *)malloc(sizeof(Hit_User));	//메모리를 할당함 calloc은 할당한 후 0으로 채움
 		memset(My_User, 0, sizeof(My_User));
 		//hitmind_2 DB에 User테이블 값

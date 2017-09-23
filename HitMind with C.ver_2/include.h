@@ -51,6 +51,7 @@
 #define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //콘솔 출력 글씨 설정
 #define RESET(X) ZeroMemory(X, sizeof(X))	//초기화 memset()이랑 같음
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
+#define PORT 5555
 //MouseUp_Wait = PutMenu를 사용할때 마우스 버튼을 클릭하자말자 넘어가기 때문에 방지를 해줌.
 
 //typedef
@@ -99,8 +100,19 @@ typedef struct SDL_Slider {
 	이 include.h헤더파일은 여러 군데에서 사용을함.
 	그러므로 같은 변수를 공유할떄에는 전역변수인 static을 사용해 줘야함
 */
-static int Display_X = 1920;	//해상도 - X
-static int Display_Y = 1080;	//해상도 - Y
+
+// 소켓용 전역변수
+static WSADATA wsaData;			
+static SOCKET Slisten_socket, Sconnect_socket[8];
+static SOCKET Clisten_socket, Cconnect_socket;
+static SOCKADDR_IN listen_addr, connect_addr;
+static int sockaddr_in_size;
+static char message[200];
+static uintptr_t Serverthread[8];
+static uintptr_t Clientthread;
+static char playerinfo[8][30];
+static int Display_X = 1920;
+static int Display_Y = 1080;
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;
@@ -111,8 +123,11 @@ char * GetDefaultMyIP();
 //초기 설정값에 맞게 프로그램을 실행 함
 void settings(int *x, int *y, int *music, int *sound, int *full);
 //설정변경
-void changesetting(int bgmusic, int sound, int x, int y);
+
+void changesetting(int bgmusic, int sound, int x, int y, int full);
 //---------------그래픽 함수--------------
+
+void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
@@ -142,18 +157,19 @@ void DrawRoundRect(SDL_Renderer* Renderer, int r, int g ,int b, int x, int y, in
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default,int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
-void UpdateSlider(Slider* Slider, int x,int y, int flag);
+void UpdateSlider(Slider* Slider, SDL_Event * event);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);
-
+int getUesrStatus(MYSQL *cons, char arr[30][30]);
 int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t *answer);
 //Password_Change 비밀번호를 변경하는데 필요한 함수. 아이디 잘못되면 -1, 답변 잘못되면 0 업데이트실패 -2 성공 1
 int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer);
@@ -166,3 +182,14 @@ char * Get_Random_Topic(MYSQL *cons);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
 //---------------Socket 함수--------------
+void OpenServer();
+// 쓰레드,서버전용 - 방(서버)를 연다
+void connectServer(char *serverIP);
+// 쓰레드,클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
+void HandleClient(int num);
+// 쓰레드,서버전용 - 클라이언트에게서 데이터를 계속 받아온다 인자값 : 클라이언트 번호 
+void sendall(char *lmessage, int c);
+// 서버전용 - 모든 클라이언트에게 데이터를 보낸다 인자값 : 전송할 데이터, 서버의 클라이언트 번호
+// 서버의 클라이언트 번호는 sendall 할때 자기 자신에게는 보내지 않기 위해 만든것
+void Clientrecv();
+// 쓰레드,클라이언트 전용 - 서버에게서 데이터를 받아온다

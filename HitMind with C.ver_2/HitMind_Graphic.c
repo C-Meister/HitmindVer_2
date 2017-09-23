@@ -356,6 +356,7 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Box.w = Box_w;
 	Slider->Box.h = Box_h;
 	Slider->Value = Value;
+	if (Default != 0)
 	*Value = Default;
 	Slider->Update = true;
 	Slider->Click = false;
@@ -366,13 +367,15 @@ void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
 	return;
 }
-void UpdateSlider(Slider* Slider, int x, int y,int flag) {
-	if (flag == BUTTONUP) {
+void UpdateSlider(Slider* Slider,  SDL_Event * event) {
+	if (event->type == SDL_MOUSEBUTTONUP) {
 		Slider->Click = false;
 		Slider->Update = false;
 		return;
 	}
-	else if (flag == BUTTONDOWN) {
+	else if (event->type == SDL_MOUSEBUTTONDOWN) {
+		int x = event->button.x;
+		int y = event->button.y;
 		if (Slider->Flag == HORIZONTAL) {
 			if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
 				Slider->Box.x = x - Slider->Box.w / 2.0;
@@ -398,7 +401,10 @@ void UpdateSlider(Slider* Slider, int x, int y,int flag) {
 			return;
 		}
 	}
-	else if (flag == MOTION) {
+	else if (event->type == SDL_MOUSEMOTION) {
+		int x = event->motion.x;
+		int y = event->motion.y;
+
 		if (Slider->Click== true) {
 			if (Slider->Flag == HORIZONTAL) {
 				if (x > Slider->Bar.x + Slider->Bar.w)
