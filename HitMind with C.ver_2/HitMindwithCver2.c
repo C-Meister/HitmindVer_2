@@ -1278,14 +1278,20 @@ int main(int argc, char *argv[])
 			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			char MemBerList[30][30] = { 0, };
+			Chating chatings[10] = { 0, };
 			int usercount = 0;
+			memset(&ID_put, 0, sizeof(ID_put));
+			int chattingput = 0;
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
 			SDL_Texture * User_Pencil = LoadTexture(renderer, ".\\design\\pencil.png");
+			SDL_Texture * Chating_noput = LoadTexture(renderer, ".\\design\\chatting1.png");
+			SDL_Texture * Chating_put = LoadTexture(renderer, ".\\design\\chatting2.png");
+			SDL_Texture * Chating_click = LoadTexture(renderer, ".\\design\\chattingput.png");
 			quit = 0;
 			sprintf(query, "LV %d", myuser->level);
-
+			warning.ison = 0;
 			while (loginsuccess && !quit)	//로그인 성공 후 대기창
 			{
 				//		if (SDL_PollEvent(&event))
@@ -1293,6 +1299,79 @@ int main(int argc, char *argv[])
 				SDL_WaitEventTimeout(&event, 1000);
 				switch (event.type)
 				{
+				case SDL_TEXTINPUT: // 채팅 입력 이벤트
+					if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+					{
+						wcscpy(wchar, L"");
+						sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+						wchar[0] = sum;
+						wcscat(ID_put, wchar);
+
+
+						if (event.text.text[0] == -29)
+							slice = 1;
+						else
+							slice = 1 + !((wchar[0] - 0xac00) % 28);
+					}
+					else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+						wcscpy(wchar, L"");
+						swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+						wcscat(ID_put, wchar);
+						hangeul = false;
+						slice = 0;
+					}
+					textinput = true;
+					break;
+				case SDL_KEYDOWN:
+					if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+						if (hangeul == true && enter == false)
+							enter = true;
+						else {
+							InsertChating_all(cons, myuser->name, ID_put);
+							memset(&ID_put, 0, sizeof(ID_put));
+							enter = false;
+							textinput = true;
+
+						}
+					}
+					else if (event.key.keysym.sym == SDLK_RALT)
+						hanyeong = !(hanyeong);
+					else if (event.key.keysym.sym == SDLK_BACKSPACE && (ID_INPUT ? wcslen(ID_put) > 0 : (PASSWORD_INPUT ? wcslen(Password_put) > 0 : 0)))// 키보드 백스페이스고 배열의 길이가 1이상일때
+					{
+						if (slice == 0) {
+
+							ID_put[wcslen(ID_put) - 1] = '\0';
+
+							textinput = true;
+						}
+						else {
+							//		printf("\nslice상태");
+							slice--;
+						}
+					}
+					else if (event.key.keysym.sym == SDLK_TAB)
+					{
+						if (hangeul == true && enter == false)
+							enter = true;
+
+					}
+
+					else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
+						strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+						SDL_SetClipboardText(utf8);// 클립보드에 넣음
+
+					}
+					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+						wcscat(ID_put, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
+
+						hangeul = false;
+						textinput = true;
+					}
+					else {
+						hangeul = true;
+						slice++;
+					}
+					break;
 				case SDL_QUIT:
 					quit = true;
 					break;
@@ -1312,7 +1391,7 @@ int main(int argc, char *argv[])
 						break;
 					}
 					break;
-				
+
 				}
 				//	}
 				/*
@@ -1362,7 +1441,10 @@ int main(int argc, char *argv[])
 
 				PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
-
+				if (chattingput == 0)
+				{
+					PutButtonImage_click(renderer, Chating_noput, Chating_put, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07, &event);
+				}
 				if (timer < SDL_GetTicks() % 1000)
 				{
 
@@ -1482,7 +1564,7 @@ int main(int argc, char *argv[])
 
 					setting_main = 1;
 					int display_value = Display_X / 320;
-					
+
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -1499,7 +1581,7 @@ int main(int argc, char *argv[])
 					CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, 30, HORIZONTAL);
 					CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, 30, HORIZONTAL);
 					CreateSlider(slider_display, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.32, set_start_y + set_start_h * 0.58, set_start_w * 0.6, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &display_value, 3, 6, display_value, HORIZONTAL);
-					
+
 					while (setting_main) {
 						//	if (SDL_PollEvent(&event))
 						//	{
@@ -1652,13 +1734,19 @@ int main(int argc, char *argv[])
 					break;
 				}
 				PutText(renderer, "로그아웃", Display_X * 0.88, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255);
-
+				if (warning.ison == 1)
+				{
+					PutText(renderer, warning.message, warning.x, warning.y, warning.size, warning.r, warning.g, warning.b);
+				}
 				SDL_RenderPresent(renderer);
 
 			}
 			SDL_DestroyTexture(WaitRoom_setting_click);
 			SDL_DestroyTexture(WaitRoom_setting_noclick);
 			SDL_DestroyTexture(User_Pencil);
+			SDL_DestroyTexture(Chating_click);
+			SDL_DestroyTexture(Chating_put);
+			SDL_DestroyTexture(Chating_noput);
 			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 		}

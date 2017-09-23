@@ -184,6 +184,7 @@ void CreateCanvas(Canvas * Canvas,SDL_Renderer * Renderer, int x, int y, int w, 
 int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
+int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 //---------------MySql 함수---------------
@@ -199,8 +200,13 @@ void Thread_MySQL(Connect_status *type);
 MYSQL * Mysql_Connect(char *ip);
 //주제중에 랜덤으로 하나를 불러와 문자열로 반환
 char * Get_Random_Topic(MYSQL *cons);
+
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
+//전체 채팅을 추가함
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
+//전체 채팅을 불러옴
+int ReadChating_all(MYSQL *cons, Chating * chatings);
 //---------------Socket 함수--------------
 void OpenServer();
 // 쓰레드,서버전용 - 방(서버)를 연다
