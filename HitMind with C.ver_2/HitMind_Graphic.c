@@ -31,14 +31,12 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
-
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	}
 	else {
 		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
-	
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN)
 		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
@@ -368,13 +366,15 @@ void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
 	return;
 }
-void UpdateSlider(Slider* Slider, int x, int y,int flag) {
-	if (flag == BUTTONUP) {
+void UpdateSlider(Slider* Slider,  SDL_Event * event) {
+	if (event->type == SDL_MOUSEBUTTONUP) {
 		Slider->Click = false;
 		Slider->Update = false;
 		return;
 	}
-	else if (flag == BUTTONDOWN) {
+	else if (event->type == SDL_MOUSEBUTTONDOWN) {
+		int x = event->button.x;
+		int y = event->button.y;
 		if (Slider->Flag == HORIZONTAL) {
 			if (x >= Slider->Bar.x&&x <= Slider->Bar.x + Slider->Bar.w&&y >= Slider->Box.y&&y <= Slider->Box.y + Slider->Box.h) {
 				Slider->Box.x = x - Slider->Box.w / 2.0;
@@ -400,7 +400,10 @@ void UpdateSlider(Slider* Slider, int x, int y,int flag) {
 			return;
 		}
 	}
-	else if (flag == MOTION) {
+	else if (event->type == SDL_MOUSEMOTION) {
+		int x = event->motion.x;
+		int y = event->motion.y;
+
 		if (Slider->Click== true) {
 			if (Slider->Flag == HORIZONTAL) {
 				if (x > Slider->Bar.x + Slider->Bar.w)
@@ -501,4 +504,88 @@ int hancheck(int unicode) {
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
 		cnt++;
 	return cnt;
+}
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
+	int r, g, b;
+	if (event->button.button == 1) {
+		if ((event->button.x >= RgbCode.x&&event->button.x <= RgbCode.x + RgbCode.w) && (event->button.y >= RgbCode.y&&event->button.y <= RgbCode.y + RgbCode.h)) {// RgbCode 이미지 안이면 if문 실행
+			int	alpha = (event->button.y - RgbCode.y) / (RgbCode.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
+			switch ((event->button.x - RgbCode.x) / (RgbCode.w / 13)) {// RgbCode안에서의 x축 계산
+			case 0:// 색 설정 코드
+				r = 255; g = 0; b = 0;
+				break;
+			case 1:
+				r = 255; g = 128; b = 0;
+				break;
+			case 2:
+				r = 255; g = 255; b = 0;
+				break;
+			case 3:
+				r = 128; g = 255; b = 0;
+				break;
+			case 4:
+				r = 0; g = 255; b = 0;
+				break;
+			case 5:
+				r = 0; g = 255; b = 128;
+				break;
+			case 6:
+				r = 0; g = 255; b = 255;
+				break;
+			case 7:
+				r = 0; g = 128; b = 255;
+				break;
+			case 8:
+				r = 0; g = 0; b = 255;
+				break;
+			case 9:
+				r = 127; g = 0; b = 255;
+				break;
+			case 10:
+				r = 255; g = 0; b = 255;
+				break;
+			case 11:
+				r = 255; g = 0; b = 127;
+				break;
+			case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
+				r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
+				alpha = 4;
+				break;
+			}
+			// 수식으로 rgb값 설정
+			if (alpha <= 4) {
+				color->r = r + r / 5 * (alpha - 4);
+				color->g = g + g / 5 * (alpha - 4);
+				color->b = b + b / 5 * (alpha - 4);
+				return 1;
+			}
+			else {
+				color->r = r + (255 - r) / 5 * (alpha - 4);
+				color->g = g + (255 - g) / 5 * (alpha - 4);
+				color->b = b + (255 - b) / 5 * (alpha - 4);
+				return 1;
+			}
+		}
+		return 0;
+	}
+}
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b) {
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+	SDL_RenderFillRect(renderer, &rect);
+
+}
+
+void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
+{
+	if (isfull)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else {
+		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowSize(window, dis_x, dis_y);
+	}
 }
