@@ -81,34 +81,6 @@ int main(int argc, char *argv[])
 	int PASSWORD_INPUT;
 	int PressButton = 0;
 	int autologin_checking;
-	//while (!quit)	//로그인 성공 후 대기창
-	//{
-	//	if (SDL_PollEvent(&event))
-	//	{
-	//		switch (event.type)
-	//		{
-	//		case SDL_QUIT:
-	//			quit = true;
-	//			break;
-	//		case SDL_WINDOWEVENT:
-	//			switch (event.window.event) {
-	//			case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-
-	//				quit = true;
-	//				Sleep(100);
-	//				break;// 브레이크
-	//			case SDL_WINDOWEVENT_ENTER:// 윈도우
-	//				SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-	//				break;
-	//			case SDL_WINDOWEVENT_LEAVE:
-	//				//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-	//				break;
-	//			case SDL_WINDOWEVENT_FOCUS_GAINED:
-	//				break;
-
-	//			}
-	//		}
-	//	}
 
 	//	SDL_SetRenderDrawColor(renderer, 216, 216, 216, 0);
 	//	SDL_RenderClear(renderer);

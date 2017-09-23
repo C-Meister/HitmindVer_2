@@ -31,14 +31,12 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
-
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	}
 	else {
 		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
-	
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN)
 		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
@@ -501,4 +499,68 @@ int hancheck(int unicode) {
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
 		cnt++;
 	return cnt;
+}
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect RgbCode) {
+	int r, g, b;
+	if (event->button.button == 1) {
+		if ((event->button.x >= RgbCode.x&&event->button.x <= RgbCode.x + RgbCode.w) && (event->button.y >= RgbCode.y&&event->button.y <= RgbCode.y + RgbCode.h)) {// RgbCode 이미지 안이면 if문 실행
+			int	alpha = (event->button.y - RgbCode.y) / (RgbCode.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
+			switch ((event->button.x - RgbCode.x) / (RgbCode.w / 13)) {// RgbCode안에서의 x축 계산
+				case 0:// 색 설정 코드
+					r = 255; g = 0; b = 0;
+					break;
+				case 1:
+					r = 255; g = 128; b = 0;
+					break;
+				case 2:
+					r = 255; g = 255; b = 0;
+					break;
+				case 3:
+					r = 128; g = 255; b = 0;
+					break;
+				case 4:
+					r = 0; g = 255; b = 0;
+					break;
+				case 5:
+					r = 0; g = 255; b = 128;
+					break;
+				case 6:
+					r = 0; g = 255; b = 255;
+					break;
+				case 7:
+					r = 0; g = 128; b = 255;
+					break;
+				case 8:
+					r = 0; g = 0; b = 255;
+					break;
+				case 9:
+					r = 127; g = 0; b = 255;
+					break;
+				case 10:
+					r = 255; g = 0; b = 255;
+					break;
+				case 11:
+					r = 255; g = 0; b = 127;
+					break;
+				case 12:// case 12는 회색계열이라서 특수한 알고리즘임 그래서 따로 코드를 써줌
+					r = 128 + (255 / 8.0)*(alpha - 4); g = 128 + (255 / 8.0) * (alpha - 4); b = 128 + (255 / 8.0) * (alpha - 4);
+					alpha = 4;
+					break;
+			}
+			// 수식으로 rgb값 설정
+			if (alpha <= 4) {
+				color->r = r + r / 5 * (alpha - 4);
+				color->g = g + g / 5 * (alpha - 4);
+				color->b = b + b / 5 * (alpha - 4);
+				return 1;
+			}
+			else {
+				color->r = r + (255 - r) / 5 * (alpha - 4);
+				color->g = g + (255 - g) / 5 * (alpha - 4);
+				color->b = b + (255 - b) / 5 * (alpha - 4);
+				return 1;
+			}
+		}
+		return 0;
+	}
 }
