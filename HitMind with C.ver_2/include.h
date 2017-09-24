@@ -117,7 +117,6 @@ typedef struct SDL_Slider {
 	float End;
 	int * Value;
 	int Click;
-	int Update;
 	int Flag;
 }Slider;
 typedef struct MYSQL_CHATING {
@@ -196,14 +195,14 @@ void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, in
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
-void UpdateSlider(Slider* Slider, SDL_Event *event);
-int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int *happen);
+int UpdateSlider(Slider* Slider, SDL_Event *event);
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
-int ChangeColor(SDL_Event * event, SDL_Color * color,SDL_Rect rect);
-void CreateCanvas(Canvas * Canvas,SDL_Renderer * Renderer, int x, int y, int w, int h, int strong);
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect);
+void CreateCanvas(Canvas * Canvas, SDL_Renderer * Renderer, int x, int y, int w, int h, int strong);
 int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
@@ -211,7 +210,9 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 void MoveSlider_value(Slider *Slider, int value);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
-
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b, int a);
+int UpdateButton(Button * Button, SDL_Event * event);
+void DrawButton(Button * Button);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);

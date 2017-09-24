@@ -43,8 +43,8 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
-	
-	
+
+
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
@@ -92,11 +92,11 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 	}
 	return 0;
 }
-int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
+int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event)
 {
 	SDL_Color color = { r, g, b };
 	int plussize = 0;		//마우스를 가져다될때 커지는 사이즈
-	
+
 	if (event->type == SDL_MOUSEBUTTONDOWN)	//클릭 되었을때
 		if (event->button.x > x && event->button.y > y && event->button.x < (x + (signed int)strlen(sentence) * (size / 2)) && event->button.y < y + size + 5)
 		{	//마우스가 해당 글씨위에 클릭하면
@@ -121,7 +121,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
-	//폰트를 닫음
+																			//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color)
@@ -134,19 +134,19 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
 	int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;// JPG파일과 PNG파일 로드 가능
 	if (IMG_Init(imgFlags) != imgFlags) {//IMG 초기화하고 초기화 안되면 if문 실행
-		
+
 		return nullptr;//널포인터 반환
 	}
 	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
 	if (Surface == nullptr) {//서피스에 이미지로드가 안되면 
-		
+
 		IMG_Quit();// IMG 종료
 		return nullptr;// 널포인터 반환
 	}
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
 	SDL_FreeSurface(Surface);// 서피스 메모리해제
 	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
-		
+
 		IMG_Quit();// IMG 종료
 		return nullptr;// 널포인터 반환
 	}
@@ -221,45 +221,45 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect,SDL_Color color, int radius,int strong) {
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	int out_x, out_y;
 	int left_x, left_y;
 	double y;
-	double Center_x=Rect->x+radius, Center_y=Rect->y+radius;
+	double Center_x = Rect->x + radius, Center_y = Rect->y + radius;
 	for (y = 0; y < radius;) {
-		out_x = floor(Center_x - sqrt((radius+strong)*(radius+strong) - y*y));
+		out_x = floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y));
 		out_y = Center_y - y;
 		y++;
-		SDL_RenderDrawLine(Renderer,out_x,out_y,floor(Center_x - sqrt(radius*radius - y*y)),Center_y - y);
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y - y);
 	}
-	Center_x = Rect->x+Rect->w-radius;
+	Center_x = Rect->x + Rect->w - radius;
 	for (y = 0; y < radius; ) {
 		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
 		out_y = Center_y - y;
 		y++;
-		SDL_RenderDrawLine(Renderer,out_x,out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
-	for (; y < radius + strong;y++) {
-		left_x = floor(Center_x-Rect->w+2*radius - sqrt((radius + strong)*(radius + strong) - y*y));
+	for (; y < radius + strong; y++) {
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt((radius + strong)*(radius + strong) - y*y));
 		left_y = Center_y - y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius+strong)*(radius+strong) - y*y)), Center_y - y);
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y)), Center_y - y);
 	}
 	Center_y = Rect->y + Rect->h - radius;
 	for (y = 0; y < radius; ) {
 		out_x = floor(Center_x + sqrt((radius + strong)*(radius + strong) - y*y));
 		out_y = Center_y + y;
 		y++;
-		SDL_RenderDrawLine(Renderer, out_x,out_y,floor(Center_x + sqrt(radius*radius - y*y)), Center_y + y);
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y + y);
 	}
 	Center_x = Rect->x + radius;
 	for (y = 0; y < radius;) {
 		out_x = floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y));
 		out_y = Center_y + y;
 		y++;
-		SDL_RenderDrawLine(Renderer, out_x,out_y,floor(Center_x - sqrt(radius*radius - y*y)), Center_y + y);
+		SDL_RenderDrawLine(Renderer, out_x, out_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y + y);
 	}
-	for (; y < radius + strong;y++) {
+	for (; y < radius + strong; y++) {
 		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt((radius + strong)*(radius + strong) - y*y));
 		left_y = Center_y + y;
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt((radius + strong)*(radius + strong) - y*y)), Center_y + y);
@@ -273,34 +273,34 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 	Center_x = Rect->x + Rect->w - radius;
 	Center_y = Rect->y + radius;
 	for (y = 0; y <= radius; y++) {
-		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius- y*y));
+		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius - y*y));
 		left_y = Center_y - y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius  - y*y)), Center_y - y);
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
 
 	Center_x = Rect->x + radius;
 	Center_y = Rect->y + Rect->h - radius;
-	for (y=0; y <= radius;y++) {
+	for (y = 0; y <= radius; y++) {
 		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt(radius*radius - y*y));
 		left_y = Center_y + y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius  - y*y)), Center_y + y);
+		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y + y);
 	}
 }
-void DrawRoundRect(SDL_Renderer* Renderer,int r, int g,int b,int x, int y, int w, int h, int radius, int strong) {
-	SDL_Rect rect = { x+ strong,y+ strong,w-2*strong,h-2*strong };
+void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong) {
+	SDL_Rect rect = { x + strong,y + strong,w - 2 * strong,h - 2 * strong };
 	SDL_Color color = { r,g,b,0 };
-	SDL_DrawRoundRect(Renderer, &rect, color, radius,strong);
-	rect.x = x; rect.w = strong; rect.y = y + strong+ radius-1 ; rect.h = h - 2 * (strong + radius)+2 ;
+	SDL_DrawRoundRect(Renderer, &rect, color, radius, strong);
+	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * (strong + radius) + 2;
 	SDL_RenderFillRect(Renderer, &rect);
-	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong+radius-1; rect.h = h - 2 *(strong + radius)+2;
+	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * (strong + radius) + 2;
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
-void FillRoundRect(SDL_Renderer* Renderer, int r,int g,int b, int x, int y, int w, int h, int radius) {
-	SDL_Rect rect = { x,y  ,w,h  };
+void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius) {
+	SDL_Rect rect = { x,y  ,w,h };
 	SDL_Color color = { r,g,b, 0 };
 	SDL_FillRoundRect(Renderer, &rect, color, radius);
-	rect.x = x; rect.y = y+radius-1; rect.w = w; rect.h = h - 2 * radius+2;
+	rect.x = x; rect.y = y + radius - 1; rect.w = w; rect.h = h - 2 * radius + 2;
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
@@ -374,16 +374,16 @@ void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, 
 	SDL_Rect rect = { x + strong,y + strong,w - 2 * strong,h - 2 * strong };
 	SDL_Color color = { r,g,b,0 };
 	SDL_DrawUpRoundRect(Renderer, &rect, color, radius, strong);
-	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong - radius + 2;
 	SDL_RenderFillRect(Renderer, &rect);
-	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong-radius + 2;
+	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * strong - radius + 2;
 	SDL_RenderFillRect(Renderer, &rect);
 	rect.x = x; rect.y = y + h - strong; rect.w = w; rect.h = strong;
 	SDL_RenderFillRect(Renderer, &rect);
 
 	return;
 }
-void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture,int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h,int * Value, float Start, float End, float Default,int Flag) {
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int * Value, float Start, float End, float Default, int Flag) {
 	Slider->BarTexture = BarTexture;
 	Slider->BoxTexture = BoxTexture;
 	Slider->Bar.x = Bar_x;
@@ -394,7 +394,7 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->End = End;
 	Slider->Start = Start;
 	if (Flag == HORIZONTAL) {
-		Slider->Box.x = floor(Bar_x + Bar_w * (Default-Start) / (End - Start) - Box_w / 2.0);
+		Slider->Box.x = floor(Bar_x + Bar_w * (Default - Start) / (End - Start) - Box_w / 2.0);
 		Slider->Box.y = floor(Bar_y + Bar_h / 2.0 - Box_h / 2.0);
 	}
 	else if (Flag == VERTICAL) {
@@ -405,7 +405,6 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Box.h = Box_h;
 	Slider->Value = Value;
 	*Value = Default;
-	Slider->Update = true;
 	Slider->Click = false;
 	return;
 }
@@ -415,15 +414,14 @@ void MoveSlider_value(Slider *Slider, int value) {
 	*Slider->Value = value;
 }
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
-	RenderTexture(Renderer,Slider->BarTexture,&Slider->Bar);
-	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
+	RenderTexture(Renderer, Slider->BarTexture, &Slider->Bar);
+	RenderTexture(Renderer, Slider->BoxTexture, &Slider->Box);
 	return;
 }
-void UpdateSlider(Slider* Slider,  SDL_Event * event) {
+int UpdateSlider(Slider* Slider,  SDL_Event * event) {
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		Slider->Click = false;
-		Slider->Update = false;
-		return;
+		return 0;
 	}
 	else if (event->type == SDL_MOUSEBUTTONDOWN) {
 		int x = event->button.x;
@@ -434,31 +432,29 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 
 				Slider->Click = true;
-				Slider->Update = true;
+				return 1;
 			}
 			else {
-				Slider->Update = false;
+				return 0;
 			}
-			return;
 		}
 		else if (Slider->Flag == VERTICAL) {
 			if (y >= Slider->Bar.y&&y <= Slider->Bar.y + Slider->Bar.h&&x >= Slider->Box.x&&x <= Slider->Box.x + Slider->Box.w) {
 				Slider->Box.y = y - Slider->Box.h / 2;
-				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start)  + Slider->Start);
+				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
 				Slider->Click = true;
-				Slider->Update = true;
+				return 1;
 			}
 			else {
-				Slider->Update = false;
+				return 0;
 			}
-			return;
 		}
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
 		int x = event->motion.x;
 		int y = event->motion.y;
 
-		if (Slider->Click== true) {
+		if (Slider->Click == true) {
 			if (Slider->Flag == HORIZONTAL) {
 				if (x > Slider->Bar.x + Slider->Bar.w)
 					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2;
@@ -467,7 +463,7 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				else {
 					Slider->Box.x = x - Slider->Box.w / 2;
 				}
-				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x)/ Slider->Bar.w*(Slider->End - Slider->Start)  + Slider->Start);
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 			}
 			else if (Slider->Flag == VERTICAL) {
 				if (y > Slider->Bar.y + Slider->Bar.h)
@@ -479,13 +475,12 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				}
 				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
 			}
-			Slider->Update = true;
+			return 1;
 		}
 		else
-			Slider->Update = false;
-		return;
+			return 0;
 	}
-	return;
+	return 0;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
@@ -562,7 +557,7 @@ int hancheck(int unicode) {
 }
 int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 	int r, g, b;
-	if(event->type == SDL_MOUSEBUTTONDOWN){
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.button == 1) {
 			if ((event->button.x >= rect.x&&event->button.x <= rect.x + rect.w) && (event->button.y >= rect.y&&event->button.y <= rect.y + rect.h)) {// RgbCode 이미지 안이면 if문 실행
 				int	alpha = (event->button.y - rect.y) / (rect.h / 9);// RgbCode 안에서의 y축 계산 == 명도채도계산
@@ -636,9 +631,9 @@ void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r,
 	rect.h = h;
 	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 	SDL_RenderFillRect(renderer, &rect);
-		
+
 }
-void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, int h,int strong) {
+void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, int h, int strong) {
 	Canvas->Click = false;
 	Canvas->Strong = strong;
 	Canvas->Color.r = 0; Canvas->Color.g = 0; Canvas->Color.b = 0; Canvas->Color.a = 0;
@@ -647,34 +642,33 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 	Canvas->Renderer = Renderer;
 	return;
 }
-int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
-	if (event->type==SDL_MOUSEBUTTONDOWN) {
+int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		int x = event->button.x; int y = event->button.y;
-		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x<=Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
-				SDL_SetRenderDrawColor(Canvas->Renderer,Canvas->Color.r, Canvas->Color.g, Canvas->Color.b,0);
+				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
 				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
-				SDL_RenderFillRect(Canvas->Renderer,&rect);
+				SDL_RenderFillRect(Canvas->Renderer, &rect);
 				Canvas->Last.x = x;
 				Canvas->Last.y = y;
 				Canvas->Click = true;
 				return 1;
 			}
 			else if (Canvas->Flag == ERASER) {
-				FillRoundRect(Canvas->Renderer,255,255,255,x-Canvas->Strong/2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong,Canvas->Strong/2);
+				FillRoundRect(Canvas->Renderer, 255, 255, 255, x - Canvas->Strong / 2, y - Canvas->Strong / 2, Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
 				Canvas->Last.x = x;
 				Canvas->Last.y = y;
 				Canvas->Click = true;
 				return 1;
 			}
 		}
-		else {
-			Canvas->Click= false;
-		}
+		Canvas->Click= false;
+		return 0;
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
 		double x = event->motion.x; double y = event->motion.y;
-		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x<=Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
 				int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
 				double length = sqrt(deltax*deltax + deltay*deltay);
@@ -690,8 +684,8 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 						x += dx;
 						y += dy;
 						SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
-							SDL_RenderFillRect(Canvas->Renderer, &rect);
-					}	
+						SDL_RenderFillRect(Canvas->Renderer, &rect);
+					}
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
@@ -702,22 +696,26 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 					}
 					return 1;
 				}
-				return 0;
 			}
+			return 0;
 		}
 		else {
 			Canvas->Click = false;
+			return 0;
 		}
 	}
 	else if (event->type == SDL_MOUSEBUTTONUP) {
 		Canvas->Click = false;
+		return 0;
 	}
 	else if (event->type == SDL_WINDOWEVENT) {
 		if (event->window.type == SDL_WINDOWEVENT_LEAVE) {
 			Canvas->Click = false;
 		}
+		return 0;
 	}
-	return 0;
+	else
+		return 0;
 }
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
 {
@@ -728,35 +726,72 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
 }
-void CreateButton(Button * Button,SDL_Renderer *Renderer,SDL_Texture *ButtonTexture,int x, int y, int w, int h,int r, int g ,int b) {
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b,int a) {
 	Button->ButtonTexture = ButtonTexture;
 	Button->ButtonRect.x = x; Button->ButtonRect.y = y; Button->ButtonRect.w = w; Button->ButtonRect.h = h;
 	Button->Renderer = Renderer;
-	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = 0;
+	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = a;
 	Button->Flag = DEACTIVATED;
 	return;
 }
 int UpdateButton(Button * Button, SDL_Event * event) {
-	if (event->type== SDL_MOUSEBUTTONDOWN) {
+	if (Button->Flag == ACTIVATED) {
+		return 0;
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (Button->Flag == ACTIVATED) {
 			return 0;
 		}
 		int x = event->button.x; int y = event->button.y;
-		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y +Button->ButtonRect.h) {
 			Button->Flag = ACTIVATED;
 			return 1;
 		}
 		return 0;
 	}
-	else if(event->type == SDL_MOUSEMOTION){
-		if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
-			return 0;
-		}
+	else if (event->type == SDL_MOUSEMOTION) {
 		int x = event->motion.x; int y = event->motion.y;
-		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
-			Button->Flag = HIGHLIGHT;
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y + Button->ButtonRect.h) {
+			if (Button->Flag == HIGHLIGHT) {
+				return 0;
+			}
+			else {
+				Button->Flag = HIGHLIGHT;
+				return 1;
+			}
+		}
+		else if ( Button->Flag == HIGHLIGHT) {
+			Button->Flag = DEACTIVATED;
 			return 1;
 		}
-		return 0;
+	}
+	return 0;
+}
+void DrawButton(Button * Button) {
+	if (Button->Flag == DEACTIVATED) {
+		SDL_SetRenderDrawColor(Button->Renderer,255,255,255,0);
+		SDL_RenderFillRect(Button->Renderer,&Button->ButtonRect);
+		RenderTexture(Button->Renderer,Button->ButtonTexture,&Button->ButtonRect);
+		return;
+	}
+	else if (Button->Flag == HIGHLIGHT) {
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
+		return;
+	}
+	else if (Button->Flag == ACTIVATED) {
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, Button->Color.a);
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_BLEND);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_NONE);
+		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
+		return;
 	}
 }
