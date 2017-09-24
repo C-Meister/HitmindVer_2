@@ -729,31 +729,34 @@ void CreateButton(Button * Button,SDL_Renderer *Renderer,SDL_Texture *ButtonText
 	return;
 }
 int UpdateButton(Button * Button, SDL_Event * event) {
-	if (event->type== SDL_MOUSEBUTTONDOWN) {
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (Button->Flag == ACTIVATED) {
 			return 0;
 		}
 		int x = event->button.x; int y = event->button.y;
-		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y +Button->ButtonRect.h) {
 			Button->Flag = ACTIVATED;
 			return 1;
 		}
 		return 0;
 	}
-	else if(event->type == SDL_MOUSEMOTION){
-		if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
-			return 0;
-		}
+	else if (event->type == SDL_MOUSEMOTION) {
 		int x = event->motion.x; int y = event->motion.y;
-		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
-			Button->Flag = HIGHLIGHT;
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y + Button->ButtonRect.h) {
+			if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
+				return 0;
+			}
+			else {
+				Button->Flag = HIGHLIGHT;
+				return 1;
+			}
+		}
+		else if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
+			Button->Flag = DEACTIVATED;
 			return 1;
 		}
-		else 
-			return 0;
 	}
-	else 
-		return 0;
+	return 0;
 }
 void DrawButton(Button * Button) {
 	if (Button->Flag == DEACTIVATED) {
@@ -773,6 +776,6 @@ void DrawButton(Button * Button) {
 		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
 		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
-		return 0;
+		return;
 	}
 }
