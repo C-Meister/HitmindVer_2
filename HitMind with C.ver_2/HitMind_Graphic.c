@@ -542,7 +542,6 @@ int hannum(wchar_t unicode[], int len) {
 	}
 	return cnt;
 }
-
 int hancheck(int unicode) {
 	int cnt = 0;
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
@@ -694,7 +693,6 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 			return 0;
 		}
 		else {
-			Canvas->Click = false;
 			return 0;
 		}
 	}
@@ -720,12 +718,13 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
 }
-void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b,int a) {
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int Padding, int x, int y, int w, int h, int r, int g, int b,int a) {
 	Button->ButtonTexture = ButtonTexture;
 	Button->ButtonRect.x = x; Button->ButtonRect.y = y; Button->ButtonRect.w = w; Button->ButtonRect.h = h;
 	Button->Renderer = Renderer;
 	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = a;
 	Button->Flag = DEACTIVATED;
+	Button->Padding = Padding;
 	return;
 }
 int UpdateButton(Button * Button, SDL_Event * event) {
@@ -763,29 +762,55 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 }
 void DrawButton(Button * Button) {
 	if (Button->Flag == DEACTIVATED) {
-		SDL_SetRenderDrawColor(Button->Renderer,255,255,255,0);
-		SDL_RenderFillRect(Button->Renderer,&Button->ButtonRect);
-		RenderTexture(Button->Renderer,Button->ButtonTexture,&Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer,255,255,255,0);// 지우기
+		SDL_RenderFillRect(Button->Renderer,&Button->ButtonRect);//
+		SDL_Rect rect = { Button->ButtonRect.x+Button->Padding,Button->ButtonRect.y+ Button->Padding,Button->ButtonRect.w - 2 * Button->Padding,Button->ButtonRect.h-2*Button->Padding };
+		RenderTexture(Button->Renderer,Button->ButtonTexture,&rect);
 		return;
 	}
 	else if (Button->Flag == HIGHLIGHT) {
-		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
-		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);// 지우기
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);// 지우기
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
-		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_Rect rect = { Button->ButtonRect.x + Button->Padding,Button->ButtonRect.y + Button->Padding,Button->ButtonRect.w - 2 * Button->Padding,Button->ButtonRect.h - 2 * Button->Padding };
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &rect);
 		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
 		return;
 	}
 	else if (Button->Flag == ACTIVATED) {
-		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
-		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);// 지우기
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect); // 지우기
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, Button->Color.a);
-		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_Rect rect = { Button->ButtonRect.x + Button->Padding,Button->ButtonRect.y + Button->Padding,Button->ButtonRect.w - 2 * Button->Padding,Button->ButtonRect.h - 2 * Button->Padding };
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &rect);
 		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
 		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_NONE);
 		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
 		return;
+	}
+	return;
+}
+void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y,int radius) {
+	int old_x = floor(sin(M_PI / 180 * 0)*radius);
+	int old_y = floor(cos(M_PI / 180 * 0)*radius);
+	for (int i = 0; i < 360; i++) {
+		int x1 = old_x;
+		int y1 = old_y;
+		int x2 = floor(sin(M_PI / 180 * (i+1))*radius);
+		int y2= floor(cos(M_PI / 180 * (i+1))*radius);
+		SDL_RenderDrawLine(Renderer, x1 + Center_x, y1 + Center_y, x2 + Center_x, y2 + Center_y);
+		old_x = x2;
+		old_y = y2;
+	}
+}
+void FillCircle(SDL_Renderer * Renderer,int Center_x, int Center_y,int radius) {
+	for (int i = 0; i < 180; i++) {
+		int x1 = floor(sin(M_PI / 180 * i)*radius);
+		int y1 = floor(cos(M_PI / 180 * i)*radius);
+		int x2 = floor(sin(M_PI / 180 * (360-i))* radius);
+		int y2 = floor(cos(M_PI / 180 * (360 - i))* radius);
+		SDL_RenderDrawLine(Renderer, x1+Center_x, y1+Center_y, x2+ Center_x, y2+ Center_y);
 	}
 }
