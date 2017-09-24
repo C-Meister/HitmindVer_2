@@ -262,3 +262,25 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
 		return 0;
 	return 1;
 }
+
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms) {
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+	int i = 0;
+	mysql_query(cons, "select * from room");
+	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0) {
+		rooms[i].ownnum = atoi(rows[0]);
+		strcpy(rooms[i].ip, rows[1]);
+		strcpy(rooms[i].name, rows[2]);
+		strcpy(rooms[i].password, rows[3]);
+		rooms[i].people = atoi(rows[4]);
+		strcpy(rooms[i].mode, rows[5]);
+		rooms[i].time = atoi(rows[6]);
+		rooms[i].question = atoi(rows[7]);
+		rooms[i].max_people = atoi(rows[8]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}

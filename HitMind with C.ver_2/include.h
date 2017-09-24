@@ -74,7 +74,18 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+typedef struct HitMind_WaitRoom {
+	int ownnum;
+	char name[30];
+	char password[35];
+	char mode[10];
+	int question;
+	int time;
+	int people;
+	int max_people;
+	char ip[20];
 
+}Hit_Room;
 typedef struct Warning_Message {
 	int ison;
 	char message[128];
@@ -143,6 +154,8 @@ char * GetDefaultMyIP();
 void settings(int *x, int *y, int *music, int *sound, int *full);
 //설정변경
 void changesetting(int bgmusic, int sound, int x, int y, int full);
+
+int wstrcmp(wchar_t *First, char *second);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
@@ -201,7 +214,8 @@ void Thread_MySQL(Connect_status *type);
 MYSQL * Mysql_Connect(char *ip);
 //주제중에 랜덤으로 하나를 불러와 문자열로 반환
 char * Get_Random_Topic(MYSQL *cons);
-
+//방 목록을 불러옴
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 //전체 채팅을 추가함
