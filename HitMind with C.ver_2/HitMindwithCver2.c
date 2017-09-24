@@ -88,16 +88,32 @@ int main(int argc, char *argv[])
 	int PressButton = 0;
 	int autologin_checking;
 	// 테스트 코드
-	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07)+(Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
-	//float MaxStrong = 70.0*Display_X /1920;
-	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
-	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
-	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
+	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
+	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
+	//float MaxStrong = 70.0*Display_X / 1920;
+	//
+	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
+	//SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
+	//SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
+	//SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
+	//SDL_Texture * NewTexture = LoadTexture(renderer, ".//design/New.jpg");
+	//SDL_Texture * EraserTexture = LoadTexture(renderer, ".//design//Eraser.jpg");
 	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
 	//SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
+	//SDL_Texture * RgbCode = LoadTexture(renderer, ".//design//RgbCode.png");
+	//
+	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
+	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
+	//Button * PencilButton = (Button *)malloc(sizeof(Button));
+	//Button * NewButton = (Button *)malloc(sizeof(Button));
+	//Button * EraserButton = (Button *)malloc(sizeof(Button));
+	//
+	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
 	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 10.0, HORIZONTAL);
-	//SDL_Texture * RgbCode = LoadTexture(renderer,".//design//RgbCode.png");
-	//SDL_Rect RgbRect = { Display_X * 0.8 + 22+(Display_X*0.1825*0.07), Display_Y * 0.64 + 10+ (Display_Y * 0.34*0.375), Display_X * 0.1825-2* (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
+	//CreateButton(PencilButton, renderer, PencilTexture, Sample.x + (Display_X*0.1825*0.22), Sample.y + (Display_Y * 0.34*0.13), 70, 70, 0, 0, 255);
+	//CreateButton(EraserButton, renderer, EraserTexture, Sample.x + 2*(Display_X*0.1825*0.22), Sample.y + (Display_Y * 0.34*0.13), 70, 70, 0, 0, 255);
+	//CreateButton(NewButton, renderer, NewTexture, Sample.x + 2*(Display_X*0.1825*0.22), Sample.y + (Display_Y * 0.34*0.13), 70, 70, 0, 0, 255);
+	//
 	//SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 	//SDL_RenderClear(renderer);
 	////1번구역
@@ -116,6 +132,8 @@ int main(int argc, char *argv[])
 	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, 10, Display_X * 0.1825, Display_Y * 0.19, 3);
 	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, 9, Display_X * 0.1825 + 2, Display_Y * 0.19 + 2, 3, 1);
 	//RenderTexture(renderer, RgbCode, &RgbRect);
+	//DrawSlider(renderer, StrongSlider);
+	//SDL_RenderPresent(renderer);
 
 	//while (!quit)//로그인 성공 후 대기창
 	//{
@@ -141,10 +159,8 @@ int main(int argc, char *argv[])
 	//				break;
 	//			}
 	//		}
-	//	UpdateSlider(StrongSlider, &event);
-	//	if (StrongSlider->Update == true) {
+	//	if (UpdateSlider(StrongSlider, &event) == true) {
 	//		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-
 	//		SDL_Rect rect = {StrongSlider->Bar.x -StrongSlider->Box.w/2.0, StrongSlider->Box.y, StrongSlider->Bar.w+StrongSlider->Box.w, StrongSlider->Box.h};
 	//		SDL_RenderFillRect(renderer, &rect);
 	//		DrawSlider(renderer, StrongSlider);

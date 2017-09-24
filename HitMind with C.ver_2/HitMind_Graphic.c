@@ -385,7 +385,6 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Box.h = Box_h;
 	Slider->Value = Value;
 	*Value = Default;
-	Slider->Update = true;
 	Slider->Click = false;
 	return;
 }
@@ -399,11 +398,10 @@ void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
 	return;
 }
-void UpdateSlider(Slider* Slider,  SDL_Event * event) {
+int UpdateSlider(Slider* Slider,  SDL_Event * event) {
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		Slider->Click = false;
-		Slider->Update = false;
-		return;
+		return 0;
 	}
 	else if (event->type == SDL_MOUSEBUTTONDOWN) {
 		int x = event->button.x;
@@ -414,31 +412,29 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 
 				Slider->Click = true;
-				Slider->Update = true;
+				return 1;
 			}
 			else {
-				Slider->Update = false;
+				return 0;
 			}
-			return;
 		}
 		else if (Slider->Flag == VERTICAL) {
 			if (y >= Slider->Bar.y&&y <= Slider->Bar.y + Slider->Bar.h&&x >= Slider->Box.x&&x <= Slider->Box.x + Slider->Box.w) {
 				Slider->Box.y = y - Slider->Box.h / 2;
 				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start)  + Slider->Start);
 				Slider->Click = true;
-				Slider->Update = true;
+				return 1;
 			}
 			else {
-				Slider->Update = false;
+				return 0;
 			}
-			return;
 		}
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
 		int x = event->motion.x;
 		int y = event->motion.y;
 
-		if (Slider->Click== true) {
+		if (Slider->Click == true) {
 			if (Slider->Flag == HORIZONTAL) {
 				if (x > Slider->Bar.x + Slider->Bar.w)
 					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2;
@@ -447,7 +443,7 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				else {
 					Slider->Box.x = x - Slider->Box.w / 2;
 				}
-				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x)/ Slider->Bar.w*(Slider->End - Slider->Start)  + Slider->Start);
+				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 			}
 			else if (Slider->Flag == VERTICAL) {
 				if (y > Slider->Bar.y + Slider->Bar.h)
@@ -459,13 +455,12 @@ void UpdateSlider(Slider* Slider,  SDL_Event * event) {
 				}
 				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
 			}
-			Slider->Update = true;
+			return 1;
 		}
 		else
-			Slider->Update = false;
-		return;
+			return 0;
 	}
-	return;
+	return 0;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
 	wchar_t wstr[256] = L"";
@@ -648,9 +643,8 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 				return 1;
 			}
 		}
-		else {
-			Canvas->Click= false;
-		}
+		Canvas->Click= false;
+		return 0;
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
 		double x = event->motion.x; double y = event->motion.y;
@@ -670,8 +664,8 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 						x += dx;
 						y += dy;
 						SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
-							SDL_RenderFillRect(Canvas->Renderer, &rect);
-					}	
+						SDL_RenderFillRect(Canvas->Renderer, &rect);
+					}
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
@@ -682,22 +676,26 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 					}
 					return 1;
 				}
-				return 0;
 			}
+			return 0;
 		}
 		else {
 			Canvas->Click = false;
+			return 0;
 		}
 	}
 	else if (event->type == SDL_MOUSEBUTTONUP) {
 		Canvas->Click = false;
+		return 0;
 	}
 	else if (event->type == SDL_WINDOWEVENT) {
 		if (event->window.type == SDL_WINDOWEVENT_LEAVE) {
 			Canvas->Click = false;
 		}
+		return 0;
 	}
-	return 0;
+	else
+		return 0;
 }
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
 {
@@ -737,6 +735,30 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 			Button->Flag = HIGHLIGHT;
 			return 1;
 		}
+		else 
+			return 0;
+	}
+	else 
+		return 0;
+}
+void DrawButton(Button * Button) {
+	if (Button->Flag == DEACTIVATED) {
+		RenderTexture(Button->Renderer,Button->ButtonTexture,&Button->ButtonRect);
+		return;
+	}
+	else if (Button->Flag == HIGHLIGHT) {
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
+		return;
+	}
+	else if (Button->Flag == ACTIVATED) {
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 128);
+		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_BLEND);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
 		return 0;
 	}
 }
