@@ -28,7 +28,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	//	getchar();
-	
+
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 	TTF_Init();		//TTF 초기화
 	HitMind_TTF_Init();
 	char version[] = "1.0.1 - Beta";		//현제 버전
-	
+
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -1346,7 +1346,7 @@ int main(int argc, char *argv[])
 				//		{
 				SDL_WaitEvent(&event);
 				//	SDL_WaitEventTimeout(&event, 1000);
-			//	SDL_PollEvent(&event);
+				//	SDL_PollEvent(&event);
 				UpdateSlider(chatslide, &event);
 				switch (event.type)
 				{
@@ -1520,7 +1520,7 @@ int main(int argc, char *argv[])
 				//2번구역
 				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.09, 3);
 				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
-				
+
 				PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				DrawSlider(renderer, chatslide);
@@ -1566,7 +1566,7 @@ int main(int argc, char *argv[])
 					allchating_cnt = ReadChating_all(cons, chatings);
 					roomcount = Get_Room_List(cons, rooms);
 				}
-				
+
 
 				for (i = 0; i < roomcount; i++)
 				{
@@ -1783,7 +1783,7 @@ int main(int argc, char *argv[])
 								}
 							}
 						}
-						
+
 
 						if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event)) //나가기 버튼 
 						{
