@@ -381,6 +381,8 @@ int main(int argc, char *argv[])
 											warning.b = 0;
 										}
 										else {
+											sprintf(query, "update user set auto_login = 'not' where auto_login = PASSWORD('%s')", GetDefaultMyIP());
+											if (mysql_query(cons, query) == 0);
 											if (autologin_checking == 1) {
 												sprintf(query, "update user set auto_login = PASSWORD('%s') where ownnum = %d", GetDefaultMyIP(), myuser->ownnum);
 												if (mysql_query(cons, query) == 0)
@@ -399,9 +401,7 @@ int main(int argc, char *argv[])
 												}
 											}
 											else {
-												sprintf(query, "update user set auto_login = 'not' where ownnum = %d", myuser->ownnum);
-												if (mysql_query(cons, query) == 0)
-													loginsuccess = true;
+												loginsuccess = true;
 											}
 										}
 										enter = false;
