@@ -1565,6 +1565,47 @@ int main(int argc, char *argv[])
 				|
 				*/
 
+					timer++;
+					usercount = getUesrStatus(cons, MemBerList);
+					if (usercount != pastusercount) {
+						newdata[2] = 1;
+						pastusercount = usercount;
+					}
+					allchating_cnt = ReadChating_all(cons, chatings);
+					if (allchating_cnt != pastchating_cnt) {
+						newdata[1] = 1;
+						pastchating_cnt = allchating_cnt;
+					}
+					roomcount = Get_Room_List(cons, rooms);
+					if (roomcount != pastroomcount)
+					{
+						newdata[0] = 1;
+						pastroomcount = roomcount;
+					}
+				}
+				
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
+				{
+
+					if (wstrcmp(ID_put, "/clear") == 0)
+					{
+						mysql_query(cons, "delete from all_chating");
+						mysql_query(cons, "alter table all_chating auto_increment = 1");
+						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
+						memset(&ID_put, 0, sizeof(ID_put));
+					}
+					else {
+						InsertChating_all(cons, myuser->name, ID_put);
+						memset(&ID_put, 0, sizeof(ID_put));
+						enter = false;
+						textinput = true;
+						allchating_cnt = ReadChating_all(cons, chatings);
+						MoveSlider_value(chatslide, chatslide->End);
+						chatmovehappen = 1;
+					}
+					MouseUP_Wait;
+
+				}
 				//1번구역
 				SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 				SDL_RenderClear(renderer);
