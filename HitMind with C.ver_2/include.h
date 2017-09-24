@@ -130,6 +130,7 @@ typedef struct Button {
 	SDL_Texture * ButtonTexture;
 	SDL_Rect ButtonRect;
 	SDL_Color Color;
+	int Padding;
 	int Flag;
 }Button;
 /*
@@ -210,9 +211,11 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 void MoveSlider_value(Slider *Slider, int value);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
-void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b, int a);
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int Padding, int x, int y, int w, int h, int r, int g, int b, int a);
 int UpdateButton(Button * Button, SDL_Event * event);
 void DrawButton(Button * Button);
+void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
+void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);
