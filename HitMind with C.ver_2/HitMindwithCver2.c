@@ -26,6 +26,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
+//	getchar();
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -1280,12 +1281,15 @@ int main(int argc, char *argv[])
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
+			Hit_Room rooms[8];
+			int roomcount = Get_Room_List(cons, rooms);
 			char MemBerList[30][30] = { 0, };
 			Chating chatings[12] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
+			
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -1294,8 +1298,10 @@ int main(int argc, char *argv[])
 			SDL_Texture * Chating_put = LoadTexture(renderer, ".\\design\\chatting2.png");
 			SDL_Texture * Chating_click = LoadTexture(renderer, ".\\design\\chattingput.png");
 			SDL_Texture * Slider_Box = LoadTextureEx(renderer, ".\\design\\Box.png", 255, 255, 255);
-
+			SDL_Texture * Room_Back_noclick = LoadTexture(renderer, ".\\design\\room1.png");
+			SDL_Texture * Room_Back_click = LoadTexture(renderer, ".\\design\\room2.png");
 			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
+			SDL_Texture * Room_Lock = LoadTexture(renderer, ".\\design\\lockicon.png");
 			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
 			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
 			quit = 0;
@@ -1525,7 +1531,52 @@ int main(int argc, char *argv[])
 					timer++;
 					usercount = getUesrStatus(cons, MemBerList);
 					allchating_cnt = ReadChating_all(cons, chatings);
+					roomcount = Get_Room_List(cons, rooms);
+				}
+				for (i = 0; i < roomcount; i++)
+				{
+					if (i % 2 == 0)
+					{
+						PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event);
+						sprintf(db_id, "%.3d", rooms[i].ownnum);
+						PutText(renderer, db_id, Display_X * 0.027, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0);	//번호 출력
 
+						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0);	//제목 출력
+
+						PutText(renderer, rooms[i].mode, Display_X * 0.1, Display_Y * (0.16 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//모드 출력
+
+						sprintf(db_id, "%d문제", rooms[i].question);
+						PutText(renderer, db_id, Display_X * 0.16, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//문제 수 출력
+
+						sprintf(db_id, "%d초", rooms[i].time);
+						PutText(renderer, db_id, Display_X * 0.23, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//문제 시간 출력
+
+						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
+						PutText(renderer, db_id, Display_X * 0.305, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//인원 수
+
+						if (strlen(rooms[i].password) > 0)
+						{
+							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.16 * (i / 2)), Display_X / 30, Display_X / 30);	
+						}
+					}
+					else {
+						PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event);
+						sprintf(db_id, "%.3d", rooms[i].ownnum);
+						PutText(renderer, db_id, Display_X * 0.372, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0);	//번호 출력
+
+						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0);	//제목 출력
+
+						PutText(renderer, rooms[i].mode, Display_X * 0.445, Display_Y * (0.16 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//모드 출력
+						sprintf(db_id, "%d문제", rooms[i].question);
+						PutText(renderer, db_id, Display_X * 0.505, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//문제 수 출력
+
+						sprintf(db_id, "%d초", rooms[i].time);
+						PutText(renderer, db_id, Display_X * 0.575, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//문제 시간 출력
+
+						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
+						PutText(renderer, db_id, Display_X * 0.65, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0);	//인원 수
+
+					}
 				}
 				for (i = 0; i < allchating_cnt; i++)
 				{
@@ -1843,8 +1894,10 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(Slider_slider_up);
 			SDL_DestroyTexture(Chating_click);
 			SDL_DestroyTexture(Chating_put);
+			SDL_DestroyTexture(Room_Lock);
 			SDL_DestroyTexture(Slider_Box);
-
+			SDL_DestroyTexture(Room_Back_click);
+			SDL_DestroyTexture(Room_Back_noclick);
 			SDL_DestroyTexture(Chating_noput);
 			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
