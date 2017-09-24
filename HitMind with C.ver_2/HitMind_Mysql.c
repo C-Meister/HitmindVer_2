@@ -98,6 +98,7 @@ int getUesrStatus(MYSQL *cons, char arr[30][30])
 	{
 		strcpy(arr[i], row[1]);
 		arr[i][27] = atoi(row[4]);
+		arr[i][28] = atoi(row[9]);
 		i++;
 	}
 	mysql_free_result(sql_result);
@@ -234,16 +235,20 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 {
 	MYSQL_RES * sql_result;
 	MYSQL_ROW rows;
+	memset(chatings, 0, sizeof(chatings));
 	int i = 0;
-	mysql_query(cons, "select * from all_chating limit 10");
+	mysql_query(cons, "select * from all_chating order by ownnum desc limit 12");
 	sql_result = mysql_store_result(cons);
 	while ((rows = mysql_fetch_row(sql_result)) != 0)
 	{
 		chatings[i].ownnum = atoi(rows[0]);
 		strcpy(chatings[i].name, rows[1]);
 		strcpy(chatings[i].message, rows[2]);
+		strcpy(chatings[i].time, rows[3]);
 		i++;
 	}
+	mysql_free_result(sql_result);
+	return i;
 }
 
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
@@ -251,8 +256,31 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
 	char query[128];
 	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
 	UTF82EUCKR(char_message, 128, query, 384);
+	char_message[strlen(char_message)] = '\0';
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)
 		return 0;
 	return 1;
+}
+
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms) {
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+	int i = 0;
+	mysql_query(cons, "select * from room");
+	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0) {
+		rooms[i].ownnum = atoi(rows[0]);
+		strcpy(rooms[i].ip, rows[1]);
+		strcpy(rooms[i].name, rows[2]);
+		strcpy(rooms[i].password, rows[3]);
+		rooms[i].people = atoi(rows[4]);
+		strcpy(rooms[i].mode, rows[5]);
+		rooms[i].time = atoi(rows[6]);
+		rooms[i].question = atoi(rows[7]);
+		rooms[i].max_people = atoi(rows[8]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
 }

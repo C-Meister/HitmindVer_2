@@ -43,6 +43,34 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 			return 1;
 	return 0;
 }
+int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event) {//이미지 버튼 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
+
+
+	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
+	{
+		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	}
+	else {
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN) {
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+		else
+			return -1;
+	}
+	return 0;
+}
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,int r, int g, int b, SDL_Event * event)
 {
 	SDL_Color color = { r, g, b };
@@ -53,8 +81,7 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size,i
 		{	//마우스가 해당 글씨위에 클릭하면
 			return 1;	//1을 반환
 		}
-	if (event->type == SDL_QUIT)	//종료하려고 하면
-		exit(1);		//종료 - 나중에 바꿔줘야함
+
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < (x + (signed int)strlen(sentence) * (size / 2)) && event->motion.y < y + size + 5)
 	{	//마우스의 위치가 글씨 위에 있으면
 		plussize = 5;	//커지는 효과
@@ -73,6 +100,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
+	
 	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
@@ -361,6 +389,11 @@ void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTe
 	Slider->Click = false;
 	return;
 }
+void MoveSlider_value(Slider *Slider, int value) {
+	Slider->Box.x = floor(Slider->Bar.x + Slider->Bar.w / 2.0 - Slider->Box.w / 2.0);
+	Slider->Box.y = floor(Slider->Bar.y + Slider->Bar.h * (value - Slider->Start) / (Slider->End - Slider->Start) - Slider->Box.h / 2.0);
+	*Slider->Value = value;
+}
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer,Slider->BarTexture,&Slider->Bar);
 	RenderTexture(Renderer,Slider->BoxTexture, &Slider->Box);
@@ -500,6 +533,7 @@ int hannum(wchar_t unicode[], int len) {
 	}
 	return cnt;
 }
+
 int hancheck(int unicode) {
 	int cnt = 0;
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))

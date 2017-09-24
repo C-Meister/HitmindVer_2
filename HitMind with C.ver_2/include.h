@@ -77,7 +77,18 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+typedef struct HitMind_WaitRoom {
+	int ownnum;
+	char name[30];
+	char password[35];
+	char mode[10];
+	int question;
+	int time;
+	int people;
+	int max_people;
+	char ip[20];
 
+}Hit_Room;
 typedef struct Warning_Message {
 	int ison;
 	char message[128];
@@ -152,6 +163,8 @@ char * GetDefaultMyIP();
 void settings(int *x, int *y, int *music, int *sound, int *full);
 //설정변경
 void changesetting(int bgmusic, int sound, int x, int y, int full);
+
+int wstrcmp(wchar_t *First, char *second);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
@@ -193,6 +206,8 @@ void CreateCanvas(Canvas * Canvas,SDL_Renderer * Renderer, int x, int y, int w, 
 int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
+int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
+void MoveSlider_value(Slider *Slider, int value);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 
@@ -209,8 +224,14 @@ void Thread_MySQL(Connect_status *type);
 MYSQL * Mysql_Connect(char *ip);
 //주제중에 랜덤으로 하나를 불러와 문자열로 반환
 char * Get_Random_Topic(MYSQL *cons);
+//방 목록을 불러옴
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
+//전체 채팅을 추가함
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
+//전체 채팅을 불러옴
+int ReadChating_all(MYSQL *cons, Chating * chatings);
 //---------------Socket 함수--------------
 void OpenServer();
 // 쓰레드,서버전용 - 방(서버)를 연다
