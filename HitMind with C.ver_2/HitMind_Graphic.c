@@ -720,15 +720,18 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
 }
-void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b) {
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int x, int y, int w, int h, int r, int g, int b,int a) {
 	Button->ButtonTexture = ButtonTexture;
 	Button->ButtonRect.x = x; Button->ButtonRect.y = y; Button->ButtonRect.w = w; Button->ButtonRect.h = h;
 	Button->Renderer = Renderer;
-	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = 0;
+	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = a;
 	Button->Flag = DEACTIVATED;
 	return;
 }
 int UpdateButton(Button * Button, SDL_Event * event) {
+	if (Button->Flag == ACTIVATED) {
+		return 0;
+	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (Button->Flag == ACTIVATED) {
 			return 0;
@@ -743,7 +746,7 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 	else if (event->type == SDL_MOUSEMOTION) {
 		int x = event->motion.x; int y = event->motion.y;
 		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y + Button->ButtonRect.h) {
-			if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
+			if (Button->Flag == HIGHLIGHT) {
 				return 0;
 			}
 			else {
@@ -751,7 +754,7 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 				return 1;
 			}
 		}
-		else if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
+		else if ( Button->Flag == HIGHLIGHT) {
 			Button->Flag = DEACTIVATED;
 			return 1;
 		}
@@ -760,21 +763,28 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 }
 void DrawButton(Button * Button) {
 	if (Button->Flag == DEACTIVATED) {
+		SDL_SetRenderDrawColor(Button->Renderer,255,255,255,0);
+		SDL_RenderFillRect(Button->Renderer,&Button->ButtonRect);
 		RenderTexture(Button->Renderer,Button->ButtonTexture,&Button->ButtonRect);
 		return;
 	}
 	else if (Button->Flag == HIGHLIGHT) {
-		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
 		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
 		return;
 	}
 	else if (Button->Flag == ACTIVATED) {
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
+		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, Button->Color.a);
 		RenderTexture(Button->Renderer, Button->ButtonTexture, &Button->ButtonRect);
-		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 128);
 		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_BLEND);
 		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);
 		SDL_SetRenderDrawColor(Button->Renderer, Button->Color.r, Button->Color.g, Button->Color.b, 0);
+		SDL_SetRenderDrawBlendMode(Button->Renderer, SDL_BLENDMODE_NONE);
 		SDL_RenderDrawRect(Button->Renderer, &Button->ButtonRect);
 		return;
 	}

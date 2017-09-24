@@ -108,9 +108,9 @@ int main(int argc, char *argv[])
 	//
 	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
 	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 10.0, HORIZONTAL);
-	//CreateButton(PencilButton, renderer, PencilTexture, Sample.x -MaxStrong/2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong,MaxStrong, 0, 0, 255);
-	//CreateButton(EraserButton, renderer, EraserTexture, Sample.x - MaxStrong / 2.0 + 2*(Display_X*0.1825*0.22), Sample.y -MaxStrong/2.0, MaxStrong,MaxStrong, 0, 0, 255);
-	//CreateButton(NewButton, renderer, NewTexture, Sample.x - MaxStrong / 2.0 + 3*(Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0 ,MaxStrong, MaxStrong, 0, 0, 255);
+	//CreateButton(PencilButton, renderer, PencilTexture, Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255,64);
+	//CreateButton(EraserButton, renderer, EraserTexture, Sample.x - MaxStrong / 2.0 + 2*(Display_X*0.1825*0.22), Sample.y -MaxStrong/2.0, MaxStrong,MaxStrong, 0, 0, 255,64);
+	//CreateButton(NewButton, renderer, NewTexture, Sample.x - MaxStrong / 2.0 + 3*(Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0 ,MaxStrong, MaxStrong, 0, 0, 255,64);
 	//
 	//SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 	//SDL_RenderClear(renderer);
@@ -196,11 +196,7 @@ int main(int argc, char *argv[])
 	//			printf("render	");
 	//		}
 	//	}
-	//	if (UpdateCanvas(canvas, &event) == 1) {
-	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
-	//	}
-	//	if (UpdateButton(PencilButton,&event)==1) {
+	//	if (UpdateButton(PencilButton, &event) == 1) {
 	//		DrawButton(PencilButton);
 	//		SDL_RenderPresent(renderer);
 	//		printf("render	");
@@ -212,6 +208,10 @@ int main(int argc, char *argv[])
 	//	}
 	//	if (UpdateButton(NewButton, &event) == 1) {
 	//		DrawButton(NewButton);
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//	}
+	//	if (UpdateCanvas(canvas, &event) == 1) {
 	//		SDL_RenderPresent(renderer);
 	//		printf("render	");
 	//	}
