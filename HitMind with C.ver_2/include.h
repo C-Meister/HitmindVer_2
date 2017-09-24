@@ -146,7 +146,6 @@ static int Display_Y = 1080;
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;
-
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴
 char * GetDefaultMyIP();
@@ -157,6 +156,8 @@ void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
 //---------------그래픽 함수--------------
+void HitMind_TTF_Init();
+void HitMind_TTF_Close();
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함

@@ -1,5 +1,6 @@
 ﻿#include "include.h"
 //그래픽 관련 함수들
+TTF_Font * Font_Size[100];
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
 
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
@@ -17,6 +18,21 @@ void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
 	SDL_DestroyTexture(Texture);
 	return;
+}
+void HitMind_TTF_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size[i] = TTF_OpenFont(".\\font\\NanumGothic.ttf", i);
+	}
+}
+void HitMind_TTF_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size[i]);
+	}
+
 }
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event) {//이미지 버튼 선언
 	SDL_Rect Src;// 직사각형 선언
@@ -99,10 +115,8 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	SDL_Color color = { r, g, b };
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
-	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
-	
-	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
-	TTF_CloseFont(font);	//폰트를 닫음
+	TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
+	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color)
