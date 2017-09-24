@@ -86,13 +86,15 @@ int main(int argc, char *argv[])
 	int PressButton = 0;
 	int autologin_checking;
 	// 테스트 코드
-	//Canvas * canvas = (Canvas*)malloc(sizeof(canvas));
+	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07)+(Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
+	//float MaxStrong = 70.0*Display_X /1920;
+	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
 	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
 	//SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
-	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, 50.0, 10.0, HORIZONTAL);
-	//SDL_Texture * RgbCode = LoadTexture(renderer,".//design//RgbCode.jpg");
+	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 10.0, HORIZONTAL);
+	//SDL_Texture * RgbCode = LoadTexture(renderer,".//design//RgbCode.png");
 	//SDL_Rect RgbRect = { Display_X * 0.8 + 22+(Display_X*0.1825*0.07), Display_Y * 0.64 + 10+ (Display_Y * 0.34*0.375), Display_X * 0.1825-2* (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
 	//SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 	//SDL_RenderClear(renderer);
@@ -111,11 +113,11 @@ int main(int argc, char *argv[])
 	////2번구역
 	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, 10, Display_X * 0.1825, Display_Y * 0.19, 3);
 	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, 9, Display_X * 0.1825 + 2, Display_Y * 0.19 + 2, 3, 1);
+	//RenderTexture(renderer, RgbCode, &RgbRect);
 
 	//while (!quit)//로그인 성공 후 대기창
 	//{
 	//	SDL_WaitEvent(&event);
-	//	
 	//		switch (event.type)
 	//		{
 	//		case SDL_QUIT:
@@ -124,7 +126,6 @@ int main(int argc, char *argv[])
 	//		case SDL_WINDOWEVENT:
 	//			switch (event.window.event) {
 	//			case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-
 	//				quit = true;
 	//				Sleep(100);
 	//				break;// 브레이크
@@ -138,17 +139,45 @@ int main(int argc, char *argv[])
 	//				break;
 	//			}
 	//		}
-	//	
-	//	SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, canvas->Color.a);
-	//	for(int i=0;i<15;i++)
-	//		SDL_RenderDrawLine(renderer,0,i,100,100);
-	//	RenderTexture(renderer, RgbCode, &RgbRect);
-	//	DrawSlider(renderer, StrongSlider);
-	//	ChangeColor(&event, &canvas->Color, RgbRect);
 	//	UpdateSlider(StrongSlider, &event);
-	//	UpdateCanvas(canvas, &event);
-	//	SDL_RenderPresent(renderer);
+	//	if (StrongSlider->Update == true) {
+	//		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+
+	//		SDL_Rect rect = {StrongSlider->Bar.x -StrongSlider->Box.w/2.0, StrongSlider->Box.y, StrongSlider->Bar.w+StrongSlider->Box.w, StrongSlider->Box.h};
+	//		SDL_RenderFillRect(renderer, &rect);
+	//		DrawSlider(renderer, StrongSlider);
+	//		if (canvas->Flag == PENCIL) {
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong,MaxStrong };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, canvas->Color.a);
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderFillRect(renderer, &rect2);
+	//			SDL_RenderPresent(renderer);
+	//		}
+	//		else if (canvas->Flag == ERASER) {
+	//			FillRoundRect(renderer, 255, 255, 255, Sample.x - canvas->Strong / 2.0, Sample.y - canvas->Strong / 2.0, canvas->Strong, canvas->Strong, canvas->Strong);
+	//			DrawRoundRect(renderer, 0, 0, 0, Sample.x - canvas->Strong / 2.0, Sample.y - canvas->Strong / 2.0, canvas->Strong, canvas->Strong, canvas->Strong, 1);
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//	}
+	//	if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
+	//		if (canvas->Flag == PENCIL) {
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, canvas->Color.a);
+	//			SDL_Rect rect = {Sample.x-canvas->Strong/2.0,Sample.y-canvas->Strong/2.0,canvas->Strong,canvas->Strong};
+	//			SDL_RenderFillRect(renderer, &rect);
+	//			SDL_RenderPresent(renderer);
+	//		}
+	//		else if (canvas->Flag == ERASER){
+	//			FillRoundRect(renderer, 255,255,255,Sample.x-canvas->Strong/2.0,Sample.y-canvas->Strong/2.0,canvas->Strong,canvas->Strong,canvas->Strong);
+	//			DrawRoundRect(renderer, 0, 0, 0, Sample.x - canvas->Strong / 2.0, Sample.y - canvas->Strong / 2.0, canvas->Strong, canvas->Strong, canvas->Strong,1);
+	//		}
+	//	}
+	//	if (UpdateCanvas(canvas, &event) == 1) {
+	//		SDL_RenderPresent(renderer);
+	//	}
 	//}
+	//return 0;
+	//
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	while (roop)
 	{
