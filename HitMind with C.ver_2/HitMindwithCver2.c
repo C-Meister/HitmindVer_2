@@ -28,6 +28,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	//	getchar();
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -39,8 +40,14 @@ int main(int argc, char *argv[])
 	TTF_Init();		//TTF 초기화
 	HitMind_TTF_Init();
 	char version[] = "1.0.1 - Beta";		//현제 버전
-
+	Mix_Music *lobbymusic = Mix_LoadMUS("sound/lobby.mp3");
+	Mix_Music *mainmusic = Mix_LoadMUS("sound/login.mp3");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
+	Mix_VolumeMusic(BGmusic);
+	
+
+	//_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
+
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
 		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);		//해당 해상도로 Window를 생성함
@@ -268,13 +275,15 @@ _beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status,
 
 while (roop)
 {
+
+	Mix_FadeInMusic(mainmusic, -1, 3000);
 	roop = 0;
 	quit = 0;
 	loginsuccess = 0;
 	while (!quit && !loginsuccess)
 	{
 		//	if (SDL_PollEvent(&event)) {
-
+		
 		SDL_WaitEvent(&event);
 		switch (event.type) {/*
 							 case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -1396,6 +1405,7 @@ while (roop)
 
 	if (loginsuccess)
 	{
+		Mix_FadeInMusic(lobbymusic, -1,3000);
 		int allchating_cnt = 0;
 		sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
 		mysql_query(cons, query);
@@ -2111,8 +2121,8 @@ while (roop)
 				Slider * slider_display = (Slider*)malloc(sizeof(Slider));
 				SDL_Texture * Slider_slider = LoadTexture(renderer, ".\\design\\slider.png");
 
-				CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, 30, HORIZONTAL);
-				CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, 30, HORIZONTAL);
+				CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, Sound, HORIZONTAL);
+				CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, BGmusic, HORIZONTAL);
 				CreateSlider(slider_display, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.32, set_start_y + set_start_h * 0.58, set_start_w * 0.6, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &display_value, 3, 6, display_value, HORIZONTAL);
 
 				while (setting_main) {
@@ -2244,6 +2254,9 @@ while (roop)
 
 
 				}
+				changesetting(BGmusic, Sound, Display_X, Display_Y, Full);
+				Mix_VolumeMusic(BGmusic*1.28);
+				
 				SDL_DestroyTexture(Setting_back);
 				SDL_DestroyTexture(Setting_Close_click);
 				SDL_DestroyTexture(Setting_Close_noclick);
@@ -2318,6 +2331,8 @@ if (cursor)
 {
 	SDL_FreeCursor(cursor);
 }
+Mix_FreeMusic(lobbymusic);
+Mix_FreeMusic(mainmusic);
 SDL_DestroyTexture(LoadingBar);
 SDL_DestroyTexture(WaitBar);
 SDL_DestroyTexture(TitleText);
