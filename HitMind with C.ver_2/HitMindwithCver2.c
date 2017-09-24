@@ -398,8 +398,11 @@ int main(int argc, char *argv[])
 
 												}
 											}
-											else
-												loginsuccess = true;
+											else {
+												sprintf(query, "update user set auto_login = 'not' where ownnum = %d", myuser->ownnum);
+												if (mysql_query(cons, query) == 0)
+													loginsuccess = true;
+											}
 										}
 										enter = false;
 										textinput = true;
@@ -1291,7 +1294,7 @@ int main(int argc, char *argv[])
 			SDL_Texture * Chating_put = LoadTexture(renderer, ".\\design\\chatting2.png");
 			SDL_Texture * Chating_click = LoadTexture(renderer, ".\\design\\chattingput.png");
 			SDL_Texture * Slider_Box = LoadTextureEx(renderer, ".\\design\\Box.png", 255, 255, 255);
-			
+
 			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
 			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
 			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
@@ -1338,13 +1341,22 @@ int main(int argc, char *argv[])
 						if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 							if (hangeul == true && enter == false)
 								enter = true;
-							else {
-								InsertChating_all(cons, myuser->name, ID_put);
-								memset(&ID_put, 0, sizeof(ID_put));
-								enter = false;
-								textinput = true;
-								allchating_cnt = ReadChating_all(cons, chatings);
-								MoveSlider_value(chatslide, chatslide->End);
+							else if (wcslen(ID_put) > 0) {
+								if (wstrcmp(ID_put, "/clear") == 0)
+								{
+									mysql_query(cons, "delete from all_chating");
+									mysql_query(cons, "alter table all_chating auto_increment = 1");
+									mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
+									memset(&ID_put, 0, sizeof(ID_put));
+								}
+								else {
+									InsertChating_all(cons, myuser->name, ID_put);
+									memset(&ID_put, 0, sizeof(ID_put));
+									enter = false;
+									textinput = true;
+									allchating_cnt = ReadChating_all(cons, chatings);
+									MoveSlider_value(chatslide, chatslide->End);
+								}
 							}
 						}
 
@@ -1412,7 +1424,7 @@ int main(int argc, char *argv[])
 						//	if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
 						if (chattingdrag > chatslide->Start && chattingdrag <= chatslide->End)
 						{
-							MoveSlider_value(chatslide, chattingdrag -10);
+							MoveSlider_value(chatslide, chattingdrag - 10);
 						}
 					}
 					if (event.wheel.y == -1) {
@@ -1473,6 +1485,24 @@ int main(int argc, char *argv[])
 				PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				DrawSlider(renderer, chatslide);
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event))
+				{
+
+					if (chattingput == 0)
+						chattingput = 1;
+					else if (wcslen(ID_put) > 0)
+					{
+
+						InsertChating_all(cons, myuser->name, ID_put);
+						memset(&ID_put, 0, sizeof(ID_put));
+						enter = false;
+						textinput = true;
+						allchating_cnt = ReadChating_all(cons, chatings);
+						MoveSlider_value(chatslide, chatslide->End);
+					}
+					MouseUP_Wait;
+
+				}
 				if (chattingput == 0)
 				{
 					if (PutButtonImage(renderer, Chating_noput, Chating_put, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07, &event))
@@ -1484,7 +1514,11 @@ int main(int argc, char *argv[])
 						chattingput = 0;
 					}
 					PutText_Unicode(renderer, ID_put, Display_X * 0.04, Display_Y * 0.92, 30 * ((float)Display_X / 1920), color);
+
 				}
+				
+				PutText(renderer, "전송", Display_X * 0.62, Display_Y * 0.925, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
 				if (timer < SDL_GetTicks() % 1000)
 				{
 
@@ -1581,11 +1615,11 @@ int main(int argc, char *argv[])
 
 						//2번구역
 						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
-						RenderTextureXYWH(renderer,can, Display_X * 0.7 + 22, Display_Y*0.042,Display_X*0.277,Display_Y*0.046); //앙
+						RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
 						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
 						FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
 						PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-						
+
 
 
 						//3번구역
@@ -1810,7 +1844,7 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(Chating_click);
 			SDL_DestroyTexture(Chating_put);
 			SDL_DestroyTexture(Slider_Box);
-			
+
 			SDL_DestroyTexture(Chating_noput);
 			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);

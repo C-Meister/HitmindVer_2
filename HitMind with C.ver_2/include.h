@@ -143,6 +143,8 @@ char * GetDefaultMyIP();
 void settings(int *x, int *y, int *music, int *sound, int *full);
 //설정변경
 void changesetting(int bgmusic, int sound, int x, int y, int full);
+
+int wstrcmp(wchar_t *First, char *second);
 //---------------그래픽 함수--------------
 //SDL - 텍스트를 출력하는함수
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);

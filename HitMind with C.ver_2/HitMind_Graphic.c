@@ -532,6 +532,7 @@ int hannum(wchar_t unicode[], int len) {
 	}
 	return cnt;
 }
+
 int hancheck(int unicode) {
 	int cnt = 0;
 	if ((unicode >= 0xac00 && unicode <= 0xd7a0) || (unicode >= 0x3131 && unicode <= 0x3163))
