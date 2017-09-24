@@ -51,7 +51,20 @@ int main(int argc, char *argv[])
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
 	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
+	SDL_Surface * mousesurface = NULL;
+	mousesurface = IMG_Load(".\\design\\pencil.png");
+	if (!mousesurface)
+	{
+		printf("loadbmp");
 
+	}
+	SDL_Cursor*cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+	if (!cursor)
+	{
+		printf("cursor");
+		getchar();
+	}
+	SDL_SetCursor(cursor);
 	SDL_Texture * LoadingBar = LoadTexture(renderer, ".\\maintema\\loading.png");
 	int qquit = false;
 	int quit = false; // while문 조건문에 쓰이는 불 변수
@@ -220,6 +233,7 @@ int main(int argc, char *argv[])
 	//return 0;
 	//
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
+
 	while (roop)
 	{
 		roop = 0;
@@ -1415,7 +1429,10 @@ int main(int argc, char *argv[])
 			//	SDL_WaitEvent(&event);
 				SDL_WaitEventTimeout(&event, 1000);
 				//	SDL_PollEvent(&event);
-				UpdateSlider(chatslide, &event);
+				if (UpdateSlider(chatslide, &event)) {
+					chatmovehappen = 1;
+				}
+			
 				switch (event.type)
 				{
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -1489,7 +1506,7 @@ int main(int argc, char *argv[])
 								enter = true;
 
 						}
-
+						
 						else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 							strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 							SDL_SetClipboardText(utf8);// 클립보드에 넣음
@@ -1545,7 +1562,7 @@ int main(int argc, char *argv[])
 						}
 					}
 				}
-
+				
 				//	}
 				/*
 				화면을 전체적으로 4등분함
@@ -1582,7 +1599,28 @@ int main(int argc, char *argv[])
 						pastroomcount = roomcount;
 					}
 				}
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
+				{
 
+					if (wstrcmp(ID_put, "/clear") == 0)
+					{
+						mysql_query(cons, "delete from all_chating");
+						mysql_query(cons, "alter table all_chating auto_increment = 1");
+						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
+						memset(&ID_put, 0, sizeof(ID_put));
+					}
+					else {
+						InsertChating_all(cons, myuser->name, ID_put);
+						memset(&ID_put, 0, sizeof(ID_put));
+						enter = false;
+						textinput = true;
+						allchating_cnt = ReadChating_all(cons, chatings);
+						MoveSlider_value(chatslide, chatslide->End);
+						chatmovehappen = 1;
+					}
+					MouseUP_Wait;
+
+				}
 				//1번구역
 				if (newdata[0])
 				{
@@ -1616,24 +1654,7 @@ int main(int argc, char *argv[])
 
 				DrawSlider(renderer, chatslide);
 				
-				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
-				{
-
-					if (chattingput == 0)
-						chattingput = 1;
-					else if (wcslen(ID_put) > 0)
-					{
-
-						InsertChating_all(cons, myuser->name, ID_put);
-						memset(&ID_put, 0, sizeof(ID_put));
-						enter = false;
-						textinput = true;
-						allchating_cnt = ReadChating_all(cons, chatings);
-						MoveSlider_value(chatslide, chatslide->End);
-					}
-					MouseUP_Wait;
-
-				}
+			
 				if (chattingput == 0)
 				{
 					if (PutButtonImage(renderer, Chating_noput, Chating_put, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07, &event, &happen))
@@ -1914,6 +1935,7 @@ int main(int argc, char *argv[])
 					SDL_DestroyTexture(Create_Close_noclick);
 					SDL_DestroyTexture(Create_Close_click);
 					SDL_DestroyTexture(Create_back);
+					newdataed = 1;
 					continue;
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
@@ -2232,6 +2254,10 @@ int main(int argc, char *argv[])
 		free(myuser);
 	if (status.ishappen == 1)
 		mysql_close(status.arg);
+	if (cursor)
+	{
+		SDL_FreeCursor(cursor);
+	}
 	SDL_DestroyTexture(LoadingBar);
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
