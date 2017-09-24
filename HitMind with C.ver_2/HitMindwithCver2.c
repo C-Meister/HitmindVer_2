@@ -24,9 +24,11 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 */
 
 #include "include.h"
+
 int main(int argc, char *argv[])
 {
 	//	getchar();
+	
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -36,13 +38,9 @@ int main(int argc, char *argv[])
 	SDL_Event event;				//SDL 이벤트를 저장함
 	Warning_M warning = { 0, "", 0, 0, 0,0, 0, 0 };
 	TTF_Init();		//TTF 초기화
+	HitMind_TTF_Init();
 	char version[] = "1.0.1 - Beta";		//현제 버전
-	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);	//나눔고딕 폰트를 불러옴
-	if (font == 0)
-	{
-		printf("error");
-		getchar();
-	}
+	
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -2025,9 +2023,7 @@ int main(int argc, char *argv[])
 	}
 
 
-
-
-
+	HitMind_TTF_Close();
 
 	if (myuser != 0)
 		free(myuser);
@@ -2041,7 +2037,6 @@ int main(int argc, char *argv[])
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
 	SDL_DestroyTexture(TitleImage);
-	TTF_CloseFont(font);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
 
