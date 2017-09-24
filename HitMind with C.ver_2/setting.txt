@@ -3,4 +3,4 @@
 È¿°úÀ½ : 30
 Display_X : 1920
 Display_Y : 1080
-fullscreen : 1
+fullscreen : 0
