@@ -418,7 +418,7 @@ void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
 	RenderTexture(Renderer, Slider->BoxTexture, &Slider->Box);
 	return;
 }
-int UpdateSlider(Slider* Slider,  SDL_Event * event) {
+int UpdateSlider(Slider* Slider, SDL_Event * event) {
 	if (event->type == SDL_MOUSEBUTTONUP) {
 		Slider->Click = false;
 		return 0;
@@ -662,39 +662,58 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				return 1;
 			}
 		}
-		Canvas->Click= false;
+		Canvas->Click = false;
 		return 0;
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
 		double x = event->motion.x; double y = event->motion.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
-				int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
+				int Signofdeltax = Sign(x - Canvas->Last.x); int Signofdeltay = Sign(y - Canvas->Last.y);
+				int x1 = Canvas->Last.x - Signofdeltax*Canvas->Strong / 2.0; int y1 = Canvas->Last.y + Signofdeltay*Canvas->Strong / 2.0;
+				int x2 = x - Signofdeltax*Canvas->Strong / 2.0; int y2 = y + Signofdeltay*Canvas->Strong / 2.0;
+				SDL_Point* Points = (SDL_Point *)malloc(sizeof(SDL_Point) * 2 * Canvas->Strong);
+				for (int i = 0; i < 2 * Canvas->Strong; i++) {
+					if (i % 2 == 0) {
+						Points[i].x = x1;
+						Points[i].y = y1;
+						x1 += Signofdeltax;
+						y1 += -Signofdeltay;
+					}
+					else {
+						Points[i].x = x2;
+						Points[i].y = y2;
+						x2 += Signofdeltax;
+						y2 += -Signofdeltay;
+					}
+				}
+				SDL_RenderDrawLines(Canvas->Renderer, Points, 2 * Canvas->Strong);
+				/*int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
 				double length = sqrt(deltax*deltax + deltay*deltay);
 				if (length == 0) {
-					return 0;
+				return 0;
 				}
 				double dx = deltax / length; double dy = deltay / length;
 				int tmp = x;  x = Canvas->Last.x; Canvas->Last.x = tmp;
 				tmp = y; y = Canvas->Last.y; Canvas->Last.y = tmp;
 				if (Canvas->Flag == PENCIL) {
-					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
-					for (int i = 0; i < length; i++) {
-						x += dx;
-						y += dy;
-						SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
-						SDL_RenderFillRect(Canvas->Renderer, &rect);
-					}
-					return 1;
+				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
+				for (int i = 0; i < length; i++) {
+				x += dx;
+				y += dy;
+				SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
+				SDL_RenderFillRect(Canvas->Renderer, &rect);
+				}
+				return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
-					for (int i = 0; i < length; i++) {
-						x += dx;
-						y += dy;
-						FillRoundRect(Canvas->Renderer, 255, 255, 255, floor(x - Canvas->Strong / 2), floor(y - Canvas->Strong / 2), Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
-					}
-					return 1;
+				for (int i = 0; i < length; i++) {
+				x += dx;
+				y += dy;
+				FillRoundRect(Canvas->Renderer, 255, 255, 255, floor(x - Canvas->Strong / 2), floor(y - Canvas->Strong / 2), Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
 				}
+				return 1;
+				}*/
 			}
 			return 0;
 		}
@@ -724,7 +743,7 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
 }
-void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int Padding, int x, int y, int w, int h, int r, int g, int b,int a) {
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int Padding, int x, int y, int w, int h, int r, int g, int b, int a) {
 	Button->ButtonTexture = ButtonTexture;
 	Button->ButtonRect.x = x; Button->ButtonRect.y = y; Button->ButtonRect.w = w; Button->ButtonRect.h = h;
 	Button->Renderer = Renderer;
@@ -742,7 +761,7 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 			return 0;
 		}
 		int x = event->button.x; int y = event->button.y;
-		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y +Button->ButtonRect.h) {
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.y + Button->ButtonRect.h) {
 			Button->Flag = ACTIVATED;
 			return 1;
 		}
@@ -759,7 +778,7 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 				return 1;
 			}
 		}
-		else if ( Button->Flag == HIGHLIGHT) {
+		else if (Button->Flag == HIGHLIGHT) {
 			Button->Flag = DEACTIVATED;
 			return 1;
 		}
@@ -768,10 +787,10 @@ int UpdateButton(Button * Button, SDL_Event * event) {
 }
 void DrawButton(Button * Button) {
 	if (Button->Flag == DEACTIVATED) {
-		SDL_SetRenderDrawColor(Button->Renderer,255,255,255,0);// 지우기
-		SDL_RenderFillRect(Button->Renderer,&Button->ButtonRect);//
-		SDL_Rect rect = { Button->ButtonRect.x+Button->Padding,Button->ButtonRect.y+ Button->Padding,Button->ButtonRect.w - 2 * Button->Padding,Button->ButtonRect.h-2*Button->Padding };
-		RenderTexture(Button->Renderer,Button->ButtonTexture,&rect);
+		SDL_SetRenderDrawColor(Button->Renderer, 255, 255, 255, 0);// 지우기
+		SDL_RenderFillRect(Button->Renderer, &Button->ButtonRect);//
+		SDL_Rect rect = { Button->ButtonRect.x + Button->Padding,Button->ButtonRect.y + Button->Padding,Button->ButtonRect.w - 2 * Button->Padding,Button->ButtonRect.h - 2 * Button->Padding };
+		RenderTexture(Button->Renderer, Button->ButtonTexture, &rect);
 		return;
 	}
 	else if (Button->Flag == HIGHLIGHT) {
@@ -798,25 +817,33 @@ void DrawButton(Button * Button) {
 	}
 	return;
 }
-void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y,int radius) {
+void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius) {
 	int old_x = floor(sin(M_PI / 180 * 0)*radius);
 	int old_y = floor(cos(M_PI / 180 * 0)*radius);
 	for (int i = 0; i < 360; i++) {
 		int x1 = old_x;
 		int y1 = old_y;
-		int x2 = floor(sin(M_PI / 180 * (i+1))*radius);
-		int y2= floor(cos(M_PI / 180 * (i+1))*radius);
+		int x2 = floor(sin(M_PI / 180 * (i + 1))*radius);
+		int y2 = floor(cos(M_PI / 180 * (i + 1))*radius);
 		SDL_RenderDrawLine(Renderer, x1 + Center_x, y1 + Center_y, x2 + Center_x, y2 + Center_y);
 		old_x = x2;
 		old_y = y2;
 	}
 }
-void FillCircle(SDL_Renderer * Renderer,int Center_x, int Center_y,int radius) {
+void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius) {
 	for (int i = 0; i < 180; i++) {
 		int x1 = floor(sin(M_PI / 180 * i)*radius);
 		int y1 = floor(cos(M_PI / 180 * i)*radius);
-		int x2 = floor(sin(M_PI / 180 * (360-i))* radius);
+		int x2 = floor(sin(M_PI / 180 * (360 - i))* radius);
 		int y2 = floor(cos(M_PI / 180 * (360 - i))* radius);
-		SDL_RenderDrawLine(Renderer, x1+Center_x, y1+Center_y, x2+ Center_x, y2+ Center_y);
+		SDL_RenderDrawLine(Renderer, x1 + Center_x, y1 + Center_y, x2 + Center_x, y2 + Center_y);
+	}
+}
+int Sign(int n) {
+	if (n >= 0) {
+		return 1;
+	}
+	else {
+		return -1;
 	}
 }
