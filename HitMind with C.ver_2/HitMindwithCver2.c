@@ -1562,7 +1562,7 @@ int main(int argc, char *argv[])
 						}
 					}
 				}
-				
+			
 				//	}
 				/*
 				화면을 전체적으로 4등분함
@@ -1599,6 +1599,7 @@ int main(int argc, char *argv[])
 						pastroomcount = roomcount;
 					}
 				}
+				
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
 				{
 
