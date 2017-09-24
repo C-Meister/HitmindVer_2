@@ -11,6 +11,9 @@
 #define VERTICAL 2
 #define ERASER 1
 #define PENCIL 2
+#define DEACTIVATED 0
+#define HIGHLIGHT 1
+#define ACTIVATED 2
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
@@ -112,7 +115,13 @@ typedef struct MYSQL_CHATING {
 	char message[50];
 	char time[30];
 }Chating;
-
+typedef struct Button {
+	SDL_Renderer *Renderer;
+	SDL_Texture * ButtonTexture;
+	SDL_Rect ButtonRect;
+	SDL_Color Color;
+	int Flag;
+}Button;
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
@@ -186,6 +195,7 @@ int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
+
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);

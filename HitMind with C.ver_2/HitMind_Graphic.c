@@ -571,8 +571,8 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 				}
 			}
 		}
-		return 0;
 	}
+	return 0;
 }
 void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b) {
 	SDL_Rect rect;
@@ -596,35 +596,59 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 	if (event->type==SDL_MOUSEBUTTONDOWN) {
 		int x = event->button.x; int y = event->button.y;
-		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&Canvas->Rect.x + Canvas->Rect.y - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x<=Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
 				SDL_SetRenderDrawColor(Canvas->Renderer,Canvas->Color.r, Canvas->Color.g, Canvas->Color.b,0);
 				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
 				SDL_RenderFillRect(Canvas->Renderer,&rect);
-				Canvas->Last.x = rect.x;
-				Canvas->Last.y = rect.y;
+				Canvas->Last.x = x;
+				Canvas->Last.y = y;
+				Canvas->Click = true;
+				return 1;
 			}
 			else if (Canvas->Flag == ERASER) {
 				FillRoundRect(Canvas->Renderer,255,255,255,x-Canvas->Strong/2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong,Canvas->Strong/2);
-				Canvas->Last.x = x - Canvas->Strong / 2;
-				Canvas->Last.y = y - Canvas->Strong / 2;
+				Canvas->Last.x = x;
+				Canvas->Last.y = y;
+				Canvas->Click = true;
+				return 1;
 			}
-			Canvas->Click = false;
 		}
 		else {
 			Canvas->Click= false;
 		}
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
-		int x = event->motion.x; int y = event->motion.y;
-		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&Canvas->Rect.x + Canvas->Rect.y - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
+		double x = event->motion.x; double y = event->motion.y;
+		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x<=Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
+				int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
+				double length = sqrt(deltax*deltax + deltay*deltay);
+				if (length == 0) {
+					return 0;
+				}
+				double dx = deltax / length; double dy = deltay / length;
+				int tmp = x;  x = Canvas->Last.x; Canvas->Last.x = tmp;
+				tmp = y; y = Canvas->Last.y; Canvas->Last.y = tmp;
 				if (Canvas->Flag == PENCIL) {
-
+					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
+					for (int i = 0; i < length; i++) {
+						x += dx;
+						y += dy;
+						SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
+							SDL_RenderFillRect(Canvas->Renderer, &rect);
+					}	
+					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
-
+					for (int i = 0; i < length; i++) {
+						x += dx;
+						y += dy;
+						FillRoundRect(Canvas->Renderer, 255, 255, 255, floor(x - Canvas->Strong / 2), floor(y - Canvas->Strong / 2), Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
+					}
+					return 1;
 				}
+				return 0;
 			}
 		}
 		else {
@@ -639,6 +663,7 @@ int UpdateCanvas(Canvas * Canvas,SDL_Event * event ) {
 			Canvas->Click = false;
 		}
 	}
+	return 0;
 }
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
 {
@@ -647,5 +672,37 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 	else {
 		SDL_SetWindowFullscreen(window, 0);
 		SDL_SetWindowSize(window, dis_x, dis_y);
+	}
+}
+void CreateButton(Button * Button,SDL_Renderer *Renderer,SDL_Texture *ButtonTexture,int x, int y, int w, int h,int r, int g ,int b) {
+	Button->ButtonTexture = ButtonTexture;
+	Button->ButtonRect.x = x; Button->ButtonRect.y = y; Button->ButtonRect.w = w; Button->ButtonRect.h = h;
+	Button->Renderer = Renderer;
+	Button->Color.r = r; Button->Color.g = g; Button->Color.b = b; Button->Color.a = 0;
+	Button->Flag = DEACTIVATED;
+	return;
+}
+int UpdateButton(Button * Button, SDL_Event * event) {
+	if (event->type== SDL_MOUSEBUTTONDOWN) {
+		if (Button->Flag == ACTIVATED) {
+			return 0;
+		}
+		int x = event->button.x; int y = event->button.y;
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
+			Button->Flag = ACTIVATED;
+			return 1;
+		}
+		return 0;
+	}
+	else if(event->type == SDL_MOUSEMOTION){
+		if (Button->Flag == ACTIVATED || Button->Flag == HIGHLIGHT) {
+			return 0;
+		}
+		int x = event->motion.x; int y = event->motion.y;
+		if (x >= Button->ButtonRect.x&&x <= Button->ButtonRect.x + Button->ButtonRect.w&&y >= Button->ButtonRect.y&& y <= Button->ButtonRect.h) {
+			Button->Flag = HIGHLIGHT;
+			return 1;
+		}
+		return 0;
 	}
 }
