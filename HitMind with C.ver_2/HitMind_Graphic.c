@@ -100,6 +100,7 @@ int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned i
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
+	
 	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
 	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴

@@ -26,7 +26,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 #include "include.h"
 int main(int argc, char *argv[])
 {
-//	getchar();
+	//	getchar();
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -290,6 +290,7 @@ int main(int argc, char *argv[])
 						myuser = 0;
 
 					}
+					int dkdk = 0;
 					memset(&ID_put, 0, sizeof(ID_put));
 					memset(&Password_put, 0, sizeof(Password_put));
 					myuser = IsAutoLogin(cons);
@@ -306,6 +307,7 @@ int main(int argc, char *argv[])
 					}
 					while (loginpopup && !loginsuccess)
 					{
+						printf("%d\n", dkdk++);
 						SDL_WaitEvent(&event);
 						switch (event.type)
 						{
@@ -1289,7 +1291,7 @@ int main(int argc, char *argv[])
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
-			
+
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -1305,15 +1307,19 @@ int main(int argc, char *argv[])
 			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
 			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
 			quit = 0;
+			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
 			warning.ison = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			allchating_cnt = ReadChating_all(cons, chatings);
 			while (loginsuccess && !quit)	//로그인 성공 후 대기창
 			{
+				printf("%d\n", dkdkdk++);
 				//		if (SDL_PollEvent(&event))
 				//		{
-				SDL_WaitEventTimeout(&event, 1000);
+				SDL_WaitEvent(&event);
+				//	SDL_WaitEventTimeout(&event, 1000);
+			//	SDL_PollEvent(&event);
 				UpdateSlider(chatslide, &event);
 				switch (event.type)
 				{
@@ -1487,7 +1493,7 @@ int main(int argc, char *argv[])
 				//2번구역
 				FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.09, 3);
 				DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
-
+				
 				PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0);	//개인정보 - 이름 출력
 				DrawSlider(renderer, chatslide);
@@ -1522,7 +1528,7 @@ int main(int argc, char *argv[])
 					PutText_Unicode(renderer, ID_put, Display_X * 0.04, Display_Y * 0.92, 30 * ((float)Display_X / 1920), color);
 
 				}
-				
+
 				PutText(renderer, "전송", Display_X * 0.62, Display_Y * 0.925, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
 				if (timer < SDL_GetTicks() % 1000)
@@ -1556,7 +1562,7 @@ int main(int argc, char *argv[])
 
 						if (strlen(rooms[i].password) > 0)
 						{
-							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.16 * (i / 2)), Display_X / 30, Display_X / 30);	
+							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.16 * (i / 2)), Display_X / 30, Display_X / 30);
 						}
 					}
 					else {
@@ -1597,7 +1603,6 @@ int main(int argc, char *argv[])
 					}
 					else if (MemBerList[i][28] == 2)
 					{
-
 						PutText(renderer, "게임 중", Display_X * 0.93, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 255, 0, 0);
 					}
 					else if (MemBerList[i][28] == 3)
@@ -1607,7 +1612,74 @@ int main(int argc, char *argv[])
 				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //방만들기 버튼
 				{
+					SDL_Texture * Create_back = LoadTexture(renderer, ".\\design\\bangcreate.png");
+					SDL_Texture * Create_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * Create_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
+					int createroom = 1;
+					int set_start_x = Display_X / 2 - (346 * ((float)Display_X / 1920));
+					int set_start_y = Display_Y / 2 - (268 * ((float)Display_X / 1920));
+					int set_start_w = 696 * ((float)Display_X / 1920);
+					int set_start_h = 587 * ((float)Display_X / 1920);
 
+					while (createroom) {
+						SDL_WaitEvent(&event);
+						switch (event.type)
+						{
+						case SDL_QUIT:
+							createroom = false;
+							break;
+						case SDL_WINDOWEVENT:
+							switch (event.window.event) {
+							case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+								createroom = false;
+								Sleep(100);
+								break;// 브레이크
+							case SDL_WINDOWEVENT_ENTER:// 윈도우
+								SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+								break;
+							case SDL_WINDOWEVENT_LEAVE:
+								//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+								break;
+							case SDL_WINDOWEVENT_FOCUS_GAINED:
+								break;
+							}
+						}
+						RenderTextureXYWH(renderer, Create_back, set_start_x, set_start_y, set_start_w, set_start_h);
+						if (PutButtonImage(renderer, Create_Close_noclick, Create_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event))
+						{
+							MouseUP_Wait;
+							createroom = false;
+						}
+						//방 제목 입력창
+						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.16, set_start_w * 0.94, set_start_h * 0.12, 13);
+						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.16 - 3, set_start_w * 0.94 + 6, set_start_h * 0.12 + 6, 13, 2);
+						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.16, 6 * ((float)Display_X / 1920), set_start_h * 0.123, 91, 155, 213);
+						PutText(renderer, "방 제목", set_start_x + set_start_w * 0.08, set_start_y + set_start_h * 0.18, 35 * ((float)Display_X / 1920), 0, 0, 0);
+
+						//방 비밀번호 입력창
+						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.31, set_start_w * 0.94, set_start_h * 0.12, 13);
+						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.31 - 3, set_start_w * 0.94 + 6, set_start_h * 0.12 + 6, 13, 2);
+						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.31, 6 * ((float)Display_X / 1920), set_start_h * 0.123, 91, 155, 213);
+						PutText(renderer, "비밀번호", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.33, 35 * ((float)Display_X / 1920), 0, 0, 0);
+
+						//방 비밀번호 입력창
+						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.46, set_start_w * 0.94, set_start_h * 0.12, 13);
+						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.46 - 3, set_start_w * 0.94 + 6, set_start_h * 0.12 + 6, 13, 2);
+						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.46, 6 * ((float)Display_X / 1920), set_start_h * 0.123, 91, 155, 213);
+						PutText(renderer, "비밀번호", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.48, 35 * ((float)Display_X / 1920), 0, 0, 0);
+
+						//방 비밀번호 입력창
+						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.61, set_start_w * 0.94, set_start_h * 0.12, 13);
+						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.61 - 3, set_start_w * 0.94 + 6, set_start_h * 0.12 + 6, 13, 2);
+						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.61, 6 * ((float)Display_X / 1920), set_start_h * 0.123, 91, 155, 213);
+						PutText(renderer, "비밀번호", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.63, 35 * ((float)Display_X / 1920), 0, 0, 0);
+						SDL_RenderPresent(renderer);
+
+					}
+
+					SDL_DestroyTexture(Create_Close_noclick);
+					SDL_DestroyTexture(Create_Close_click);
+					SDL_DestroyTexture(Create_back);
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event)) //빠른 시작 버튼
 				{
