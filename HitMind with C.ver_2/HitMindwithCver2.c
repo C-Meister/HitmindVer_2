@@ -28,6 +28,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	//	getchar();
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
@@ -39,8 +40,14 @@ int main(int argc, char *argv[])
 	TTF_Init();		//TTF 초기화
 	HitMind_TTF_Init();
 	char version[] = "1.0.1 - Beta";		//현제 버전
-
+	Mix_Music *lobbymusic = Mix_LoadMUS("sound/lobby.mp3");
+	Mix_Music *mainmusic = Mix_LoadMUS("sound/login.mp3");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
+	Mix_VolumeMusic(BGmusic);
+	
+
+	//_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
+
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
 		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);		//해당 해상도로 Window를 생성함
@@ -266,111 +273,113 @@ int main(int argc, char *argv[])
 	//
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 
-	while (roop)
-	{
-		roop = 0;
-		quit = 0;
-		loginsuccess = 0;
-		while (!quit && !loginsuccess)
-		{
-			//	if (SDL_PollEvent(&event)) {
+while (roop)
+{
 
-			SDL_WaitEvent(&event);
-			switch (event.type) {/*
-								 case SDL_TEXTINPUT: // 채팅 입력 이벤트
-								 if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
-								 {
-								 wcscpy(wchar, L"");
-								 int sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
-								 wchar[0] = sum;
-								 wcscat(wstr, wchar);
-								 if (event.text.text[0] == -29)
-								 slice = 1;
-								 else
-								 slice = 1 + !((wchar[0] - 0xac00) % 28);
-								 }
-								 else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
-								 wcscpy(wchar, L"");
-								 swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-								 wcscat(wstr, wchar);// 문자열 연결
-								 hangeul = false;
-								 slice = 0;
-								 }
-								 textinput = true;
-								 break;
-								 case SDL_KEYDOWN:
-								 if (event.key.keysym.sym == SDLK_RETURN) {
-								 if (hangeul == true && enter == false)
-								 enter = true;
-								 else {
-								 strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
-								 UTF82EUCKR(euckr, 512, utf8, 768);
-								 euckr[strlen(euckr)] = '\0';
-								 han2unicode(euckr, unicode);
-								 if (hannum(unicode, wcslen(unicode)) != hannum(wstr, wcslen(wstr))) {
-								 strcpy(euckr, "[Error] invalid conversion");
-								 }
-								 // euckr을 DB에 올리면 됨
-								 strcpy(utf8, "");
-								 wcscpy(wstr, L"");
-								 wcscpy(unicode, L"");
-								 strcpy(euckr, "");
-								 enter = false;
-								 textinput = true;
-								 }
-								 }
-								 else if (event.key.keysym.sym == SDLK_RALT)
-								 hanyeong = !(hanyeong);
-								 else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(wstr) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
-								 {
-								 if (slice == 0) {
-								 wstr[wcslen(wstr) - 1] = '\0';// 마지막문자를 널문자로 바꿈
-								 textinput = true;
-								 }
-								 else {
-								 slice--;
-								 }
-								 }
-								 else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
-								 strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
-								 SDL_SetClipboardText(utf8);// 클립보드에 넣음
-								 }
-								 else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
-								 wcscat(wstr, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
-								 hangeul = false;
-								 textinput = true;
-								 }
-								 else {
-								 hangeul = true;
-								 slice++;
-								 }
-								 break;*/
-			case SDL_MOUSEBUTTONDOWN:
-				PressButton = 1;
+	Mix_FadeInMusic(mainmusic, -1, 3000);
+	roop = 0;
+	quit = 0;
+	loginsuccess = 0;
+	while (!quit && !loginsuccess)
+	{
+		//	if (SDL_PollEvent(&event)) {
+		
+		SDL_WaitEvent(&event);
+		switch (event.type) {/*
+							 case SDL_TEXTINPUT: // 채팅 입력 이벤트
+							 if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+							 {
+							 wcscpy(wchar, L"");
+							 int sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+							 wchar[0] = sum;
+							 wcscat(wstr, wchar);
+							 if (event.text.text[0] == -29)
+							 slice = 1;
+							 else
+							 slice = 1 + !((wchar[0] - 0xac00) % 28);
+							 }
+							 else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+							 wcscpy(wchar, L"");
+							 swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+							 wcscat(wstr, wchar);// 문자열 연결
+							 hangeul = false;
+							 slice = 0;
+							 }
+							 textinput = true;
+							 break;
+							 case SDL_KEYDOWN:
+							 if (event.key.keysym.sym == SDLK_RETURN) {
+							 if (hangeul == true && enter == false)
+							 enter = true;
+							 else {
+							 strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
+							 UTF82EUCKR(euckr, 512, utf8, 768);
+							 euckr[strlen(euckr)] = '\0';
+							 han2unicode(euckr, unicode);
+							 if (hannum(unicode, wcslen(unicode)) != hannum(wstr, wcslen(wstr))) {
+							 strcpy(euckr, "[Error] invalid conversion");
+							 }
+							 // euckr을 DB에 올리면 됨
+							 strcpy(utf8, "");
+							 wcscpy(wstr, L"");
+							 wcscpy(unicode, L"");
+							 strcpy(euckr, "");
+							 enter = false;
+							 textinput = true;
+							 }
+							 }
+							 else if (event.key.keysym.sym == SDLK_RALT)
+							 hanyeong = !(hanyeong);
+							 else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(wstr) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
+							 {
+							 if (slice == 0) {
+							 wstr[wcslen(wstr) - 1] = '\0';// 마지막문자를 널문자로 바꿈
+							 textinput = true;
+							 }
+							 else {
+							 slice--;
+							 }
+							 }
+							 else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
+							 strcpy(utf8, UNICODE2UTF8(wstr, wcslen(wstr)));
+							 SDL_SetClipboardText(utf8);// 클립보드에 넣음
+							 }
+							 else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+							 wcscat(wstr, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
+							 hangeul = false;
+							 textinput = true;
+							 }
+							 else {
+							 hangeul = true;
+							 slice++;
+							 }
+							 break;*/
+		case SDL_MOUSEBUTTONDOWN:
+			PressButton = 1;
+			break;
+		case SDL_QUIT:
+			quit = true;
+			break;
+		case SDL_WINDOWEVENT:
+			switch (event.window.event) {
+			case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+				quit = true;// quit를 true로 변경
+				Sleep(100);
+				break;// 브레이크
+			case SDL_WINDOWEVENT_ENTER:// 윈도우
+				SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 				break;
-			case SDL_QUIT:
-				quit = true;
+			case SDL_WINDOWEVENT_LEAVE:
+				//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
 				break;
-			case SDL_WINDOWEVENT:
-				switch (event.window.event) {
-				case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-					quit = true;// quit를 true로 변경
-					Sleep(100);
-					break;// 브레이크
-				case SDL_WINDOWEVENT_ENTER:// 윈도우
-					SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-					break;
-				case SDL_WINDOWEVENT_LEAVE:
-					//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					break;
-				}
+			case SDL_WINDOWEVENT_FOCUS_GAINED:
+				break;
 			}
-			//	}
-			RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
-			RenderTextureXYWH(renderer, TitleText, Display_X / 4, Display_Y / 10, Display_X / 2, Display_Y / 3);
-			PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
+		}
+		//	}
+		RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
+		RenderTextureXYWH(renderer, TitleText, Display_X / 4, Display_Y / 10, Display_X / 2, Display_Y / 3);
+		PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255);
 
 			if (status.ishappen == false)
 				RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
@@ -1394,21 +1403,22 @@ int main(int argc, char *argv[])
 		}
 
 
-		if (loginsuccess)
-		{
-			int allchating_cnt = 0;
-			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
-			mysql_query(cons, query);
-			Hit_Room rooms[8];
-			int newdata[3] = { 1, 1, 1 };
-			int roomcount = Get_Room_List(cons, rooms);
-			int pastroomcount = roomcount;
-			char MemBerList[30][30] = { 0, };
-			Chating chatings[12] = { 0, };
-			int usercount = 0;
-			memset(&ID_put, 0, sizeof(ID_put));
-			int chattingput = 0;
-			int chattingdrag = 0;
+	if (loginsuccess)
+	{
+		Mix_FadeInMusic(lobbymusic, -1,3000);
+		int allchating_cnt = 0;
+		sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
+		mysql_query(cons, query);
+		Hit_Room rooms[8];
+		int newdata[3] = { 1, 1, 1 };
+		int roomcount = Get_Room_List(cons, rooms);
+		int pastroomcount = roomcount;
+		char MemBerList[30][30] = { 0, };
+		Chating chatings[12] = { 0, };
+		int usercount = 0;
+		memset(&ID_put, 0, sizeof(ID_put));
+		int chattingput = 0;
+		int chattingdrag = 0;
 
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
@@ -2130,9 +2140,9 @@ int main(int argc, char *argv[])
 					Slider * slider_display = (Slider*)malloc(sizeof(Slider));
 					SDL_Texture * Slider_slider = LoadTexture(renderer, ".\\design\\slider.png");
 
-					CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, 30, HORIZONTAL);
-					CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, 30, HORIZONTAL);
-					CreateSlider(slider_display, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.32, set_start_y + set_start_h * 0.58, set_start_w * 0.6, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &display_value, 3, 6, display_value, HORIZONTAL);
+				CreateSlider(slider_sound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.24, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &Sound, 0, 100, Sound, HORIZONTAL);
+				CreateSlider(slider_bgsound, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.42, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &BGmusic, 0, 100, BGmusic, HORIZONTAL);
+				CreateSlider(slider_display, Slider_Box, Slider_slider, set_start_x + set_start_w * 0.32, set_start_y + set_start_h * 0.58, set_start_w * 0.6, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &display_value, 3, 6, display_value, HORIZONTAL);
 
 					while (setting_main) {
 						//	if (SDL_PollEvent(&event))
@@ -2262,18 +2272,21 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 
 
-					}
-					SDL_DestroyTexture(Setting_back);
-					SDL_DestroyTexture(Setting_Close_click);
-					SDL_DestroyTexture(Setting_Close_noclick);
-					SDL_DestroyTexture(Slider_slider);
-					free(slider_sound);
-					free(slider_bgsound);
-					free(slider_display);
-					newdataed = 1;
-					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
-					continue;
 				}
+				changesetting(BGmusic, Sound, Display_X, Display_Y, Full);
+				Mix_VolumeMusic(BGmusic*1.28);
+				
+				SDL_DestroyTexture(Setting_back);
+				SDL_DestroyTexture(Setting_Close_click);
+				SDL_DestroyTexture(Setting_Close_noclick);
+				SDL_DestroyTexture(Slider_slider);
+				free(slider_sound);
+				free(slider_bgsound);
+				free(slider_display);
+				newdataed = 1;
+				CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
+				continue;
+			}
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event, &happen)) //닉네임 변경 버튼
 				{
@@ -2329,24 +2342,26 @@ int main(int argc, char *argv[])
 
 	HitMind_TTF_Close();
 
-	if (myuser != 0)
-		free(myuser);
-	if (status.ishappen == 1)
-		mysql_close(status.arg);
-	if (cursor)
-	{
-		SDL_FreeCursor(cursor);
-	}
-	SDL_DestroyTexture(LoadingBar);
-	SDL_DestroyTexture(WaitBar);
-	SDL_DestroyTexture(TitleText);
-	SDL_DestroyTexture(TitleImage);
-	SDL_DestroyTexture(LoadingBar);
-	SDL_DestroyTexture(WaitBar);
-	SDL_DestroyTexture(TitleText);
-	SDL_DestroyTexture(TitleImage);
-	TTF_Quit();
-	SDL_DestroyRenderer(renderer);
+if (myuser != 0)
+free(myuser);
+if (status.ishappen == 1)
+mysql_close(status.arg);
+if (cursor)
+{
+	SDL_FreeCursor(cursor);
+}
+Mix_FreeMusic(lobbymusic);
+Mix_FreeMusic(mainmusic);
+SDL_DestroyTexture(LoadingBar);
+SDL_DestroyTexture(WaitBar);
+SDL_DestroyTexture(TitleText);
+SDL_DestroyTexture(TitleImage);
+SDL_DestroyTexture(LoadingBar);
+SDL_DestroyTexture(WaitBar);
+SDL_DestroyTexture(TitleText);
+SDL_DestroyTexture(TitleImage);
+TTF_Quit();
+SDL_DestroyRenderer(renderer);
 
 
 	SDL_DestroyWindow(Window);
