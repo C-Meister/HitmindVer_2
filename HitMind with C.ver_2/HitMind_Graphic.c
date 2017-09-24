@@ -34,7 +34,7 @@ void HitMind_TTF_Close() {
 	}
 
 }
-int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event) {//이미지 버튼 선언
+int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen) {//이미지 버튼 선언
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
 	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
@@ -49,6 +49,7 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	{
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		*happen = true;
 	}
 	else {
 		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
@@ -59,7 +60,7 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 			return 1;
 	return 0;
 }
-int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event) {//이미지 버튼 선언
+int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen) {//이미지 버튼 선언
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
 	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
@@ -74,16 +75,20 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 	{
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		*happen = true;
 	}
 	else {
+
 		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
 			return 1;
-		else
+		else {
+			*happen = true;
 			return -1;
+		}
 	}
 	return 0;
 }
@@ -337,20 +342,21 @@ void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color colo
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
 }
-int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event)
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int *happen)
 {
 
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->motion.y < y + h)
 	{
 		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
-
+		*happen = true;
 	}
 	else {
 		FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
+
 		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
 			return 1;
 	}
