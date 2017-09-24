@@ -669,7 +669,26 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 		double x = event->motion.x; double y = event->motion.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
-				int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
+				int Signofdeltax = Sign(x - Canvas->Last.x); int Signofdeltay = Sign(y - Canvas->Last.y);
+				int x1 = Canvas->Last.x - Signofdeltax*Canvas->Strong / 2.0; int y1 = Canvas->Last.y + Signofdeltay*Canvas->Strong / 2.0;
+				int x2 = x - Signofdeltax*Canvas->Strong / 2.0; int y2 = y + Signofdeltay*Canvas->Strong / 2.0;
+				SDL_Point* Points = (SDL_Point *)malloc(sizeof(SDL_Point)*2*Canvas->Strong);
+				for (int i = 0; i < 2 * Canvas->Strong; i++) {
+					if (i % 2 == 0) {
+						Points[i].x = x1;
+						Points[i].y = y1;
+						x1 += Signofdeltax;
+						y1 += -Signofdeltay;
+					}
+					else {
+						Points[i].x = x2;
+						Points[i].y = y2;
+						x2 += Signofdeltax;
+						y2 += -Signofdeltay;
+					}
+				}
+				SDL_RenderDrawLines(Canvas->Renderer, Points, 2*Canvas->Strong);
+				/*int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
 				double length = sqrt(deltax*deltax + deltay*deltay);
 				if (length == 0) {
 					return 0;
@@ -694,7 +713,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 						FillRoundRect(Canvas->Renderer, 255, 255, 255, floor(x - Canvas->Strong / 2), floor(y - Canvas->Strong / 2), Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
 					}
 					return 1;
-				}
+				}*/
 			}
 			return 0;
 		}
@@ -818,5 +837,13 @@ void FillCircle(SDL_Renderer * Renderer,int Center_x, int Center_y,int radius) {
 		int x2 = floor(sin(M_PI / 180 * (360-i))* radius);
 		int y2 = floor(cos(M_PI / 180 * (360 - i))* radius);
 		SDL_RenderDrawLine(Renderer, x1+Center_x, y1+Center_y, x2+ Center_x, y2+ Center_y);
+	}
+}
+int Sign(int n) {
+	if (n >= 0) {
+		return 1;
+	}
+	else {
+		return -1;
 	}
 }
