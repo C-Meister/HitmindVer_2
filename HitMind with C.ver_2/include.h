@@ -164,6 +164,8 @@ void settings(int *x, int *y, int *music, int *sound, int *full);
 void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
+
+void soundplay();
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
