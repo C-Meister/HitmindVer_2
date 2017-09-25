@@ -45,13 +45,12 @@ int main(int argc, char *argv[])
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);	//나눔고딕 폰트를 불러옴
 	SockParam ServerParam;
 	SockParam ClientParam;
-	char Smessage[200];
-	char Cmessage[200];
-	char playerinfo[8][30];
+	uintptr_t server;
+	uintptr_t client;
+	ZeroMemory(&ServerParam, sizeof(SockParam));
+	ZeroMemory(&ClientParam, sizeof(SockParam));
 
-	ClientParam.playerinfo = &playerinfo;
-	ServerParam.message = &Smessage;
-	ClientParam.message = &Cmessage;
+	
 
 	if (font == 0)
 	{
