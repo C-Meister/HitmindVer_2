@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
-		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);		//해당 해상도로 Window를 생성함
+		Window = SDL_CreateWindow("HitMind_2", 0, 0, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	else
 		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_SOFTWARE/* | SDL_RENDERER_PRESENTVSYNC*/);
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
 	//float MaxStrong = 70.0*Display_X / 1920;
 	//
-	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil.png");
+	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
 	//SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
 	//SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
 	//SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
@@ -159,6 +159,10 @@ int main(int argc, char *argv[])
 	//DrawButton(PencilButton);
 	//DrawButton(EraserButton);
 	//DrawButton(NewButton);
+	//canvas->Strong *= 50 / 70.0;
+	//FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//SDL_RenderPresent(renderer);
 
 	//while (!quit)//로그인 성공 후 대기창
@@ -166,7 +170,6 @@ int main(int argc, char *argv[])
 	//	SDL_WaitEvent(&event);
 	//	if (UpdateCanvas(canvas, &event) == 1) {
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
 	//		continue;
 	//	}
 	//		switch (event.type)
@@ -197,33 +200,35 @@ int main(int argc, char *argv[])
 	//		DrawSlider(renderer, StrongSlider);
 	//		SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong+2,MaxStrong+2 };
 	//		SDL_RenderFillRect(renderer, &rect1);
-	//		if (canvas->Flag == PENCIL) {
-	//			canvas->Strong *= 50/70.0;
-	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, canvas->Color.a);
+	//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//		if (canvas->Flag == ERASER) {
 	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
-	//			SDL_RenderFillRect(renderer, &rect2);
+	//			SDL_RenderDrawRect(renderer, &rect2);
 	//			SDL_RenderPresent(renderer);
 	//			printf("render	");
 	//		}
-	//		else if (canvas->Flag == ERASER) {
-	//			SDL_SetRenderDrawColor(canvas->Renderer, 0, 0,0, 0);
-	//			DrawCircle(canvas->Renderer, Sample.x, Sample.y, canvas->Strong/2.0);
+	//		else if (canvas->Flag == PENCIL) {
+	//			canvas->Strong *= 50 / 70.0;
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x,Sample.y,canvas->Strong/2.0);
 	//			SDL_RenderPresent(renderer);
 	//			printf("render	");
 	//		}
 	//		continue;
 	//	}
 	//	if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
-	//		if (canvas->Flag == PENCIL) {
-	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, canvas->Color.a);
-	//			SDL_Rect rect = {Sample.x-canvas->Strong/2.0,Sample.y-canvas->Strong/2.0,canvas->Strong,canvas->Strong};
-	//			SDL_RenderFillRect(renderer, &rect);
+	//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//		if (canvas->Flag == ERASER) {
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderDrawRect(renderer, &rect2);
 	//			SDL_RenderPresent(renderer);
 	//			printf("render	");
 	//		}
-	//		else if (canvas->Flag == ERASER){
-	//			FillRoundRect(renderer, 255,255,255,Sample.x-canvas->Strong/2.0,Sample.y-canvas->Strong/2.0,canvas->Strong,canvas->Strong,canvas->Strong);
-	//			DrawRoundRect(renderer, 0, 0, 0, Sample.x - canvas->Strong / 2.0, Sample.y - canvas->Strong / 2.0, canvas->Strong, canvas->Strong, canvas->Strong,1);
+	//		else if (canvas->Flag == PENCIL){
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0+1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//			SDL_RenderPresent(renderer);
 	//			printf("render	");
 	//		}
@@ -235,6 +240,14 @@ int main(int argc, char *argv[])
 	//			EraserButton->Flag = DEACTIVATED;
 	//			DrawButton(EraserButton);
 	//			canvas->Flag = PENCIL;
+	//			canvas->Strong *= 50 / 70.0;
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//		}
 	//		SDL_RenderPresent(renderer);
 	//		printf("render	");
@@ -246,6 +259,13 @@ int main(int argc, char *argv[])
 	//			PencilButton->Flag = DEACTIVATED;
 	//			DrawButton(PencilButton);
 	//			canvas->Flag = ERASER;
+	//			canvas->Strong *= 70 / 50.0;
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderDrawRect(renderer, &rect2);
 	//		}
 	//		SDL_RenderPresent(renderer);
 	//		printf("render	");
@@ -2038,7 +2058,7 @@ int main(int argc, char *argv[])
 					newdataed = 1;
 					continue;
 				}
-				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
+				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
 					SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
 
@@ -2117,7 +2137,7 @@ int main(int argc, char *argv[])
 							qquit = true;
 						}
 
-						if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 						{
 							qquit = true;
 						}
