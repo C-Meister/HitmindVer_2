@@ -239,6 +239,8 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
 //전체 채팅을 불러옴
 int ReadChating_all(MYSQL *cons, Chating * chatings);
+//방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함
+int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
 //---------------Socket 함수--------------
 void OpenServer();
 // 쓰레드,서버전용 - 방(서버)를 연다
