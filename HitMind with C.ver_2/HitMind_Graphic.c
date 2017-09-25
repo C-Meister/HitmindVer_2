@@ -348,11 +348,13 @@ int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int p
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->motion.y < y + h)
 	{
 		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
+		if (strong != 0)
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
 		*happen = true;
 	}
 	else {
 		FillRoundRect(Renderer, r, g, b, x, y, w, h, radius);
+		if (strong != 0)
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
 	}
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
