@@ -2027,7 +2027,7 @@ while (roop)
 					newdataed = 1;
 					continue;
 				}
-				if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
+				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
 					SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
 
@@ -2106,7 +2106,7 @@ while (roop)
 							qquit = true;
 						}
 
-						if (PutRoundButton(renderer, 255, 0, 0, 230, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 						{
 							qquit = true;
 						}
