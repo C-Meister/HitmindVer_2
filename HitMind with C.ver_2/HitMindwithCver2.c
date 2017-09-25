@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	int i, j;
+	Hit_Room My_Room;
+	memset(&My_Room, 0, sizeof(My_Room));
 	int happen = 0;
 	int backspacehappen = false;
 	int pass_reset_mode = 1;
@@ -1401,7 +1403,7 @@ int main(int argc, char *argv[])
 			int pastchating_cnt = allchating_cnt;
 			int chatmovehappen = 0;
 			int newdataed = 1;
-			while (loginsuccess && !quit)	//로그인 성공 후 대기창
+			while (loginsuccess && !quit && !isplaygame)	//로그인 성공 후 대기창
 			{
 				if (newdataed)
 				{
@@ -1685,7 +1687,10 @@ int main(int argc, char *argv[])
 				{
 					if (i % 2 == 0)
 					{
-						PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen);
+						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
+							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							isplaygame = true;
+						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.027, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0);	//번호 출력
 
@@ -1708,7 +1713,10 @@ int main(int argc, char *argv[])
 						}
 					}
 					else {
-						PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen);
+						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
+							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							isplaygame = true;
+						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.372, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0);	//번호 출력
 
@@ -1874,7 +1882,10 @@ int main(int argc, char *argv[])
 											}
 											else
 											{
-
+												roomcount = Get_Room_List(cons, rooms);
+												memcpy(&My_Room, &rooms[roomcount - 1], sizeof(Hit_Room));
+												createroom = false;
+												isplaygame = true;
 											}
 										}
 									}
@@ -2060,94 +2071,6 @@ int main(int argc, char *argv[])
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
-					SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
-
-					//배경
-					SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
-
-					//1번구역
-					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
-					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
-					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
-					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-					//2번구역
-					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
-					RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
-					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
-					FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
-					PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-					//3번구역
-					FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
-					DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
-					FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
-					PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
-
-					//4번구역
-					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
-					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
-
-
-					while (!qquit) {
-
-						/*
-						화면을 전체적으로 4등분함
-
-						|
-						1번구역		 |
-						|
-						|    2번구역
-						|
-						---------------------|-----------------
-						3번구역		 |
-						|     4번구역
-						|
-						|
-						*/
-
-						if (SDL_PollEvent(&event))
-						{
-							switch (event.type)
-							{
-							case SDL_QUIT:
-								qquit = true;
-								break;
-							case SDL_WINDOWEVENT:
-								switch (event.window.event) {
-								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-									qquit = true;
-									Sleep(100);
-									break;// 브레이크
-								case SDL_WINDOWEVENT_ENTER:// 윈도우
-									SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-									break;
-								case SDL_WINDOWEVENT_LEAVE:
-									//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-									break;
-								case SDL_WINDOWEVENT_FOCUS_GAINED:
-									break;
-								}
-							}
-						}
-
-
-						if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
-						{
-							qquit = true;
-						}
-
-						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
-						{
-							qquit = true;
-						}
-
-						PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255);
-						PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255);    //방장일때는 시작하기
-
-
-						SDL_RenderPresent(renderer);
-					}
 					qquit = false;
 				}
 				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255);
@@ -2372,6 +2295,93 @@ int main(int argc, char *argv[])
 	while (isplaygame)
 	{
 
+		SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
+
+		//배경
+		SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
+
+		//1번구역
+		FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+		DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+		FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
+		PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+		//2번구역
+		FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
+		RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
+		DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
+		FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
+		PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+		
+		//3번구역
+		FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
+		DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
+		FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
+		PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+
+		//4번구역
+		FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
+		DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
+
+
+		while (!qquit) {
+			SDL_WaitEvent(&event);
+				switch (event.type)
+				{
+				case SDL_QUIT:
+					qquit = true;
+					break;
+				case SDL_WINDOWEVENT:
+					switch (event.window.event) {
+					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+						qquit = true;
+						Sleep(100);
+						break;// 브레이크
+					case SDL_WINDOWEVENT_ENTER:// 윈도우
+						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+						break;
+					case SDL_WINDOWEVENT_LEAVE:
+						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+						break;
+					case SDL_WINDOWEVENT_FOCUS_GAINED:
+						break;
+					}
+				}
+			
+
+			/*
+			화면을 전체적으로 4등분함
+
+			|
+			1번구역		 |
+			|
+			|    2번구역
+			|
+			---------------------|-----------------
+			3번구역		 |
+			|     4번구역
+			|
+			|
+			*/
+
+			
+
+			if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
+			{
+				qquit = true;
+			}
+
+			if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+			{
+				qquit = true;
+			}
+
+			PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255);
+			PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255);    //방장일때는 시작하기
+
+
+			SDL_RenderPresent(renderer);
+		}
 	}
 
 	HitMind_TTF_Close();
