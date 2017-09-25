@@ -215,7 +215,7 @@ void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTe
 int UpdateButton(Button * Button, SDL_Event * event);
 void DrawButton(Button * Button);
 void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
-void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
+void ConnectCircle(SDL_Renderer * Renderer, int Last_x, int Last_y, double dx, double dy, double length, int radius);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);

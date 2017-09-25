@@ -277,7 +277,6 @@ void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 		left_y = Center_y - y;
 		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
 	}
-
 	Center_x = Rect->x + radius;
 	Center_y = Rect->y + Rect->h - radius;
 	for (y = 0; y <= radius; y++) {
@@ -647,15 +646,16 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
 				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
-				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
-				SDL_RenderFillRect(Canvas->Renderer, &rect);
+				FillCircle(Canvas->Renderer, x, y, Canvas->Strong / 2.0);
 				Canvas->Last.x = x;
 				Canvas->Last.y = y;
 				Canvas->Click = true;
 				return 1;
 			}
 			else if (Canvas->Flag == ERASER) {
-				FillRoundRect(Canvas->Renderer, 255, 255, 255, x - Canvas->Strong / 2, y - Canvas->Strong / 2, Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
+				SDL_SetRenderDrawColor(Canvas->Renderer, 255,255,255, 0);
+				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
+				SDL_RenderFillRect(Canvas->Renderer, &rect);
 				Canvas->Last.x = x;
 				Canvas->Last.y = y;
 				Canvas->Click = true;
@@ -666,54 +666,58 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 		return 0;
 	}
 	else if (event->type == SDL_MOUSEMOTION) {
-		double x = event->motion.x; double y = event->motion.y;
+		int x = event->motion.x; int y = event->motion.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
-				int Signofdeltax = Sign(x - Canvas->Last.x); int Signofdeltay = Sign(y - Canvas->Last.y);
-				int x1 = Canvas->Last.x - Signofdeltax*Canvas->Strong / 2.0; int y1 = Canvas->Last.y + Signofdeltay*Canvas->Strong / 2.0;
-				int x2 = x - Signofdeltax*Canvas->Strong / 2.0; int y2 = y + Signofdeltay*Canvas->Strong / 2.0;
-				SDL_Point* Points = (SDL_Point *)malloc(sizeof(SDL_Point)*2*Canvas->Strong);
-				for (int i = 0; i < 2 * Canvas->Strong; i++) {
-					if (i % 2 == 0) {
-						Points[i].x = x1;
-						Points[i].y = y1;
-						x1 += Signofdeltax;
-						y1 += -Signofdeltay;
-					}
-					else {
-						Points[i].x = x2;
-						Points[i].y = y2;
-						x2 += Signofdeltax;
-						y2 += -Signofdeltay;
-					}
-				}
-				SDL_RenderDrawLines(Canvas->Renderer, Points, 2*Canvas->Strong);
-				/*int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
+				int deltax = x - Canvas->Last.x; int deltay = y - Canvas->Last.y;
 				double length = sqrt(deltax*deltax + deltay*deltay);
 				if (length == 0) {
 					return 0;
 				}
 				double dx = deltax / length; double dy = deltay / length;
-				int tmp = x;  x = Canvas->Last.x; Canvas->Last.x = tmp;
-				tmp = y; y = Canvas->Last.y; Canvas->Last.y = tmp;
+
+				SDL_Renderer * Renderer = Canvas->Renderer; // 연산을 줄이기 위해 구조체의 참조 변수들을 지역변수로 선언
+				int Last_x = Canvas->Last.x; int Last_y = Canvas->Last.y; //마지막으로 찍었던 점의 x,y좌표
+				int Strong = Canvas->Strong;//굵기
+				int radius = Strong*0.5;// 굵기의 1/2 또는 반지름
+				SDL_Rect rect;
+
 				if (Canvas->Flag == PENCIL) {
-					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
-					for (int i = 0; i < length; i++) {
-						x += dx;
-						y += dy;
-						SDL_Rect rect = { floor(x - Canvas->Strong / 2.0),floor(y - Canvas->Strong / 2.0),Canvas->Strong,Canvas->Strong };
-						SDL_RenderFillRect(Canvas->Renderer, &rect);
-					}
+					ConnectCircle(Renderer, Last_x, Last_y, dx, dy, length, radius);
+				/*	int old_x = Last_x; int old_y = Last_y;
+					int i;
+					for (i = 1; i < length; i++) {
+						rect.x = (int)floor(Last_x + i*dx);
+						rect.y = (int)floor(Last_y + i*dy);
+						if (rect.x == old_x && rect.y == old_y) {
+							continue;
+						}
+						FillCircle(Renderer,rect.x,rect.y,radius);
+						old_x = rect.x;
+						old_y = rect.y;
+					}*/
+					Canvas->Last.x = x; Canvas->Last.y = y;
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
-					for (int i = 0; i < length; i++) {
-						x += dx;
-						y += dy;
-						FillRoundRect(Canvas->Renderer, 255, 255, 255, floor(x - Canvas->Strong / 2), floor(y - Canvas->Strong / 2), Canvas->Strong, Canvas->Strong, Canvas->Strong / 2);
+					rect.w = rect.h = Strong;
+					SDL_SetRenderDrawColor(Canvas->Renderer,255, 255, 255, 0);
+					int x_Exp = Last_x - radius; int y_Exp = Last_y - radius;
+					int old_x = x_Exp; int old_y = y_Exp;
+					int i;
+					for (i = 1; i < length; i++) {
+						rect.x = (int)floor(x_Exp + i*dx);
+						rect.y = (int)floor(y_Exp + i*dy);
+						if (rect.x == old_x && rect.y == old_y) {
+							continue;
+						}
+						SDL_RenderFillRect(Renderer, &rect);
+						old_x = rect.x;
+						old_y = rect.y;
 					}
+					Canvas->Last.x = x; Canvas->Last.y = y;
 					return 1;
-				}*/
+				}
 			}
 			return 0;
 		}
@@ -817,33 +821,35 @@ void DrawButton(Button * Button) {
 	}
 	return;
 }
-void DrawCircle(SDL_Renderer * Renderer, int Center_x, int Center_y,int radius) {
-	int old_x = floor(sin(M_PI / 180 * 0)*radius);
-	int old_y = floor(cos(M_PI / 180 * 0)*radius);
-	for (int i = 0; i < 360; i++) {
-		int x1 = old_x;
-		int y1 = old_y;
-		int x2 = floor(sin(M_PI / 180 * (i+1))*radius);
-		int y2= floor(cos(M_PI / 180 * (i+1))*radius);
-		SDL_RenderDrawLine(Renderer, x1 + Center_x, y1 + Center_y, x2 + Center_x, y2 + Center_y);
-		old_x = x2;
-		old_y = y2;
-	}
-}
 void FillCircle(SDL_Renderer * Renderer,int Center_x, int Center_y,int radius) {
-	for (int i = 0; i < 180; i++) {
-		int x1 = floor(sin(M_PI / 180 * i)*radius);
-		int y1 = floor(cos(M_PI / 180 * i)*radius);
-		int x2 = floor(sin(M_PI / 180 * (360-i))* radius);
-		int y2 = floor(cos(M_PI / 180 * (360 - i))* radius);
-		SDL_RenderDrawLine(Renderer, x1+Center_x, y1+Center_y, x2+ Center_x, y2+ Center_y);
+	int left_x, right_x,up_y,down_y;
+	double y;
+	for (y = 0; y < radius; y++) {
+		left_x = Center_x - (int)sqrt(radius*radius - y*y) + !y;
+		right_x = Center_x + (int)sqrt(radius*radius - y*y) - !y;
+		up_y = Center_y - y;
+		down_y = Center_y + y;
+		SDL_RenderDrawLine(Renderer, left_x, up_y, right_x, up_y);
+		SDL_RenderDrawLine(Renderer, left_x, down_y,right_x, down_y);
 	}
 }
-int Sign(int n) {
-	if (n >= 0) {
-		return 1;
-	}
-	else {
-		return -1;
+void ConnectCircle(SDL_Renderer * Renderer, int Last_x, int Last_y, double dx, double dy, double length,int radius) {
+	int left_x, right_x, up_y, down_y;
+	double y; int i, old_x, old_y;
+	for (y = 0; y < radius; y++) {
+		left_x = Last_x - (int)sqrt(radius*radius - y*y) + !y;
+		right_x = Last_x + (int)sqrt(radius*radius - y*y) - !y;
+		old_x =old_y = 0;
+		up_y = Last_y - y;
+		down_y = Last_y + y;
+		for (i = 1; i < length; i++) {
+			if (floor(i*dx) == old_x && floor(i*dy) == old_y) {
+				continue;
+			}
+			old_x = floor(i * dx);
+			old_y = floor(i * dy);
+			SDL_RenderDrawLine(Renderer, left_x+old_x, up_y+old_y, right_x+old_x, up_y+old_y);
+			SDL_RenderDrawLine(Renderer, left_x+old_x, down_y+old_y,right_x+old_x, down_y+old_y);
+		}
 	}
 }
