@@ -52,6 +52,7 @@
 #define RESET(X) ZeroMemory(X, sizeof(X))	//초기화 memset()이랑 같음
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
+#define MAXPEOPLE 8
 //MouseUp_Wait = PutMenu를 사용할때 마우스 버튼을 클릭하자말자 넘어가기 때문에 방지를 해줌.
 
 //typedef
@@ -94,6 +95,21 @@ typedef struct SDL_Slider {
 	int Update;
 	int Flag;
 }Slider;
+typedef struct Socket_Parameters {
+	WSADATA wsadata;
+	SOCKET Slisten_socket;
+	SOCKET Sconnect_socket[MAXPEOPLE];
+	SOCKET Clisten_socket;
+	SOCKET Cconnect_socket;
+	SOCKADDR_IN listen_addr;
+	SOCKADDR_IN connect_addr;
+	uintptr_t Serverthread[MAXPEOPLE];
+	uintptr_t Clientthread;
+	char playerinfo[8][30];
+	char message[200];
+	char serverip[50];
+	int num;
+}SockParam;
 
 /*
 	변수에 대한 설명:
@@ -102,15 +118,7 @@ typedef struct SDL_Slider {
 */
 
 // 소켓용 전역변수
-static WSADATA wsaData;			
-static SOCKET Slisten_socket, Sconnect_socket[8];
-static SOCKET Clisten_socket, Cconnect_socket;
-static SOCKADDR_IN listen_addr, connect_addr;
-static int sockaddr_in_size;
-static char message[200];
-static uintptr_t Serverthread[8];
-static uintptr_t Clientthread;
-static char playerinfo[8][30];
+
 static int Display_X = 1920;
 static int Display_Y = 1080;
 static int BGmusic = 30;     //배경음악 크기
@@ -182,14 +190,14 @@ char * Get_Random_Topic(MYSQL *cons);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
 //---------------Socket 함수--------------
-void OpenServer();
+void OpenServer(SockParam *param);
 // 쓰레드,서버전용 - 방(서버)를 연다
-void connectServer(char *serverIP);
+void connectServer(SockParam *param);
 // 쓰레드,클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
-void HandleClient(int num);
+void HandleClient(SockParam *param);
 // 쓰레드,서버전용 - 클라이언트에게서 데이터를 계속 받아온다 인자값 : 클라이언트 번호 
-void sendall(char *lmessage, int c);
+void sendall(SockParam *param);
 // 서버전용 - 모든 클라이언트에게 데이터를 보낸다 인자값 : 전송할 데이터, 서버의 클라이언트 번호
 // 서버의 클라이언트 번호는 sendall 할때 자기 자신에게는 보내지 않기 위해 만든것
-void Clientrecv();
+void Clientrecv(SockParam *param);
 // 쓰레드,클라이언트 전용 - 서버에게서 데이터를 받아온다

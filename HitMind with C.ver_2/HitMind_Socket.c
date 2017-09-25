@@ -1,81 +1,153 @@
 ﻿#include "include.h"
 
 //Socket통신 관련 함수들
-void OpenServer() {
-	WSAStartup(MAKEWORD(2, 2), &wsaData);
+/*
+서버를 여는 함수
+소켓을 열고 클라이언트가 올 때까지 대기하고있다가 클라이언트가 접속하면
+비어있는 쓰레드에 할당 후 클라이언트가 보내는 패킷을 계속 받음
+*/
+void OpenServer(SockParam *param) {	
+	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
+	printf("WSAStartup() %d\n", param->Slisten_socket);
 
-	Slisten_socket = socket(PF_INET, SOCK_STREAM, 0);
+	param->Slisten_socket = socket(PF_INET, SOCK_STREAM, 0);
+	printf("socket() errcode : %d\n", param->Slisten_socket);
 
-	memset(&Slisten_socket, 0, sizeof(listen_addr));
+	memset(&(param->listen_addr), 0, sizeof(param->listen_addr));
 
-	listen_addr.sin_family = AF_INET;
-	listen_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-	listen_addr.sin_port = htons(PORT);
+	param->listen_addr.sin_family = AF_INET;
+	param->listen_addr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
+	param->listen_addr.sin_port = htons(PORT);
 
-	bind(Slisten_socket, (SOCKADDR*)&listen_addr, sizeof(listen_addr));
+	int err = bind(param->Slisten_socket, (SOCKADDR*)&(param->listen_addr), sizeof(param->listen_addr));
+	printf("bind() errcode : %d\n", err);
 
-	listen(Slisten_socket, 5);
+	listen(param->Slisten_socket, 5);
+	printf("listen()\n");
 
-	sockaddr_in_size = sizeof(connect_addr);
-	
+	int sockaddr_in_size = sizeof(param->connect_addr);
 	int idx = 0;
+
+	/*
+	여기서부터 무한 반복을 하는데
+	연결요청이 올때까지 계속 대기함
+	연결요청이 들어오면 빈 쓰레드,소켓에 할당하는 역할을 하고있음
+	*/
 	while (1) {
-		while (Sconnect_socket[idx] != 0)
+		idx = 0;
+
+		while (param->Sconnect_socket[idx] != 0)
 			idx++;
-		Sconnect_socket[idx] = accept(Slisten_socket, (SOCKADDR*)&connect_addr, &sockaddr_in_size);
-		Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, idx, 0, 0);
+		param->Sconnect_socket[idx] = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
+		printf("accept()\n");
+		if (param->Sconnect_socket[idx] == -1) {
+			printf("error\n");
+			closesocket(param->Slisten_socket);
+			Sleep(2000);
+			exit(1);
+		}
+		else if (param->Sconnect_socket[idx] != 0) {
+
+			param->num = idx;
+			printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
+			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
+		}
+
 	}
 	// 서버 켜짐
 }
-void connectServer(char *serverIP) {
-	Cconnect_socket = socket(PF_INET, SOCK_STREAM, 0);	//connect_sock변수에 소켓 할당
-	connect_addr.sin_family = AF_INET;				//연결할 서버의 주소 설정
-	connect_addr.sin_addr.S_un.S_addr = inet_addr(serverIP); //서버 IP
-	connect_addr.sin_port = htons(5555);					 //서버 포트
+/*
+서버에 연결하는 함수
+param.serverip에 들어있는 ip로 접속함
+서버에 연결되고 서버에게 연결되었다는 신호를 보낸 후
+서버로부터 오는 패킷을 계속해서 받음
+*/
+void connectServer(SockParam *param) {
+	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
+	printf("WSAStartup()\n");
+	param->Cconnect_socket = socket(PF_INET, SOCK_STREAM, 0);	//connect_sock변수에 소켓 할당
+	printf("socket()\n");
+	param->connect_addr.sin_family = AF_INET;				//연결할 서버의 주소 설정
+	param->connect_addr.sin_addr.S_un.S_addr = inet_addr(param->serverip); //서버 IP
+	param->connect_addr.sin_port = htons(5555);					 //서버 포트
 
-	connect(Cconnect_socket, (SOCKADDR *)&connect_addr, sizeof(connect_addr));
-	sprintf(message, "player connect");
-	send(Cconnect_socket, message, 180, 0);
-	Clientthread = _beginthreadex(0, 0, (_beginthreadex_proc_type)Clientrecv, 0, 0, 0);
+	if (connect(param->Cconnect_socket, (SOCKADDR *)&(param->connect_addr), sizeof(param->connect_addr)))
+	{
+		printf("connecterror\n");
+	}
+	printf("connect()\n");
+	Sleep(10);
 
+	send(param->Cconnect_socket, "player connect", 40, 0);
+	printf("send\n");
+	param->Clientthread = _beginthreadex(0, 0, (_beginthreadex_proc_type)Clientrecv, param, 0, 0);
+	while (1) {}
 	
 }
-void HandleClient(int num) {
+/*
+각각의 클라이언트를 제어하는 함수
+클라이언트에게 신호가 오면 send로 보내주는 역할을 함
+echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 보내주어야 함
+*/
+void HandleClient(SockParam *param) {
+	int ClientNumber = param->num;
+	printf("%x\n", &(param->Sconnect_socket[ClientNumber]));
 	while (1) {
-		if (recv(Sconnect_socket[num], message, 180, 0) > 0) {
-			if (strcmp(message, "player connect") == 0) {
-				send(Sconnect_socket[num], "playercheck start", 180, 0);
+		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
+
+			printf("Recv()");
+			if (strcmp(param->message, "player connect") == 0) { //받은 패킷이 player connect라면
+				printf("%d 접속\n", ClientNumber);
+				/*
+				여기서 서버에 접속해있는 플레이어는 online 접속하지 않은 곳은 offline을 보내어
+				클라이언트가 처리할 수 있도록 만듬
+				*/
+				send(param->Sconnect_socket[ClientNumber], "playercheck start", 180, 0);
 				for (int i = 0; i < 8; i++) {
-					if (Sconnect_socket[i] != 0) {
-						sprintf(message, "%d online", i);
-						send(Sconnect_socket[num], message, 180, 0);
+					if (param->Sconnect_socket[i] != 0) { // 클라이언트가 접속해있을때
+						printf("%d online\n", i);
+						sprintf(param->message, "%d online", i);
+						send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 					}
-					else {
-						sprintf(message, "%d offline", i);
-						send(Sconnect_socket[num], message, 180, 0);
+					else {	// 아닐때
+						printf("%d offline\n", i);
+						sprintf(param->message, "%d offline", i);
+						send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 					}
 				}
-				send(Sconnect_socket[num], "playercheck finish", 180, 0);
+				send(param->Sconnect_socket[ClientNumber], "playercheck finish", 180, 0); // 플레이어 온라인여부가 전송이 완료되었음을 보냄
 			}
+			/*
+			여기서부터 작성하면 됨
+			*/
 		}
 	}
 }
-void sendall(char *lmessage, int c) {
+/*
+접속해있는 모든 클라이언트에게 패킷을 전송함
+param.message를 수정하면 됨
+*/
+void sendall(SockParam *param) {
 	for (int i = 0; i < 8; i++) {
-		if (i == c)
-			continue;
-		if (Sconnect_socket[i] != 0)
-			send(Sconnect_socket[i], lmessage, 180, 0);
+		if (param->Sconnect_socket[i] != 0)
+			send(param->Sconnect_socket[i], param->message, 180, 0);
 	}
 }
-void Clientrecv() {
+/*
+클라이언트가 서버로부터 오는 패킷을 처리하는 함수
+*/
+void Clientrecv(SockParam *param) {
+
 	while (1) {
 		int i = 0;
-		if (recv(Cconnect_socket, message, 180, 0)) {
-			if (strcmp(message, "playercheck start") == 0) {
-				while ((strcmp(message, "playercheck finish") == 0)) {
-					recv(Cconnect_socket, message, 180, 0);
-					strcpy(playerinfo[i++], message);
+		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
+			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
+				while (1) {
+					recv(param->Cconnect_socket, param->message, 180, 0);
+					printf("%s\n", param->message);
+					if (!(strcmp(param->message, "playercheck finish")))
+						break;
+					strcpy(param->playerinfo[i++], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
 				}
 			}
 		}
