@@ -250,14 +250,16 @@ int ReadChating_all(MYSQL *cons, Chating * chatings);
 //방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
 //---------------Socket 함수--------------
-void OpenServer(SockParam *param);
+
 // 쓰레드,서버전용 - 방(서버)를 연다
-void connectServer(SockParam *param);
+void OpenServer(SockParam *param);
+
 // 쓰레드,클라이언트 전용 - 방(서버)에 연결함 인자값 : IP주소
-void HandleClient(SockParam *param);
+void connectServer(SockParam *param);
 // 쓰레드,서버전용 - 클라이언트에게서 데이터를 계속 받아온다 인자값 : 클라이언트 번호 
-void sendall(SockParam *param);
+void HandleClient(SockParam *param);
 // 서버전용 - 모든 클라이언트에게 데이터를 보낸다 인자값 : 전송할 데이터, 서버의 클라이언트 번호
 // 서버의 클라이언트 번호는 sendall 할때 자기 자신에게는 보내지 않기 위해 만든것
-void Clientrecv(SockParam *param);
+void sendall(SockParam *param);
 // 쓰레드,클라이언트 전용 - 서버에게서 데이터를 받아온다
+void Clientrecv(SockParam *param);
