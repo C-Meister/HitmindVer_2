@@ -1,7 +1,7 @@
-ï»¿//í—¤ë”íŒŒì¼ë“¤ì´ ì„ ì–¸ëœ í—¤ë”íŒŒì¼
-//ëª¨ë“  .cíŒŒì¼ì— ì„ ì–¸í•´ì£¼ì
+//Çì´õÆÄÀÏµéÀÌ ¼±¾ğµÈ Çì´õÆÄÀÏ
+//¸ğµç .cÆÄÀÏ¿¡ ¼±¾ğÇØÁÖÀÚ
 #pragma once
-//ì „ì²˜ë¦¬ê¸°
+//ÀüÃ³¸®±â
 #define	_CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define MOTION 0
@@ -9,63 +9,68 @@
 #define BUTTONUP 2
 #define HORIZONTAL 1
 #define VERTICAL 2
-//í—¤ë”íŒŒì¼
+#define ERASER 1
+#define PENCIL 2
+#define DEACTIVATED 0
+#define HIGHLIGHT 1
+#define ACTIVATED 2
+//Çì´õÆÄÀÏ
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
-#include <stdlib.h>				//malloc ì‚¬ìš©
-#include <math.h>				//ìˆ˜í•™ ê´€ë ¨ í•¨ìˆ˜
-#include <process.h>			//Thread ì‚¬ìš© í•¨ìˆ˜
-#include <Windows.h>			//Window api ê´€ë ¨ í•¨ìˆ˜
-#include <signal.h>				//Interruptì²˜ë¦¬ í•¨ìˆ˜
-#include <time.h>				//ì‹œê°„ ê´€ë ¨ í•¨ìˆ˜
-#include <stdbool.h>			//Bool ì‚¬ìš© í•¨ìˆ˜
-#include <stdint.h>				//ì—¬ëŸ¬ typedef ê´€ë ¨ íƒ€ì… í•¨ìˆ˜
-#include <direct.h>				//í´ë” ê´€ë ¨ í•¨ìˆ˜
-#include "mysql/mysql.h"//MySQL í•¨ìˆ˜ë“¤
+#include <stdlib.h>				//malloc »ç¿ë
+#include <math.h>				//¼öÇĞ °ü·Ã ÇÔ¼ö
+#include <process.h>			//Thread »ç¿ë ÇÔ¼ö
+#include <Windows.h>			//Window api °ü·Ã ÇÔ¼ö
+#include <signal.h>				//InterruptÃ³¸® ÇÔ¼ö
+#include <time.h>				//½Ã°£ °ü·Ã ÇÔ¼ö
+#include <stdbool.h>			//Bool »ç¿ë ÇÔ¼ö
+#include <stdint.h>				//¿©·¯ typedef °ü·Ã Å¸ÀÔ ÇÔ¼ö
+#include <direct.h>				//Æú´õ °ü·Ã ÇÔ¼ö
+#include "mysql/mysql.h"//MySQL ÇÔ¼öµé
 #include <tchar.h>
 #include "lib//iconv.h"
-#include "SDL/SDL.h"			//SDL - ê¸°ë³¸ í—¤ë”íŒŒì¼
-#include "SDL/SDL_image.h"		//SDL - ì´ë¯¸ì§€ í—¤ë”íŒŒì¼
-#include "SDL/SDL_ttf.h"		//SDL - í°íŠ¸(í…ìŠ¤íŠ¸) í—¤ë”íŒŒì¼
-#include "SDL/han2unicode.h"	//han2unicode - ê¸°ë³¸ 949 ì–¸ì–´ë“¤ì„ uniocdeë¡œ ë°”ê¿”ì¤Œ
-#include "SDL/SDL_mixer.h"		//SDL - ì‚¬ìš´ë“œ í—¤ë”íŒŒì¼
+#include "SDL/SDL.h"			//SDL - ±âº» Çì´õÆÄÀÏ
+#include "SDL/SDL_image.h"		//SDL - ÀÌ¹ÌÁö Çì´õÆÄÀÏ
+#include "SDL/SDL_ttf.h"		//SDL - ÆùÆ®(ÅØ½ºÆ®) Çì´õÆÄÀÏ
+#include "SDL/han2unicode.h"	//han2unicode - ±âº» 949 ¾ğ¾îµéÀ» uniocde·Î ¹Ù²ãÁÜ
+#include "SDL/SDL_mixer.h"		//SDL - »ç¿îµå Çì´õÆÄÀÏ
 //#include "vld/vld.h"
 
-//ì˜¤ë¥˜ ë¬´ì‹œ
+//¿À·ù ¹«½Ã
 #pragma warning (disable : 4244)
 #pragma warning (disable : 4047)
 #pragma warning (disable : 4267)
 
 #pragma comment (lib, "lib/libiconv.lib")
-#pragma comment (lib, "lib/SDL2")			//ê·¸ë˜í”½ ë¼ì´ë¸ŒëŸ¬ë¦¬ 1
-#pragma comment (lib, "lib/SDL2main")		//ê·¸ë˜í”½ ë¼ì´ë¸ŒëŸ¬ë¦¬ 2 
-#pragma comment (lib, "lib/SDL2_image")		//ê·¸ë˜í”½ ë¼ì´ë¸ŒëŸ¬ë¦¬ 3
-#pragma comment (lib, "lib/SDL2_ttf")		//ê·¸ë˜í”½ ë¼ì´ë¸ŒëŸ¬ë¦¬ 4
-#pragma comment (lib, "lib/SDL2_mixer.lib")	//ê·¸ë˜í”½ ì‚¬ìš´ë“œ ë¼ì´ë¸ŒëŸ¬ë¦¬ 5
-#pragma comment (lib, "ws2_32.lib")			//ì†Œì¼“ ë¼ì´ë¸ŒëŸ¬ë¦¬
-#pragma comment (lib, "lib/libmysql.lib")	//MySQL ë¼ì´ë¸ŒëŸ¬ë¦¬
+#pragma comment (lib, "lib/SDL2")			//±×·¡ÇÈ ¶óÀÌºê·¯¸® 1
+#pragma comment (lib, "lib/SDL2main")		//±×·¡ÇÈ ¶óÀÌºê·¯¸® 2 
+#pragma comment (lib, "lib/SDL2_image")		//±×·¡ÇÈ ¶óÀÌºê·¯¸® 3
+#pragma comment (lib, "lib/SDL2_ttf")		//±×·¡ÇÈ ¶óÀÌºê·¯¸® 4
+#pragma comment (lib, "lib/SDL2_mixer.lib")	//±×·¡ÇÈ »ç¿îµå ¶óÀÌºê·¯¸® 5
+#pragma comment (lib, "ws2_32.lib")			//¼ÒÄÏ ¶óÀÌºê·¯¸®
+#pragma comment (lib, "lib/libmysql.lib")	//MySQL ¶óÀÌºê·¯¸®
 
-#define nullptr 0 //c++ì—ë§Œ ìˆëŠ” nullptr  0ìœ¼ë¡œ ì§€ì •
-#define CHOP(x) x[strlen(x) - 1] = ' '	//fgetsë¥¼ ì“°ë©´ ì—”í„°ë„ ë°°ì—´ì—ë‚¨ìŒ. ì—”í„°ë¥¼ ë°°ì—´ì—ì„œ ì‚­ì œí•´ì£¼ëŠ”ê²ƒ
-#define CLS system("cls")	//ì½˜ì†” í™”ë©´ ì§€ìš°ê¸°
-#define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //ì½˜ì†” ì¶œë ¥ ê¸€ì”¨ ì„¤ì •
-#define RESET(X) ZeroMemory(X, sizeof(X))	//ì´ˆê¸°í™” memset()ì´ë‘ ê°™ìŒ
+#define nullptr 0 //c++¿¡¸¸ ÀÖ´Â nullptr  0À¸·Î ÁöÁ¤
+#define CHOP(x) x[strlen(x) - 1] = ' '	//fgets¸¦ ¾²¸é ¿£ÅÍµµ ¹è¿­¿¡³²À½. ¿£ÅÍ¸¦ ¹è¿­¿¡¼­ »èÁ¦ÇØÁÖ´Â°Í
+#define CLS system("cls")	//ÄÜ¼Ö È­¸é Áö¿ì±â
+#define setcolor(X, Y) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), X | (Y << 4)) //ÄÜ¼Ö Ãâ·Â ±Û¾¾ ¼³Á¤
+#define RESET(X) ZeroMemory(X, sizeof(X))	//ÃÊ±âÈ­ memset()ÀÌ¶û °°À½
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
 #define MAXPEOPLE 8
-//MouseUp_Wait = PutMenuë¥¼ ì‚¬ìš©í• ë•Œ ë§ˆìš°ìŠ¤ ë²„íŠ¼ì„ í´ë¦­í•˜ìë§ì ë„˜ì–´ê°€ê¸° ë•Œë¬¸ì— ë°©ì§€ë¥¼ í•´ì¤Œ.
+//MouseUp_Wait = PutMenu¸¦ »ç¿ëÇÒ¶§ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏÀÚ¸»ÀÚ ³Ñ¾î°¡±â ¶§¹®¿¡ ¹æÁö¸¦ ÇØÁÜ.
 
 //typedef
-typedef unsigned short Unicode;	//han2unicodeë¥¼ ì“¸ë•Œ, unsigned short í˜•ì„ ì‚¬ìš©í•¨. ì‰½ê²Œ ì‚¬ìš©í•˜ê¸°ìœ„í•´ typedef í•´ì¤Œ
+typedef unsigned short Unicode;	//han2unicode¸¦ ¾µ¶§, unsigned short ÇüÀ» »ç¿ëÇÔ. ½±°Ô »ç¿ëÇÏ±âÀ§ÇØ typedef ÇØÁÜ
 
-//struct êµ¬ì¡°ì²´
-typedef struct Hitmind_User {	//HitMind_User êµ¬ì¡°ì²´ì´ë‹¤. ì ‘ì†ìì˜ ì •ë³´ë¥¼ ì €ì¥í•¨
-	int ownnum;		//ownnum : ê³ ìœ ë²ˆí˜¸
-	char id[30];	//id :  ë¡œê·¸ì¸í• ë•Œ id
-	char password[42]; //password : ë¡œê·¸ì¸í• ë•Œ ë¹„ë°€ë²ˆí˜¸
-	char name[30]; //name : ì‚¬ìš©ìì˜ ì´ë¦„
-	int level;		//level : ì ‘ì†ìì˜ ë ˆë²¨
-	int money;		//money : ì ‘ì†ìì˜ ëˆ
+								//struct ±¸Á¶Ã¼
+typedef struct Hitmind_User {	//HitMind_User ±¸Á¶Ã¼ÀÌ´Ù. Á¢¼ÓÀÚÀÇ Á¤º¸¸¦ ÀúÀåÇÔ
+	int ownnum;		//ownnum : °íÀ¯¹øÈ£
+	char id[30];	//id :  ·Î±×ÀÎÇÒ¶§ id
+	char password[42]; //password : ·Î±×ÀÎÇÒ¶§ ºñ¹Ğ¹øÈ£
+	char name[30]; //name : »ç¿ëÀÚÀÇ ÀÌ¸§
+	int level;		//level : Á¢¼ÓÀÚÀÇ ·¹º§
+	int money;		//money : Á¢¼ÓÀÚÀÇ µ·
 	char ownip[42];
 	int pass_length;
 }Hit_User;
@@ -73,6 +78,18 @@ typedef struct Connect_Status {
 	void * arg;
 	bool ishappen;
 }Connect_status;
+typedef struct HitMind_WaitRoom {
+	int ownnum;
+	char name[30];
+	char password[35];
+	char mode[10];
+	int question;
+	int time;
+	int people;
+	int max_people;
+	char ip[20];
+
+}Hit_Room;
 typedef struct Warning_Message {
 	int ison;
 	char message[128];
@@ -83,6 +100,15 @@ typedef struct Warning_Message {
 	int g;
 	int b;
 }Warning_M;
+typedef struct Canvas {
+	SDL_Renderer * Renderer;
+	SDL_Color  Color;
+	SDL_Rect Rect;
+	int Strong;
+	int Flag;
+	int Click;
+	SDL_Point Last;
+}Canvas;
 typedef struct SDL_Slider {
 	SDL_Texture * BoxTexture;
 	SDL_Texture * BarTexture;
@@ -92,9 +118,22 @@ typedef struct SDL_Slider {
 	float End;
 	int * Value;
 	int Click;
-	int Update;
 	int Flag;
 }Slider;
+typedef struct MYSQL_CHATING {
+	int ownnum;
+	char name[30];
+	char message[128];
+	char time[30];
+}Chating;
+typedef struct Button {
+	SDL_Renderer *Renderer;
+	SDL_Texture * ButtonTexture;
+	SDL_Rect ButtonRect;
+	SDL_Color Color;
+	int Padding;
+	int Flag;
+}Button;
 typedef struct Socket_Parameters {
 	WSADATA wsadata;
 	SOCKET Slisten_socket;
@@ -112,92 +151,113 @@ typedef struct Socket_Parameters {
 }SockParam;
 
 /*
-	ë³€ìˆ˜ì— ëŒ€í•œ ì„¤ëª…:
-	ì´ include.hí—¤ë”íŒŒì¼ì€ ì—¬ëŸ¬ êµ°ë°ì—ì„œ ì‚¬ìš©ì„í•¨.
-	ê·¸ëŸ¬ë¯€ë¡œ ê°™ì€ ë³€ìˆ˜ë¥¼ ê³µìœ í• ë–„ì—ëŠ” ì „ì—­ë³€ìˆ˜ì¸ staticì„ ì‚¬ìš©í•´ ì¤˜ì•¼í•¨
+º¯¼ö¿¡ ´ëÇÑ ¼³¸í:
+ÀÌ include.hÇì´õÆÄÀÏÀº ¿©·¯ ±ºµ¥¿¡¼­ »ç¿ëÀ»ÇÔ.
+±×·¯¹Ç·Î °°Àº º¯¼ö¸¦ °øÀ¯ÇÒ‹š¿¡´Â Àü¿ªº¯¼öÀÎ staticÀ» »ç¿ëÇØ Áà¾ßÇÔ
 */
 
-// ì†Œì¼“ìš© ì „ì—­ë³€ìˆ˜
+// ¼ÒÄÏ¿ë Àü¿ªº¯¼ö
 
 static int Display_X = 1920;
 static int Display_Y = 1080;
-static int BGmusic = 30;     //ë°°ê²½ìŒì•… í¬ê¸°
-static int Sound = 30;       //íš¨ê³¼ìŒ
+static int BGmusic = 30;     //¹è°æÀ½¾Ç Å©±â
+static int Sound = 30;       //È¿°úÀ½
 static int Full = 0;
-
-//---------------ì½˜ì†” í•¨ìˆ˜----------------
-//ë‚˜ì˜ IPë¥¼ ë°›ì•„ì˜´
+//---------------ÄÜ¼Ö ÇÔ¼ö----------------
+//³ªÀÇ IP¸¦ ¹Ş¾Æ¿È
 char * GetDefaultMyIP();
-//ì´ˆê¸° ì„¤ì •ê°’ì— ë§ê²Œ í”„ë¡œê·¸ë¨ì„ ì‹¤í–‰ í•¨
+//ÃÊ±â ¼³Á¤°ª¿¡ ¸Â°Ô ÇÁ·Î±×·¥À» ½ÇÇà ÇÔ
 void settings(int *x, int *y, int *music, int *sound, int *full);
-//ì„¤ì •ë³€ê²½
+//¼³Á¤º¯°æ
 void changesetting(int bgmusic, int sound, int x, int y, int full);
-//---------------ê·¸ë˜í”½ í•¨ìˆ˜--------------
 
-void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
+int wstrcmp(wchar_t *First, char *second);
 
-//SDL - í…ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•˜ëŠ”í•¨ìˆ˜
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);		
-//SDL - PutMenuí•¨ìˆ˜ ë²„íŠ¼ì„ ì¶”ê°€í•¨. ë§ˆìš°ìŠ¤ë¥¼ ê°€ì ¸ë‹¤ë˜ë©´ ì»¤ì§€ëŠ” íš¨ê³¼ì™€ í´ë¦­í•˜ë©´ 1ì„ ë¦¬í„´, ì•„ë‹ˆë©´ 0ì„ ë¦¬í„´í•¨
+void soundplay();
+//---------------±×·¡ÇÈ ÇÔ¼ö--------------
+void HitMind_TTF_Init();
+void HitMind_TTF_Close();
+//SDL - ÅØ½ºÆ®¸¦ Ãâ·ÂÇÏ´ÂÇÔ¼ö
+void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
+//SDL - PutMenuÇÔ¼ö ¹öÆ°À» Ãß°¡ÇÔ. ¸¶¿ì½º¸¦ °¡Á®´ÙµÇ¸é Ä¿Áö´Â È¿°ú¿Í Å¬¸¯ÇÏ¸é 1À» ¸®ÅÏ, ¾Æ´Ï¸é 0À» ¸®ÅÏÇÔ
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
-//SDL - PutText í…ìŠ¤íŠ¸ë¥¼ ì¶œë ¥í•¨.
+//SDL - PutText ÅØ½ºÆ®¸¦ Ãâ·ÂÇÔ.
 int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
-//SDL - LoadTexture ì´ë¯¸ì§€ë¥¼ ë¶ˆëŸ¬ì˜´ ì¸ìê°’ : ë Œë”ëŸ¬, íŒŒì¼ ê²½ë¡œ
+//SDL - LoadTexture ÀÌ¹ÌÁö¸¦ ºÒ·¯¿È ÀÎÀÚ°ª : ·»´õ·¯, ÆÄÀÏ °æ·Î
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
-//SDL - RenderTexture ì´ë¯¸ì§€ë¥¼ ë Œë”ëŸ¬ì— ì¶œë ¥í•¨ Rectë¡œ x, y, h, wë¥¼ ì„¤ì • ê°€ëŠ¥
+//SDL - RenderTexture ÀÌ¹ÌÁö¸¦ ·»´õ·¯¿¡ Ãâ·ÂÇÔ Rect·Î x, y, h, w¸¦ ¼³Á¤ °¡´É
 void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect);
-//SDL -  LoadTextureEx ì´ë¯¸ì§€ë¥¼ íŠ¹ë³„í•˜ê²Œ ë¶ˆëŸ¬ì˜´ ì¸ìê°’ : ë Œë”ëŸ¬, íŒŒì¼ ê²½ë¡œ, r, g, b í•´ë‹¹ ìƒ‰ê¹”ì„ ì—†ì•°
+//SDL -  LoadTextureEx ÀÌ¹ÌÁö¸¦ Æ¯º°ÇÏ°Ô ºÒ·¯¿È ÀÎÀÚ°ª : ·»´õ·¯, ÆÄÀÏ °æ·Î, r, g, b ÇØ´ç »ö±òÀ» ¾ø¾Ú
 SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b);
-//SDL - RenderTextureEX í…ìŠ¤ì³ë¥¼ íŠ¹ë³„í•˜ê²Œ ì¶œë ¥í•¨ ì¸ìê°’ : ë Œë”ëŸ¬, ì´ë¯¸ì§€, ìœ„ì¹˜, ê°ë„
+//SDL - RenderTextureEX ÅØ½ºÃÄ¸¦ Æ¯º°ÇÏ°Ô Ãâ·ÂÇÔ ÀÎÀÚ°ª : ·»´õ·¯, ÀÌ¹ÌÁö, À§Ä¡, °¢µµ
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
 int hancheck(int unicode);
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
 int hannum(wchar_t unicode[], int len);
-//SDL - RenderTextureXYWH ì´ë¯¸ì§€ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ”ë° Rectë¥¼ ë¯¸ë¦¬ ìƒì„±í•  í•„ìš”ê°€ ì—†ìŠ´
+//SDL - RenderTextureXYWH ÀÌ¹ÌÁö¸¦ ºÒ·¯¿À´Âµ¥ Rect¸¦ ¹Ì¸® »ı¼ºÇÒ ÇÊ¿ä°¡ ¾ø½¿
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
-//SDL - PutText_Unicode Unicodeëª¨ë“œë¡œ ê¸€ìë¥¼ ì¶œë ¥í•œë‹¤. 
-void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius,int strong);
+//SDL - PutText_Unicode Unicode¸ğµå·Î ±ÛÀÚ¸¦ Ãâ·ÂÇÑ´Ù. 
+void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
-void FillRoundRect(SDL_Renderer* Renderer, int r,int g, int b, int x, int y, int w, int h, int radius);
-void DrawRoundRect(SDL_Renderer* Renderer, int r, int g ,int b, int x, int y, int w, int h, int radius, int strong);
+void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
+void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
-void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default,int Flag);
+void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
-void UpdateSlider(Slider* Slider, SDL_Event * event);
-int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event);
+int UpdateSlider(Slider* Slider, SDL_Event *event);
+int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int * happen);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
-void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
-//SDL - PutButtonImage ì´ë¯¸ì§€ ë²„íŠ¼ì„ ë§Œë“ ë‹¤ ê¸°ì¡´ì€ Textureì˜ ì´ë¯¸ì§€ë¥¼, ë§ˆìš°ìŠ¤ë¥¼ ì˜¬ë¦¬ë©´ MouseOnImageë¡œ ë³€í•œë‹¤
-int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event);
-//---------------MySql í•¨ìˆ˜---------------
-//ìë™ ë¡œê·¸ì¸ì¸ì§€ ì²´í¬í•˜ëŠ” í•¨ìˆ˜
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect);
+void CreateCanvas(Canvas * Canvas, SDL_Renderer * Renderer, int x, int y, int w, int h, int strong);
+int UpdateCanvas(Canvas* Canvas, SDL_Event * event);
+//SDL - PutButtonImage ÀÌ¹ÌÁö ¹öÆ°À» ¸¸µç´Ù ±âÁ¸Àº TextureÀÇ ÀÌ¹ÌÁö¸¦, ¸¶¿ì½º¸¦ ¿Ã¸®¸é MouseOnImage·Î º¯ÇÑ´Ù
+int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
+int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
+void MoveSlider_value(Slider *Slider, int value);
+void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
+void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
+void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTexture, int Padding, int x, int y, int w, int h, int r, int g, int b, int a);
+int UpdateButton(Button * Button, SDL_Event * event);
+void DrawButton(Button * Button);
+void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
+void ConnectCircle(SDL_Renderer * Renderer, int Last_x, int Last_y, double dx, double dy, double length, int radius);
+//---------------MySql ÇÔ¼ö---------------
+//ÀÚµ¿ ·Î±×ÀÎÀÎÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
 Hit_User *IsAutoLogin(MYSQL *cons);
 int getUesrStatus(MYSQL *cons, char arr[30][30]);
 int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t *answer);
-//Password_Change ë¹„ë°€ë²ˆí˜¸ë¥¼ ë³€ê²½í•˜ëŠ”ë° í•„ìš”í•œ í•¨ìˆ˜. ì•„ì´ë”” ì˜ëª»ë˜ë©´ -1, ë‹µë³€ ì˜ëª»ë˜ë©´ 0 ì—…ë°ì´íŠ¸ì‹¤íŒ¨ -2 ì„±ê³µ 1
+//Password_Change ºñ¹Ğ¹øÈ£¸¦ º¯°æÇÏ´Âµ¥ ÇÊ¿äÇÑ ÇÔ¼ö. ¾ÆÀÌµğ Àß¸øµÇ¸é -1, ´äº¯ Àß¸øµÇ¸é 0 ¾÷µ¥ÀÌÆ®½ÇÆĞ -2 ¼º°ø 1
 int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer);
-//_beginthreadexìš© í•¨ìˆ˜. ì“°ë ˆë“œë¡œ mysqlì— ì—°ê²°í•¨
+//_beginthreadex¿ë ÇÔ¼ö. ¾²·¹µå·Î mysql¿¡ ¿¬°áÇÔ
 void Thread_MySQL(Connect_status *type);
-//ì²˜ìŒ MySQLì— ì—°ê²°í•¨
+//Ã³À½ MySQL¿¡ ¿¬°áÇÔ
 MYSQL * Mysql_Connect(char *ip);
-//ì£¼ì œì¤‘ì— ëœë¤ìœ¼ë¡œ í•˜ë‚˜ë¥¼ ë¶ˆëŸ¬ì™€ ë¬¸ìì—´ë¡œ ë°˜í™˜
-char * Get_Random_Topic(MYSQL *cons);	
-//ì•„ì´ë””ì™€ íŒ¨ìŠ¤ì›Œë“œë¡œ ë¡œê·¸ì¸í•¨
-Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
-//---------------Socket í•¨ìˆ˜--------------
+//ÁÖÁ¦Áß¿¡ ·£´ıÀ¸·Î ÇÏ³ª¸¦ ºÒ·¯¿Í ¹®ÀÚ¿­·Î ¹İÈ¯
+char * Get_Random_Topic(MYSQL *cons);
+//¹æ ¸ñ·ÏÀ» ºÒ·¯¿È
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms);
+//¾ÆÀÌµğ¿Í ÆĞ½º¿öµå·Î ·Î±×ÀÎÇÔ
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
+//ÀüÃ¼ Ã¤ÆÃÀ» Ãß°¡ÇÔ
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
+//ÀüÃ¼ Ã¤ÆÃÀ» ºÒ·¯¿È
+int ReadChating_all(MYSQL *cons, Chating * chatings);
+//¹æÀ» ¸¸µë, ¹æÀÌ¸§, ºñ¹Ğ¹øÈ£, ¸ğµå, ¹®Á¦ °³¼ö, ¹®Á¦ ½Ã°£ ÀÌ ÇÊ¿äÇÔ
+int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
+//---------------Socket ÇÔ¼ö--------------
 void OpenServer(SockParam *param);
-// ì“°ë ˆë“œ,ì„œë²„ì „ìš© - ë°©(ì„œë²„)ë¥¼ ì—°ë‹¤
+// ¾²·¹µå,¼­¹öÀü¿ë - ¹æ(¼­¹ö)¸¦ ¿¬´Ù
 void connectServer(SockParam *param);
-// ì“°ë ˆë“œ,í´ë¼ì´ì–¸íŠ¸ ì „ìš© - ë°©(ì„œë²„)ì— ì—°ê²°í•¨ ì¸ìê°’ : IPì£¼ì†Œ
+// ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¹æ(¼­¹ö)¿¡ ¿¬°áÇÔ ÀÎÀÚ°ª : IPÁÖ¼Ò
 void HandleClient(SockParam *param);
-// ì“°ë ˆë“œ,ì„œë²„ì „ìš© - í´ë¼ì´ì–¸íŠ¸ì—ê²Œì„œ ë°ì´í„°ë¥¼ ê³„ì† ë°›ì•„ì˜¨ë‹¤ ì¸ìê°’ : í´ë¼ì´ì–¸íŠ¸ ë²ˆí˜¸ 
+// ¾²·¹µå,¼­¹öÀü¿ë - Å¬¶óÀÌ¾ğÆ®¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ °è¼Ó ¹Ş¾Æ¿Â´Ù ÀÎÀÚ°ª : Å¬¶óÀÌ¾ğÆ® ¹øÈ£ 
 void sendall(SockParam *param);
-// ì„œë²„ì „ìš© - ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ë°ì´í„°ë¥¼ ë³´ë‚¸ë‹¤ ì¸ìê°’ : ì „ì†¡í•  ë°ì´í„°, ì„œë²„ì˜ í´ë¼ì´ì–¸íŠ¸ ë²ˆí˜¸
-// ì„œë²„ì˜ í´ë¼ì´ì–¸íŠ¸ ë²ˆí˜¸ëŠ” sendall í• ë•Œ ìê¸° ìì‹ ì—ê²ŒëŠ” ë³´ë‚´ì§€ ì•Šê¸° ìœ„í•´ ë§Œë“ ê²ƒ
+// ¼­¹öÀü¿ë - ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô µ¥ÀÌÅÍ¸¦ º¸³½´Ù ÀÎÀÚ°ª : Àü¼ÛÇÒ µ¥ÀÌÅÍ, ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£
+// ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£´Â sendall ÇÒ¶§ ÀÚ±â ÀÚ½Å¿¡°Ô´Â º¸³»Áö ¾Ê±â À§ÇØ ¸¸µç°Í
 void Clientrecv(SockParam *param);
-// ì“°ë ˆë“œ,í´ë¼ì´ì–¸íŠ¸ ì „ìš© - ì„œë²„ì—ê²Œì„œ ë°ì´í„°ë¥¼ ë°›ì•„ì˜¨ë‹¤
+// ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¼­¹ö¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿Â´Ù

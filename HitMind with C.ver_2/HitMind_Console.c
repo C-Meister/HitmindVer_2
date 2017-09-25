@@ -51,3 +51,45 @@ void changesetting(int bgmusic, int sound, int x, int y, int full) {
 	fprintf(set, "fullscreen : %d\n", full);
 	fclose(set);
 }
+int wstrcmp(wchar_t *First, char *second) {
+	char query[384];
+	char euc_kr[128];
+	strcpy(query, UNICODE2UTF8(First, 128));
+	UTF82EUCKR(euc_kr, 128, query, 384);
+	euc_kr[strlen(euc_kr)] = 0;
+	return strcmp(euc_kr, second);
+}
+
+void soundplay() {
+	
+	
+
+	srand((unsigned)time(NULL));
+
+	int bgmrand = 0;
+	int i;
+	char tmpbgm[20] = { 0, };
+	Mix_Music *bgm[12];
+	int colbgm[12] = { 180,120,170,230,100,325,102,185,155,95,125,160 };
+
+	for (i = 0; i < 12; i++) {
+		sprintf(tmpbgm, "sound/%d.mp3", i + 1);
+		bgm[i] = Mix_LoadMUS(tmpbgm);
+		colbgm[i] *= 1000;
+	}
+
+	while (1) {
+		bgmrand = rand() % 12;
+		Mix_PlayMusic(bgm[bgmrand], 1);
+		Sleep(colbgm[bgmrand]);
+	}
+
+
+
+	for (i = 0; i < 12; i++) {
+		Mix_FreeMusic(bgm[i]);
+	}
+
+
+}
+

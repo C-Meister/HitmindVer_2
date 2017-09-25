@@ -98,6 +98,7 @@ int getUesrStatus(MYSQL *cons, char arr[30][30])
 	{
 		strcpy(arr[i], row[1]);
 		arr[i][27] = atoi(row[4]);
+		arr[i][28] = atoi(row[9]);
 		i++;
 	}
 	mysql_free_result(sql_result);
@@ -229,4 +230,96 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		return My_User;		//리턴
 	}
 
+}
+int ReadChating_all(MYSQL *cons, Chating * chatings)
+{
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+	memset(chatings, 0, sizeof(chatings));
+	int i = 0;
+	mysql_query(cons, "select * from all_chating order by ownnum desc limit 12");
+	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0)
+	{
+		chatings[i].ownnum = atoi(rows[0]);
+		strcpy(chatings[i].name, rows[1]);
+		strcpy(chatings[i].message, rows[2]);
+		strcpy(chatings[i].time, rows[3]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}
+
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
+	char char_message[128];
+	char query[128];
+	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
+	UTF82EUCKR(char_message, 128, query, 384);
+	char_message[strlen(char_message)] = '\0';
+	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
+	if (mysql_query(cons, query) != 0)
+		return 0;
+	return 1;
+}
+
+int Get_Room_List(MYSQL *cons, Hit_Room * rooms) {
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+	int i = 0;
+	mysql_query(cons, "select * from room");
+	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0) {
+		rooms[i].ownnum = atoi(rows[0]);
+		strcpy(rooms[i].ip, rows[1]);
+		strcpy(rooms[i].name, rows[2]);
+		strcpy(rooms[i].password, rows[3]);
+		rooms[i].people = atoi(rows[4]);
+		strcpy(rooms[i].mode, rows[5]);
+		rooms[i].time = atoi(rows[6]);
+		rooms[i].question = atoi(rows[7]);
+		rooms[i].max_people = atoi(rows[8]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}
+
+int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer)
+{
+	char char_roomname[128] = { 0 , };
+	char char_roompass[128] = { 0, };
+	char query[384];
+	strcpy(query, UNICODE2UTF8(roomname, wcslen(roomname)));
+	UTF82EUCKR(char_roomname, 128, query, 384);
+	char_roomname[strlen(char_roomname)] = '\0';
+
+	strcpy(query, UNICODE2UTF8(rompass, wcslen(rompass)));
+	UTF82EUCKR(char_roompass, 128, query, 384);
+	char_roompass[strlen(char_roompass)] = '\0';
+
+	MYSQL_ROW rows;
+	sprintf(query, "select * from room where name = '%s'", char_roomname);
+	mysql_query(cons, query);
+	rows = mysql_fetch_row(mysql_store_result(cons));
+	if (rows != 0)
+	{
+		return -1;
+	}
+	char char_mode[10];
+	if (mode == 1)
+	{
+		strcpy(char_mode, "일반");
+	}
+	else if (mode == 2) {
+		strcpy(char_mode, "콘테스트");
+	}
+	else
+		strcpy(char_mode, "FPS");
+	sprintf(query, "insert into room (ip, name, password , mode, time, question, max_people) values ('%s', '%s', '%s', '%s', %d, %d, 4)", GetDefaultMyIP(), char_roomname, char_roompass, char_mode, timer, question);
+	if (mysql_query(cons, query) != 0)
+	{
+		return 0;
+	}
+	return 1;
 }
