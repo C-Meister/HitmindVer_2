@@ -58,6 +58,7 @@
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
 #define MAXPEOPLE 8
+//MouseUp_Wait = PutMenuë¥??¬ìš©? ë•Œ ë§ˆìš°??ë²„íŠ¼???´ë¦­?˜ìë§ì ?˜ì–´ê°€ê¸??Œë¬¸??ë°©ì?ë¥??´ì¤Œ.
 //MouseUp_Wait = PutMenu¸¦ »ç¿ëÇÒ¶§ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏÀÚ¸»ÀÚ ³Ñ¾î°¡±â ¶§¹®¿¡ ¹æÁö¸¦ ÇØÁÜ.
 
 //typedef
@@ -120,20 +121,7 @@ typedef struct SDL_Slider {
 	int Click;
 	int Flag;
 }Slider;
-typedef struct MYSQL_CHATING {
-	int ownnum;
-	char name[30];
-	char message[128];
-	char time[30];
-}Chating;
-typedef struct Button {
-	SDL_Renderer *Renderer;
-	SDL_Texture * ButtonTexture;
-	SDL_Rect ButtonRect;
-	SDL_Color Color;
-	int Padding;
-	int Flag;
-}Button;
+
 typedef struct Socket_Parameters {
 	WSADATA wsadata;
 	SOCKET Slisten_socket;
@@ -150,13 +138,41 @@ typedef struct Socket_Parameters {
 	int num;
 }SockParam;
 
+
+typedef struct MYSQL_CHATING {
+	int ownnum;
+	char name[30];
+	char message[128];
+	char time[30];
+}Chating;
+typedef struct Button {
+	SDL_Renderer *Renderer;
+	SDL_Texture * ButtonTexture;
+	SDL_Rect ButtonRect;
+	SDL_Color Color;
+	int Padding;
+	int Flag;
+}Button;
+
 /*
 º¯¼ö¿¡ ´ëÇÑ ¼³¸í:
 ÀÌ include.hÇì´õÆÄÀÏÀº ¿©·¯ ±ºµ¥¿¡¼­ »ç¿ëÀ»ÇÔ.
 ±×·¯¹Ç·Î °°Àº º¯¼ö¸¦ °øÀ¯ÇÒ‹š¿¡´Â Àü¿ªº¯¼öÀÎ staticÀ» »ç¿ëÇØ Áà¾ßÇÔ
 */
 
-// ¼ÒÄÏ¿ë Àü¿ªº¯¼ö
+
+
+//// ¼ÒÄÏ¿ë Àü¿ªº¯¼ö
+//static WSADATA wsaData;
+//static SOCKET Slisten_socket, Sconnect_socket[8];
+//static SOCKET Clisten_socket, Cconnect_socket;
+//static SOCKADDR_IN listen_addr, connect_addr;
+//static int sockaddr_in_size;
+//static char message[200];
+//static uintptr_t Serverthread[8];
+//static uintptr_t Clientthread;
+//static char playerinfo[8][30];
+
 
 static int Display_X = 1920;
 static int Display_Y = 1080;
@@ -237,6 +253,24 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 void Thread_MySQL(Connect_status *type);
 //Ã³À½ MySQL¿¡ ¿¬°áÇÔ
 MYSQL * Mysql_Connect(char *ip);
+
+//ì£¼ì œì¤‘ì— ?œë¤?¼ë¡œ ?˜ë‚˜ë¥?ë¶ˆëŸ¬?€ ë¬¸ì?´ë¡œ ë°˜í™˜
+char * Get_Random_Topic(MYSQL *cons);	
+//?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
+//---------------Socket ?¨ìˆ˜--------------
+void OpenServer(SockParam *param);
+// ?°ë ˆ???œë²„?„ìš© - ë°??œë²„)ë¥??°ë‹¤
+void connectServer(SockParam *param);
+// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ë°??œë²„)???°ê²°???¸ìê°?: IPì£¼ì†Œ
+void HandleClient(SockParam *param);
+// ?°ë ˆ???œë²„?„ìš© - ?´ë¼?´ì–¸?¸ì—ê²Œì„œ ?°ì´?°ë? ê³„ì† ë°›ì•„?¨ë‹¤ ?¸ìê°?: ?´ë¼?´ì–¸??ë²ˆí˜¸ 
+void sendall(SockParam *param);
+// ?œë²„?„ìš© - ëª¨ë“  ?´ë¼?´ì–¸?¸ì—ê²??°ì´?°ë? ë³´ë‚¸???¸ìê°?: ?„ì†¡???°ì´?? ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸
+// ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸??sendall ? ë•Œ ?ê¸° ?ì‹ ?ê²Œ??ë³´ë‚´ì§€ ?Šê¸° ?„í•´ ë§Œë“ ê²?
+void Clientrecv(SockParam *param);
+// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ?œë²„?ê²Œ???°ì´?°ë? ë°›ì•„?¨ë‹¤
+
 //ÁÖÁ¦Áß¿¡ ·£´ıÀ¸·Î ÇÏ³ª¸¦ ºÒ·¯¿Í ¹®ÀÚ¿­·Î ¹İÈ¯
 char * Get_Random_Topic(MYSQL *cons);
 //¹æ ¸ñ·ÏÀ» ºÒ·¯¿È
@@ -250,14 +284,15 @@ int ReadChating_all(MYSQL *cons, Chating * chatings);
 //¹æÀ» ¸¸µë, ¹æÀÌ¸§, ºñ¹Ğ¹øÈ£, ¸ğµå, ¹®Á¦ °³¼ö, ¹®Á¦ ½Ã°£ ÀÌ ÇÊ¿äÇÔ
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
 //---------------Socket ÇÔ¼ö--------------
-void OpenServer(SockParam *param);
+void OpenServer();
 // ¾²·¹µå,¼­¹öÀü¿ë - ¹æ(¼­¹ö)¸¦ ¿¬´Ù
-void connectServer(SockParam *param);
+void connectServer(char *serverIP);
 // ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¹æ(¼­¹ö)¿¡ ¿¬°áÇÔ ÀÎÀÚ°ª : IPÁÖ¼Ò
-void HandleClient(SockParam *param);
+void HandleClient(int num);
 // ¾²·¹µå,¼­¹öÀü¿ë - Å¬¶óÀÌ¾ğÆ®¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ °è¼Ó ¹Ş¾Æ¿Â´Ù ÀÎÀÚ°ª : Å¬¶óÀÌ¾ğÆ® ¹øÈ£ 
-void sendall(SockParam *param);
+void sendall(char *lmessage, int c);
 // ¼­¹öÀü¿ë - ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô µ¥ÀÌÅÍ¸¦ º¸³½´Ù ÀÎÀÚ°ª : Àü¼ÛÇÒ µ¥ÀÌÅÍ, ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£
 // ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£´Â sendall ÇÒ¶§ ÀÚ±â ÀÚ½Å¿¡°Ô´Â º¸³»Áö ¾Ê±â À§ÇØ ¸¸µç°Í
-void Clientrecv(SockParam *param);
+void Clientrecv();
 // ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¼­¹ö¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿Â´Ù
+
