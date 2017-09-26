@@ -162,6 +162,9 @@ typedef struct User {
 	int Turn;
 	int Count;
 }User;
+
+
+
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
