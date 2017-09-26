@@ -245,6 +245,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 		strcpy(chatings[i].name, rows[1]);
 		strcpy(chatings[i].message, rows[2]);
 		strcpy(chatings[i].time, rows[3]);
+		
 		i++;
 	}
 	mysql_free_result(sql_result);
