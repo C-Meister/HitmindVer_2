@@ -18,7 +18,7 @@ void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int
 	Dst.h = Src.h;
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
 	SDL_DestroyTexture(Texture);
-	return;
+	return Src.w;// 출력할 문자열의 너비를 반환
 }
 void HitMind_TTF_Init()
 {
@@ -87,8 +87,6 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
-
-
 	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
 	{
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
@@ -106,6 +104,79 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 		else {
 			*happen = true;
 			return -1;
+		}
+	}
+	return 0;
+}
+/*
+	마우스를 올려놓으면 MouseOnImage출력 후 리턴 0, 이미지 클릭시에는 리턴 1, 다른 곳 클릭 시 원래 이미지 출력하고 리턴 -1
+*/
+int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag) {//이미지 버튼 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
+	if (event->type == SDL_MOUSEMOTION) {
+		if (*Flag == ACTIVATED) {
+			return 0;
+		}
+		if (event->motion.x >= x && event->motion.y >= y && event->motion.x <= x + w && event->button.y <= y + h)
+		{
+			if (*Flag == HIGHLIGHT) {
+				return 0;
+			}
+			else {
+				SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+				SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장	
+				*Flag = HIGHLIGHT;
+				return 1;
+			}
+		}
+		else {
+			if (*Flag == DEACTIVATED) {
+				return 0;
+			}
+			else {
+				*Flag = DEACTIVATED;
+				SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+				SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+				return 1;
+			}
+		}
+	}
+	else if (event->type == SDL_MOUSEBUTTONDOWN) {
+		if (event->button.button != 1)
+			return 0;
+		if (event->button.x >= x && event->button.y >= y && event->button.x <= x + w && event->button.y <= y + h) {
+
+			if (*Flag == ACTIVATED) {
+				return 0;
+			}
+			else {
+				if (MouseClickImage != NULL) {
+					SDL_QueryTexture(MouseClickImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+					SDL_RenderCopy(Renderer, MouseClickImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장	
+				}
+				*Flag = ACTIVATED;
+				return 1;
+			}
+		}
+		else {
+
+			if (*Flag == DEACTIVATED) {
+				return 0;
+			}
+			else {
+				*Flag = DEACTIVATED;
+				SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+				SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -152,6 +223,31 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 	else if (m == 2)
 		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
 
+	return 0;	//평소에도 0을 리턴
+}
+int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size,int Limit, SDL_Color color)
+{
+	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
+	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(font, unicode, color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+	SDL_Texture* Texture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+	SDL_Rect Src;
+	Src.x = 0;
+	Src.y = 0;
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+	if (Src.w > Limit) {
+		SDL_DestroyTexture(Texture);
+		TTF_CloseFont(font);	//폰트를 닫음
+		return -1;
+	}
+	SDL_Rect Dst;
+	Dst.x = x;
+	Dst.y = y;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	TTF_CloseFont(font);	//폰트를 닫음
 	return 0;	//평소에도 0을 리턴
 }
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
@@ -667,7 +763,7 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 }
 int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
-		int x = event->button.x; int y = event->button.y;
+			int x = event->button.x; int y = event->button.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
 				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
@@ -706,40 +802,22 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				int Strong = Canvas->Strong;//굵기
 				int radius = Strong*0.5;// 굵기의 1/2 또는 반지름
 				SDL_Rect rect;
-
+				rect.x = Last_x-radius; rect.y = Last_y-radius;
+				rect.w = rect.h = Strong;
 				if (Canvas->Flag == PENCIL) {
-					ConnectCircle(Renderer, Last_x, Last_y, dx, dy, length, radius);
-				/*	int old_x = Last_x; int old_y = Last_y;
-					int i;
-					for (i = 1; i < length; i++) {
-						rect.x = (int)floor(Last_x + i*dx);
-						rect.y = (int)floor(Last_y + i*dy);
-						if (rect.x == old_x && rect.y == old_y) {
-							continue;
-						}
-						FillCircle(Renderer,rect.x,rect.y,radius);
-						old_x = rect.x;
-						old_y = rect.y;
-					}*/
+					
+					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
+					if (Strong >= 4) {
+						LineCircle(Renderer, Strong, Last_x, Last_y, x, y);
+					}
+					else {
+						LineThick(Renderer, Strong, Last_x, Last_y, x, y);
+					}
 					Canvas->Last.x = x; Canvas->Last.y = y;
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
-					rect.w = rect.h = Strong;
-					SDL_SetRenderDrawColor(Canvas->Renderer,255, 255, 255, 0);
-					int x_Exp = Last_x - radius; int y_Exp = Last_y - radius;
-					int old_x = x_Exp; int old_y = y_Exp;
-					int i;
-					for (i = 1; i < length; i++) {
-						rect.x = (int)floor(x_Exp + i*dx);
-						rect.y = (int)floor(y_Exp + i*dy);
-						if (rect.x == old_x && rect.y == old_y) {
-							continue;
-						}
-						SDL_RenderFillRect(Renderer, &rect);
-						old_x = rect.x;
-						old_y = rect.y;
-					}
+					LineThick(Renderer,Strong,Last_x,Last_y,x,y);
 					Canvas->Last.x = x; Canvas->Last.y = y;
 					return 1;
 				}
@@ -762,6 +840,11 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 	}
 	else
 		return 0;
+	//SDL_SetRenderDrawColor(Canvas->Renderer, 255, 0, 255, 0);
+	//rect.x = x - 2*Strong;
+	//rect.y = y - 2*Strong;                              // 소실되는 이벤트를 알아보기 위한 코드
+	//rect.w = rect.h = 4* Strong;
+	//SDL_RenderFillRect(Renderer, &rect);
 }
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull)
 {
@@ -858,23 +941,141 @@ void FillCircle(SDL_Renderer * Renderer,int Center_x, int Center_y,int radius) {
 		SDL_RenderDrawLine(Renderer, left_x, down_y,right_x, down_y);
 	}
 }
-void ConnectCircle(SDL_Renderer * Renderer, int Last_x, int Last_y, double dx, double dy, double length,int radius) {
-	int left_x, right_x, up_y, down_y;
-	double y; int i, old_x, old_y;
-	for (y = 0; y < radius; y++) {
-		left_x = Last_x - (int)sqrt(radius*radius - y*y) + !y;
-		right_x = Last_x + (int)sqrt(radius*radius - y*y) - !y;
-		old_x =old_y = 0;
-		up_y = Last_y - y;
-		down_y = Last_y + y;
-		for (i = 1; i < length; i++) {
-			if (floor(i*dx) == old_x && floor(i*dy) == old_y) {
-				continue;
-			}
-			old_x = floor(i * dx);
-			old_y = floor(i * dy);
-			SDL_RenderDrawLine(Renderer, left_x+old_x, up_y+old_y, right_x+old_x, up_y+old_y);
-			SDL_RenderDrawLine(Renderer, left_x+old_x, down_y+old_y,right_x+old_x, down_y+old_y);
+void Line(SDL_Renderer* Renderer,float x1, float y1, float x2, float y2)
+{
+	// Bresenham's line algorithm
+	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+	if (steep)
+	{
+		swap(&x1, &y1);
+		swap(&x2, &y2);
+	}
+
+	if (x1 > x2)
+	{
+		swap(&x1, &x2);
+		swap(&y1, &y2);
+	}
+
+	const float dx = x2 - x1;
+	const float dy = fabs(y2 - y1);
+
+	float error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
+
+	const int maxX = (int)x2;
+
+	for (int x = (int)x1; x<=maxX; x++)
+	{
+		if (steep)
+		{
+			SDL_RenderDrawPoint(Renderer,y, x);
+		}
+		else
+		{
+			SDL_RenderDrawPoint(Renderer,x, y);
+		}
+
+		error -= dy;
+		if (error < 0)
+		{
+			y += ystep;
+			error += dx;
 		}
 	}
+}
+void LineThick(SDL_Renderer* Renderer, int Thick, float x1, float y1, float x2, float y2)
+{
+	// Bresenham's line algorithm
+	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+	if (steep)
+	{
+		swap(&x1, &y1);
+		swap(&x2, &y2);
+	}
+
+	if (x1 > x2)
+	{
+		swap(&x1, &x2);
+		swap(&y1, &y2);
+	}
+
+	const float dx = x2 - x1;
+	const float dy = fabs(y2 - y1);
+
+	float error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
+
+	const int maxX = (int)x2;
+
+	for (int x = (int)x1; x<=maxX; x++)
+	{
+		if (steep)
+		{
+			SDL_Rect rect= { y - Thick / 2.0, x - Thick / 2.0,Thick,Thick };
+			SDL_RenderFillRect(Renderer,&rect );
+		}
+		else
+		{
+			SDL_Rect rect= { x - Thick / 2.0, y - Thick / 2.0,Thick,Thick };
+			SDL_RenderFillRect(Renderer, &rect);
+		}
+
+		error -= dy;
+		if (error < 0)
+		{
+			y += ystep;
+			error += dx;
+		}
+	}
+}
+void LineCircle(SDL_Renderer*Renderer, int Thick, float x1, float y1, float x2, float y2) {
+	const bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+	if (steep)
+	{
+		swap(&x1, &y1);
+		swap(&x2, &y2);
+	}
+
+	if (x1 > x2)
+	{
+		swap(&x1, &x2);
+		swap(&y1, &y2);
+	}
+
+	const float dx = x2 - x1;
+	const float dy = fabs(y2 - y1);
+
+	float error = dx / 2.0f;
+	const int ystep = (y1 < y2) ? 1 : -1;
+	int y = (int)y1;
+
+	const int maxX = (int)x2;
+
+	for (int x = (int)x1; x <= maxX; x++)
+	{
+		if (steep)
+		{
+			FillCircle(Renderer, y, x, Thick / 2.0);
+		}
+		else
+		{
+			FillCircle(Renderer, x, y, Thick / 2.0);
+		}
+
+		error -= dy;
+		if (error < 0)
+		{
+			y += ystep;
+			error += dx;
+		}
+	}
+}
+void swap(float  *a, float *b) {
+	float tmp = *a;
+	*a = *b;
+	*b = tmp;
+	return;
 }

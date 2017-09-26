@@ -133,8 +133,10 @@ typedef struct Socket_Parameters {
 	uintptr_t Serverthread[MAXPEOPLE];
 	uintptr_t Clientthread;
 	char playerinfo[8][30];
+	int playerstatus[8];
 	char message[200];
 	char serverip[50];
+	int sockethappen;
 	int num;
 }SockParam;
 
@@ -153,7 +155,13 @@ typedef struct Button {
 	int Padding;
 	int Flag;
 }Button;
-
+typedef struct User {
+	char Nickname[20];
+	int Master;
+	int Level;
+	int Turn;
+	int Count;
+}User;
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
@@ -194,7 +202,8 @@ void soundplay();
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 //SDL - 텍스트를 출력하는함수
-void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
+int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
 //SDL - PutMenu함수 버튼을 추가함. 마우스를 가져다되면 커지는 효과와 클릭하면 1을 리턴, 아니면 0을 리턴함
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutText 텍스트를 출력함.
@@ -241,7 +250,11 @@ void CreateButton(Button * Button, SDL_Renderer *Renderer, SDL_Texture *ButtonTe
 int UpdateButton(Button * Button, SDL_Event * event);
 void DrawButton(Button * Button);
 void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
-void ConnectCircle(SDL_Renderer * Renderer, int Last_x, int Last_y, double dx, double dy, double length, int radius);
+void Line(SDL_Renderer* Renderer, float x1, float y1, float x2, float y2);
+void LineThick(SDL_Renderer* Renderer, int Thick,float x1, float y1, float x2, float y2);
+void LineCircle(SDL_Renderer*Renderer, int Thick, float x1, float y1, float x2, float y2);
+void swap(float *a, float * b);
+int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);
