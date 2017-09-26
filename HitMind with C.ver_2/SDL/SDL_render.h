@@ -721,7 +721,7 @@ extern DECLSPEC int SDLCALL SDL_RenderDrawPoints(SDL_Renderer * renderer,
  *  \param x1 The x coordinate of the start point.
  *  \param y1 The y coordinate of the start point.
  *  \param x2 The x coordinate of the end point.
- *  \param y2 The y coordinate of the end point.
+ *  \param y2 Tshe y coordinate of the end point.
  *
  *  \return 0 on success, or -1 on error
  */
