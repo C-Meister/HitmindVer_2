@@ -49,10 +49,10 @@ void OpenServer(SockParam *param) {
 		else if (param->Sconnect_socket[idx] != 0) {
 
 			param->num = idx;
-			printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
+		//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
-
+		Sleep(1);
 	}
 	// 서버 켜짐
 }
@@ -69,11 +69,12 @@ void connectServer(SockParam *param) {
 	printf("socket()\n");
 	param->connect_addr.sin_family = AF_INET;				//연결할 서버의 주소 설정
 	param->connect_addr.sin_addr.S_un.S_addr = inet_addr(param->serverip); //서버 IP
-	param->connect_addr.sin_port = htons(5555);					 //서버 포트
+	param->connect_addr.sin_port = htons(PORT);					 //서버 포트
 
 	if (connect(param->Cconnect_socket, (SOCKADDR *)&(param->connect_addr), sizeof(param->connect_addr)))
 	{
 		printf("connecterror\n");
+		param->sockethappen = -1;
 	}
 	printf("connect()\n");
 	Sleep(10);
@@ -81,7 +82,6 @@ void connectServer(SockParam *param) {
 	send(param->Cconnect_socket, "player connect", 40, 0);
 	printf("send\n");
 	param->Clientthread = _beginthreadex(0, 0, (_beginthreadex_proc_type)Clientrecv, param, 0, 0);
-	while (1) {}
 	
 }
 /*
@@ -91,7 +91,6 @@ echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 
 */
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
-	printf("%x\n", &(param->Sconnect_socket[ClientNumber]));
 	while (1) {
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
 
@@ -137,10 +136,12 @@ void sendall(SockParam *param) {
 클라이언트가 서버로부터 오는 패킷을 처리하는 함수
 */
 void Clientrecv(SockParam *param) {
-
+	char query[128] = { 0, };
 	while (1) {
 		int i = 0;
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
+
+
 			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
@@ -148,8 +149,16 @@ void Clientrecv(SockParam *param) {
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i++], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
+					sprintf(query, "%d online", i);
+					if (!(strcmp(param->message, query)))
+						param->playerstatus[i] = 1;
+					else
+						param->playerstatus[i] = 0;
 				}
+				param->sockethappen = true;
 			}
+			
+
 		}
 	}
 }

@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	uintptr_t client;
 	ZeroMemory(&ServerParam, sizeof(SockParam));
 	ZeroMemory(&ClientParam, sizeof(SockParam));
-
+	int bangsang;
 	
 
 	if (font == 0)
@@ -1711,6 +1711,9 @@ int main(int argc, char *argv[])
 					{
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							strcpy(ClientParam.serverip, My_Room.ip);
+							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
 							isplaygame = true;
 						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
@@ -1737,6 +1740,9 @@ int main(int argc, char *argv[])
 					else {
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							strcpy(ClientParam.serverip, My_Room.ip);
+							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
 							isplaygame = true;
 						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
@@ -1908,8 +1914,13 @@ int main(int argc, char *argv[])
 											}
 											else
 											{
+												bangsang = 1;
+												server = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)OpenServer, &ServerParam, 0, NULL);
+												
 												roomcount = Get_Room_List(cons, rooms);
 												memcpy(&My_Room, &rooms[roomcount - 1], sizeof(Hit_Room));
+												strcpy(ClientParam.serverip, My_Room.ip);
+												client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 												createroom = false;
 												isplaygame = true;
 											}
@@ -2320,11 +2331,18 @@ int main(int argc, char *argv[])
 		}
 
 
-		while (isplaygame)
+		if (isplaygame)
 		{
-
-			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
 			qquit = 0;
+			/*if (ClientParam.Cconnect_socket == 0)
+			{
+				loginsuccess = 1;
+				roop = 1;
+				qquit = 1;
+			}*/
+			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
+		
+
 			//배경
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 			SDL_RenderClear(renderer);
@@ -2401,8 +2419,28 @@ int main(int argc, char *argv[])
 				|
 				*/
 
+				if (ClientParam.sockethappen == 1)
+				{
+					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
+					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
 
+					for (i = 0; i < 4; i++) {
+						if (ClientParam.playerstatus[i])
+						{
+							FillRoundRect(renderer, 255, 255, 255, Display_X * 0.01, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
 
+						}
+					}
+					ClientParam.sockethappen = false;
+				}
+				if (ClientParam.sockethappen == -1)
+				{
+					loginsuccess = 1;
+					roop = 1;
+					qquit = true;
+				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
 					loginsuccess = 1;
@@ -2422,6 +2460,7 @@ int main(int argc, char *argv[])
 
 				SDL_RenderPresent(renderer);
 			}
+			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
 	}
