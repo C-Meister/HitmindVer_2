@@ -1,6 +1,7 @@
 ﻿#include "include.h"
 //그래픽 관련 함수들
 TTF_Font * Font_Size[100];
+TTF_Font * Font_Size2[100];
 void TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
 
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
@@ -31,6 +32,22 @@ void HitMind_TTF_Close() {
 	for (int i = 0; i < 100; i++)
 	{
 		TTF_CloseFont(Font_Size[i]);
+	}
+
+}
+
+void HitMind_TTF2_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size2[i] = TTF_OpenFont(".\\font\\NanumGothicBold.ttf", i);
+	}
+}
+void HitMind_TTF2_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size2[i]);
 	}
 
 }
@@ -115,20 +132,25 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, 
 	TTF_CloseFont(font);	//임시로 출력하기위한 폰트를 닫음
 	return 0;	//클릭이 안되었으니 0을 리턴
 }
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b)
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m)
 {
 	SDL_Color color = { r, g, b };
 	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
-	TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
-																			//폰트를 닫음
+	if(m==1)
+		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
+	else if(m==2)          
+		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);         //볼드체
 	return 0;	//평소에도 0을 리턴
 }
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color)
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
 {
-	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size);	//폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
-	TTF_DrawText(renderer, font, unicode, x, y, color);			//Text를 적음
-	TTF_CloseFont(font);	//폰트를 닫음
+
+	if (m == 1)
+		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
+	else if (m == 2)
+		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
+
 	return 0;	//평소에도 0을 리턴
 }
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
