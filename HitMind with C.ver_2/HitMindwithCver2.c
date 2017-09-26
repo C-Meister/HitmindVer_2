@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	uintptr_t client;
 	ZeroMemory(&ServerParam, sizeof(SockParam));
 	ZeroMemory(&ClientParam, sizeof(SockParam));
-
+	int bangsang;
 	
 
 	if (font == 0)
@@ -126,52 +126,52 @@ int main(int argc, char *argv[])
 	int PressButton = 0;
 	int autologin_checking;
 	// 테스트 코드
-	//User Player[4] = {
-	//	{
-	//		"신상호",
-	//		1, //master
-	//		1, //level
-	//		0, //turn
-	//		0//count
-	//	},
-	//	{
-	//		"장민석",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"배수한",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"서상희",
-	//		0,
-	//		1,
-	//		1,
-	//		0
-	//	}
-	//};
-	//User * Me = &Player[1];
-	//char Topics[5][20] = {
-	//	"하스스톤",
-	//	"리그오브레전드",
-	//	"배틀그라운드",
-	//	"마인크래프트",
-	//	"스타크래프트"
-	//};
-	//int MaxTopic = 5; //총 토픽 개수
-	//int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
-	//char Now_Max[10];
-	//sprintf(Now_Max,"%d/%d", NowTopic,MaxTopic);
-	//wchar_t InGameChat[384]=L"";
-	//char euckrofchat[384] = "";
-	//char utf8ofchat[384]="";
-	//int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
+	User Player[4] = {
+		{
+			"신상호",
+			1, //master
+			1, //level
+			0, //turn
+			0//count
+		},
+		{
+			"장민석",
+			0,
+			0,
+			1,
+			0
+		},
+		{
+			"배수한",
+			0,
+			0,
+			1,
+			0
+		},
+		{
+			"서상희",
+			0,
+			1,
+			1,
+			0
+		}
+	};
+	User * Me = &Player[1];
+	char Topics[5][20] = {
+		"하스스톤",
+		"리그오브레전드",
+		"배틀그라운드",
+		"마인크래프트",
+		"스타크래프트"
+	};
+	int MaxTopic = 5; //총 토픽 개수
+	int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
+	char Now_Max[10];
+	sprintf(Now_Max,"%d/%d", NowTopic,MaxTopic);
+	wchar_t InGameChat[128]=L"";
+	char euckrofchat[128] = "";
+	char utf8ofchat[128]="";
+	int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
 
 	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
 	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
@@ -1604,7 +1604,8 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-			
+			ZeroMemory(&ServerParam, sizeof(SockParam));
+			ZeroMemory(&ClientParam, sizeof(SockParam));
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
@@ -1613,12 +1614,17 @@ int main(int argc, char *argv[])
 			int roomcount = Get_Room_List(cons, rooms);
 			int pastroomcount = roomcount;
 			char MemBerList[30][30] = { 0, };
+			int RefrashEvent = 1;
+			Hit_Timer Refrash;
+			Refrash.event = &RefrashEvent;
+			Refrash.time = 500;
+			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &Refrash, 0, NULL);
 			Chating chatings[12] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
-
+			
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -1637,6 +1643,7 @@ int main(int argc, char *argv[])
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
 			warning.ison = 0;
+			long long firsttime = SDL_GetTicks();
 			int nonhappen = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			int pastusercount = usercount;
@@ -1668,7 +1675,7 @@ int main(int argc, char *argv[])
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
-				SDL_WaitEventTimeout(&event, 1000);
+				SDL_WaitEventTimeout(&event, 500);
 				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
@@ -1819,10 +1826,8 @@ int main(int argc, char *argv[])
 			|
 			|
 			*/
-				if (timer < SDL_GetTicks() % 1000)
+				if (RefrashEvent)
 				{
-
-					timer++;
 					usercount = getUesrStatus(cons, MemBerList);
 					if (usercount != pastusercount) {
 						newdata[2] = 1;
@@ -1832,13 +1837,19 @@ int main(int argc, char *argv[])
 					if (allchating_cnt != pastchating_cnt) {
 						newdata[1] = 1;
 						pastchating_cnt = allchating_cnt;
+
+						chatmovehappen = 1;
+
 					}
 					roomcount = Get_Room_List(cons, rooms);
 					if (roomcount != pastroomcount)
 					{
 						newdata[0] = 1;
 						pastroomcount = roomcount;
+						
 					}
+					RefrashEvent = 0;
+					
 				}
 
 
@@ -1934,12 +1945,15 @@ int main(int argc, char *argv[])
 					{
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							strcpy(ClientParam.serverip, My_Room.ip);
+							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
 							isplaygame = true;
 						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.027, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0,1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,1);	//제목 출력
+						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,2);	//제목 출력
 
 						PutText(renderer, rooms[i].mode, Display_X * 0.085, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0,1);	//모드 출력
 
@@ -1960,12 +1974,15 @@ int main(int argc, char *argv[])
 					else {
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.16 * (i / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+							strcpy(ClientParam.serverip, My_Room.ip);
+							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
 							isplaygame = true;
 						}
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.372, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0,1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,1);	//제목 출력
+						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,2);	//제목 출력
 
 						PutText(renderer, rooms[i].mode, Display_X * 0.43, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0,1);	//모드 출력
 						sprintf(db_id, "%d문제", rooms[i].question);
@@ -2131,8 +2148,13 @@ int main(int argc, char *argv[])
 											}
 											else
 											{
+												bangsang = 1;
+												server = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)OpenServer, &ServerParam, 0, NULL);
+												
 												roomcount = Get_Room_List(cons, rooms);
 												memcpy(&My_Room, &rooms[roomcount - 1], sizeof(Hit_Room));
+												strcpy(ClientParam.serverip, My_Room.ip);
+												client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 												createroom = false;
 												isplaygame = true;
 											}
@@ -2543,11 +2565,18 @@ int main(int argc, char *argv[])
 		}
 
 
-		while (isplaygame)
+		if (isplaygame)
 		{
-
-			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
 			qquit = 0;
+			/*if (ClientParam.Cconnect_socket == 0)
+			{
+				loginsuccess = 1;
+				roop = 1;
+				qquit = 1;
+			}*/
+			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
+		
+
 			//배경
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 			SDL_RenderClear(renderer);
@@ -2582,7 +2611,7 @@ int main(int argc, char *argv[])
 			system("cls");
 
 			while (!qquit) {
-				SDL_WaitEvent(&event);
+				SDL_WaitEventTimeout(&event, 500);
 				switch (event.type)
 				{
 				case SDL_MOUSEMOTION:
@@ -2624,13 +2653,40 @@ int main(int argc, char *argv[])
 				|
 				*/
 
+				if (ClientParam.sockethappen == 1)
+				{
 
+					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
+					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
+					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
+					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
+					for (i = 0; i < 4; i++) {
+						if (ClientParam.playerstatus[i])
+						{
+							FillRoundRect(renderer, 233, 233, 233, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
+
+						}
+					}
+					ClientParam.sockethappen = false;
+				}
+				if (ClientParam.sockethappen == -1)
+				{
+					loginsuccess = 1;
+					roop = 1;
+					qquit = true;
+				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
 					loginsuccess = 1;
 					roop = 1;
-
+					if (bangsang == 1) {
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						ServerParam.sockethappen = 5;
+						bangsang = 0;
+					}
+					closesocket(ClientParam.Cconnect_socket);
 					qquit = true;
 				}
 
@@ -2645,6 +2701,7 @@ int main(int argc, char *argv[])
 
 				SDL_RenderPresent(renderer);
 			}
+			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
 	}

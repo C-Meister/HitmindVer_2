@@ -133,8 +133,10 @@ typedef struct Socket_Parameters {
 	uintptr_t Serverthread[MAXPEOPLE];
 	uintptr_t Clientthread;
 	char playerinfo[8][30];
+	int playerstatus[8];
 	char message[200];
 	char serverip[50];
+	int sockethappen;
 	int num;
 }SockParam;
 
@@ -160,6 +162,10 @@ typedef struct User {
 	int Turn;
 	int Count;
 }User;
+typedef struct HitMind_Time {
+	unsigned int time;
+	int * event;
+}Hit_Timer;
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
@@ -194,11 +200,15 @@ void settings(int *x, int *y, int *music, int *sound, int *full);
 void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
-
+uintptr_t CreateTimer(unsigned int time, int * event);
+void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
+
+void HitMind_TTF2_Init();
+void HitMind_TTF2_Close();
 //SDL - 텍스트를 출력하는함수
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
