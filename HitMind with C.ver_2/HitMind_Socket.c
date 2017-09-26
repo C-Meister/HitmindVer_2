@@ -129,6 +129,11 @@ void HandleClient(SockParam *param) {
 				}
 				send(param->Sconnect_socket[ClientNumber], "playercheck finish", 180, 0); // 플레이어 온라인여부가 전송이 완료되었음을 보냄
 			}
+			if (strcmp(param->message, "nexthostip") == 0) {
+				strcpy(param->message, "nexthostis");
+				recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+				sendall(param);
+			}
 			/*
 			여기서부터 작성하면 됨
 			*/
@@ -174,9 +179,51 @@ void Clientrecv(SockParam *param) {
 				}
 				param->sockethappen = true;
 			}
-			
+			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
+				send(param->Cconnect_socket, "nexthostip", 180, 0);
+				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
+				send(param->Cconnect_socket, param->message, 180, 0);
+				// 소켓 닫음
+				closesocket(param->Cconnect_socket);
+				// 오픈 서버
+				_endthreadex(param->c);
+				OpenServer(param);
+			}
+			if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
+				recv(param->Cconnect_socket, param->message, 180, 0); // 호스트의 ip를 받음
+				strcpy(param->serverip, param->message);
+				// 소켓 닫음
+				closesocket(param->Cconnect_socket);
+				// 서버 연결
+				_endthreadex(param->c);
+				connectServer(param);
+				
+			}
 
 		}
 	}
-
 }
+/*
+서버를 연 호스트가 나갔을 때 호스트를 바꿈
+*/
+void hostChange(SockParam *param) {
+	int nexthost = 0;
+
+	// 다음 호스트를 정함(랜덤)
+	while (1) {
+		int nexthost = rand() % 8;
+		if (param->Sconnect_socket[nexthost] != 0) {
+			break;
+		}
+	}
+	// 다음 호스트에게 nexthost를 보냄
+	if (param->Sconnect_socket[nexthost] != 0) {
+			send(param->Sconnect_socket[nexthost], "nexthost", 180, 0);
+	}
+	else { // 만약 다음 호스트가 없을경우(나갔을경우) 다시 뽑음 (의미없을듯)
+			hostChange(param);
+			return;
+	}
+		
+}	
+

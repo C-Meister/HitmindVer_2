@@ -24,7 +24,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 */
 
 #include "include.h"
-
 int main(int argc, char *argv[])
 {
 	//	getchar();
@@ -51,7 +50,8 @@ int main(int argc, char *argv[])
 	ZeroMemory(&ClientParam, sizeof(SockParam));
 	int bangsang;
 	
-
+	ServerParam.s = &server;
+	ServerParam.c = &client;
 	if (font == 0)
 	{
 		printf("error");
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 	int PASSWORD_INPUT;
 	int PressButton = 0;
 	int autologin_checking;
-	//// 테스트 코드
+	// 테스트 코드
 	//User Player[4] = {
 	//	{
 	//		"신상호",
@@ -181,6 +181,7 @@ int main(int argc, char *argv[])
 	//SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ 22, 10 + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
 	//SDL_Rect ChatRect = { Display_X * 0.8 +Display_X*0.1825*0.035+ 22, 10 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
 	//SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + 22, 10 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
+	//SDL_Rect TimerRect = {Display_X*0.017,Display_Y*0.76,Display_X*0.8-Display_X*0.017,Display_Y*0.004};
 	//SDL_Color TextColor = { 0,0,0,0 };
 
 	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
@@ -258,15 +259,23 @@ int main(int argc, char *argv[])
 	////
 	//// 토픽과 문제수
 	//FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255, 1);
+	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255,1);
 	//SDL_RenderFillRect(renderer,&LineRect);
 	//FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
-	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255, 1);
+	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255,1);
 	////
 	//SDL_RenderPresent(renderer);
 	//while (!quit)//로그인 성공 후 대기창
 	//{
-	//	SDL_WaitEvent(&event);
+	//	if (SDL_WaitEventTimeout(&event, 50)==0) {
+	//		SDL_SetRenderDrawColor(renderer, 255,255,255, 0);
+	//		SDL_RenderFillRect(renderer, &TimerRect);
+	//		TimerRect.w -= 1;
+	//		SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+	//		SDL_RenderFillRect(renderer,&TimerRect);
+	//		SDL_RenderPresent(renderer);
+	//		continue;
+	//	}
 	//	if (UpdateCanvas(canvas, &event) == 1&&Chat!= ACTIVATED) {
 	//		SDL_RenderPresent(renderer);
 	//		printf("render	");
@@ -532,7 +541,7 @@ int main(int argc, char *argv[])
 	//	}
 	//}
 	//	return 0;
-	////
+	
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
@@ -544,9 +553,8 @@ int main(int argc, char *argv[])
 	
 		while (!quit && !loginsuccess)
 		{
-			//	if (SDL_PollEvent(&event)) {
-
 			SDL_WaitEvent(&event);
+
 			switch (event.type) {
 			case SDL_KEYDOWN:
 				PressButton = 1;
@@ -810,8 +818,6 @@ int main(int argc, char *argv[])
 							MouseUP_Wait;
 							loginpopup = false;
 						}
-
-
 						if (ID_INPUT == 0) {	//아이디 입력창
 							if (PutButtonImage(renderer, login_input_id_noclick, login_input_id_noclick, Display_X / 4 + 22, Display_Y / 4 + 110, 617, 63, &event, &happen))
 							{
@@ -2045,7 +2051,7 @@ int main(int argc, char *argv[])
 					}
 					newdata[2] = 0;
 				}
-				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //방만들기 버튼
+				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.037 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //방만들기 버튼
 				{
 					SDL_Texture * Create_back = LoadTexture(renderer, ".\\design\\bangcreate.png");
 					SDL_Texture * Create_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
@@ -2349,14 +2355,14 @@ int main(int argc, char *argv[])
 					newdataed = 1;
 					continue;
 				}
-				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.025, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
+				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.037-(Display_Y*Display_Y)/(1080*1080.0)*11.5, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
 					qquit = false;
 				}
-				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,2);
-				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,2);
+				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255,2);
+				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255,2);
 
-				if (PutButtonImage(renderer, WaitRoom_setting_noclick, WaitRoom_setting_click, Display_X * 0.92 + 10, Display_Y * 0.02, 86 * ((float)Display_X / 1920), 82 * ((float)Display_X / 1920), &event, &happen))//설정 버튼
+				if (PutButtonImage(renderer, WaitRoom_setting_noclick, WaitRoom_setting_click, Display_X * 0.92 + 10, Display_Y * 0.027 - (Display_Y*Display_Y*Display_Y) / (1080 * 1080*1080.0)*11.5, 86 * ((float)Display_X / 1920), 82 * ((float)Display_X / 1920), &event, &happen))//설정 버튼
 				{
 
 					setting_main = 1;
