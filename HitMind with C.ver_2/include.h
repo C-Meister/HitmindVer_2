@@ -165,6 +165,10 @@ typedef struct User {
 	int Turn;
 	int Count;
 }User;
+typedef struct HitMind_Time {
+	unsigned int time;
+	int * event;
+}Hit_Timer;
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
@@ -199,7 +203,8 @@ void settings(int *x, int *y, int *music, int *sound, int *full);
 void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
-
+uintptr_t CreateTimer(unsigned int time, int * event);
+void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();

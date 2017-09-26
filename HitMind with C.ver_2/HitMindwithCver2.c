@@ -24,11 +24,9 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 */
 
 #include "include.h"
-
 int main(int argc, char *argv[])
 {
 	//	getchar();
-	
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
@@ -128,53 +126,53 @@ int main(int argc, char *argv[])
 	int PASSWORD_INPUT;
 	int PressButton = 0;
 	int autologin_checking;
-	//// 테스트 코드
-	//User Player[4] = {
-	//	{
-	//		"신상호",
-	//		1, //master
-	//		1, //level
-	//		0, //turn
-	//		0//count
-	//	},
-	//	{
-	//		"장민석",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"배수한",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"서상희",
-	//		0,
-	//		1,
-	//		1,
-	//		0
-	//	}
-	//};
-	//User * Me = &Player[1];
-	//char Topics[5][20] = {
-	//	"하스스톤",
-	//	"리그오브레전드",
-	//	"배틀그라운드",
-	//	"마인크래프트",
-	//	"스타크래프트"
-	//};
-	//int MaxTopic = 5; //총 토픽 개수
-	//int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
-	//char Now_Max[10];
-	//sprintf(Now_Max,"%d/%d", NowTopic,MaxTopic);
-	//wchar_t InGameChat[128]=L"";
-	//char euckrofchat[128] = "";
-	//char utf8ofchat[128]="";
-	//int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
+	// 테스트 코드
+	User Player[4] = {
+		{
+			"신상호",
+			1, //master
+			1, //level
+			0, //turn
+			0//count
+		},
+		{
+			"장민석",
+			0,
+			0,
+			1,
+			0
+		},
+		{
+			"배수한",
+			0,
+			0,
+			1,
+			0
+		},
+		{
+			"서상희",
+			0,
+			1,
+			1,
+			0
+		}
+	};
+	User * Me = &Player[1];
+	char Topics[5][20] = {
+		"하스스톤",
+		"리그오브레전드",
+		"배틀그라운드",
+		"마인크래프트",
+		"스타크래프트"
+	};
+	int MaxTopic = 5; //총 토픽 개수
+	int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
+	char Now_Max[10];
+	sprintf(Now_Max,"%d/%d", NowTopic,MaxTopic);
+	wchar_t InGameChat[128]=L"";
+	char euckrofchat[128] = "";
+	char utf8ofchat[128]="";
+	int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
 
 	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
 	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
@@ -260,10 +258,10 @@ int main(int argc, char *argv[])
 	////
 	//// 토픽과 문제수
 	//FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255, 1);
+	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255,1);
 	//SDL_RenderFillRect(renderer,&LineRect);
 	//FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
-	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255, 1);
+	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255,1);
 	////
 	//SDL_RenderPresent(renderer);
 	//while (!quit)//로그인 성공 후 대기창
@@ -534,7 +532,7 @@ int main(int argc, char *argv[])
 	//	}
 	//}
 	//	return 0;
-	////
+	//
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
@@ -812,8 +810,6 @@ int main(int argc, char *argv[])
 							MouseUP_Wait;
 							loginpopup = false;
 						}
-
-
 						if (ID_INPUT == 0) {	//아이디 입력창
 							if (PutButtonImage(renderer, login_input_id_noclick, login_input_id_noclick, Display_X / 4 + 22, Display_Y / 4 + 110, 617, 63, &event, &happen))
 							{
@@ -1619,12 +1615,17 @@ int main(int argc, char *argv[])
 			int roomcount = Get_Room_List(cons, rooms);
 			int pastroomcount = roomcount;
 			char MemBerList[30][30] = { 0, };
+			int RefrashEvent = 1;
+			Hit_Timer Refrash;
+			Refrash.event = &RefrashEvent;
+			Refrash.time = 500;
+			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &Refrash, 0, NULL);
 			Chating chatings[12] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
-
+			
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -1643,6 +1644,7 @@ int main(int argc, char *argv[])
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
 			warning.ison = 0;
+			long long firsttime = SDL_GetTicks();
 			int nonhappen = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			int pastusercount = usercount;
@@ -1674,7 +1676,7 @@ int main(int argc, char *argv[])
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
-				SDL_WaitEventTimeout(&event, 1000);
+				SDL_WaitEventTimeout(&event, 500);
 				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
@@ -1825,10 +1827,8 @@ int main(int argc, char *argv[])
 			|
 			|
 			*/
-				if (timer < SDL_GetTicks() % 1000)
+				if (RefrashEvent)
 				{
-
-					timer++;
 					usercount = getUesrStatus(cons, MemBerList);
 					if (usercount != pastusercount) {
 						newdata[2] = 1;
@@ -1838,13 +1838,19 @@ int main(int argc, char *argv[])
 					if (allchating_cnt != pastchating_cnt) {
 						newdata[1] = 1;
 						pastchating_cnt = allchating_cnt;
+
+						chatmovehappen = 1;
+
 					}
 					roomcount = Get_Room_List(cons, rooms);
 					if (roomcount != pastroomcount)
 					{
 						newdata[0] = 1;
 						pastroomcount = roomcount;
+						
 					}
+					RefrashEvent = 0;
+					
 				}
 
 
@@ -2606,7 +2612,7 @@ int main(int argc, char *argv[])
 			system("cls");
 
 			while (!qquit) {
-				SDL_WaitEvent(&event);
+				SDL_WaitEventTimeout(&event, 500);
 				switch (event.type)
 				{
 				case SDL_MOUSEMOTION:
@@ -2650,6 +2656,7 @@ int main(int argc, char *argv[])
 
 				if (ClientParam.sockethappen == 1)
 				{
+
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
@@ -2658,7 +2665,7 @@ int main(int argc, char *argv[])
 					for (i = 0; i < 4; i++) {
 						if (ClientParam.playerstatus[i])
 						{
-							FillRoundRect(renderer, 255, 255, 255, Display_X * 0.01, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
+							FillRoundRect(renderer, 233, 233, 233, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
 
 						}
 					}

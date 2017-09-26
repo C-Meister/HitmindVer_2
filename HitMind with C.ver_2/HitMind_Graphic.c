@@ -2,8 +2,7 @@
 //그래픽 관련 함수들
 TTF_Font * Font_Size[100];
 TTF_Font * Font_Size2[100];
-int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color) {
-
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color ) {
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
@@ -35,7 +34,6 @@ void HitMind_TTF_Close() {
 	}
 
 }
-
 void HitMind_TTF2_Init()
 {
 	for (int i = 0; i < 100; i++)
@@ -60,22 +58,21 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
-
-	
-		if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
-		{
-			SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
-			SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
-			*happen = true;
-		}
-		else {
-			SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
-			SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
-		}
-		if (event->type == SDL_MOUSEBUTTONDOWN)
-			if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
-				return 1;
-	
+	int mouse_x, mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	if (mouse_x > x && mouse_y > y && mouse_x < x + w && mouse_y < y + h)
+	{
+		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		*happen = true;
+	}
+	else {
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
 	return 0;
 }
 int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen) {//이미지 버튼 선언
@@ -87,7 +84,9 @@ int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Text
 	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
 	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
 	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
-	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->button.y < y + h)
+	int mouse_x, mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	if (mouse_x > x && mouse_y > y && mouse_x < x + w && mouse_y < y + h)
 	{
 		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
@@ -227,7 +226,6 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 }
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size,int Limit, SDL_Color color)
 {
-	
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font_Size[size], unicode, color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
@@ -460,9 +458,9 @@ void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color colo
 }
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int *happen)
 {
-
-	if (event->motion.x > x && event->motion.y > y && event->motion.x < x + w && event->motion.y < y + h)
-	{
+	int mouse_x, mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	if (mouse_x > x && mouse_y > y && mouse_x < x + w && mouse_y < y + h) {
 		FillRoundRect(Renderer, put_r, put_g, put_b, x, y, w, h, radius);
 		if (strong != 0)
 		DrawRoundRect(Renderer, rect_r, rect_g, rect_b, x - strong, y - strong, w + strong, h + strong, radius, strong);
@@ -760,8 +758,8 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 	return;
 }
 int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
-	if (event->type == SDL_MOUSEBUTTONDOWN) {
-			int x = event->button.x; int y = event->button.y;
+	if (event->type == SDL_MOUSEBUTTONDOWN&&event->button.button ==1||(event->type==SDL_MOUSEMOTION&&Canvas->Click==false&&event->motion.state==1)) {
+		int x = event->button.x; int y = event->button.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
 				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
@@ -784,7 +782,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 		Canvas->Click= false;
 		return 0;
 	}
-	else if (event->type == SDL_MOUSEMOTION) {
+	else if (event->type == SDL_MOUSEMOTION&&event->motion.state == 1) {
 		int x = event->motion.x; int y = event->motion.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Click == true) {
@@ -823,6 +821,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 			return 0;
 		}
 		else {
+			Canvas->Click = false;
 			return 0;
 		}
 	}
@@ -836,8 +835,9 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 		}
 		return 0;
 	}
-	else
+	else {
 		return 0;
+	}
 	//SDL_SetRenderDrawColor(Canvas->Renderer, 255, 0, 255, 0);
 	//rect.x = x - 2*Strong;
 	//rect.y = y - 2*Strong;                              // 소실되는 이벤트를 알아보기 위한 코드
