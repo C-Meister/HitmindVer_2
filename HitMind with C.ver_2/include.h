@@ -132,12 +132,15 @@ typedef struct Socket_Parameters {
 	SOCKADDR_IN connect_addr;
 	uintptr_t Serverthread[MAXPEOPLE];
 	uintptr_t Clientthread;
-	char playerinfo[8][30];
-	int playerstatus[8];
+	char playerinfo[MAXPEOPLE][30];
+	int playerstatus[MAXPEOPLE];
 	char message[200];
 	char serverip[50];
+	char nextserverip[50];
 	int sockethappen;
 	int num;
+	uintptr_t *s;
+	uintptr_t *c;
 }SockParam;
 
 
@@ -274,18 +277,18 @@ MYSQL * Mysql_Connect(char *ip);
 char * Get_Random_Topic(MYSQL *cons);	
 //?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
-//---------------Socket ?¨ìˆ˜--------------
+//---------------Socket ÇÔ¼ö--------------
 void OpenServer(SockParam *param);
-// ?°ë ˆ???œë²„?„ìš© - ë°??œë²„)ë¥??°ë‹¤
+// ¼­¹ö ¿°
 void connectServer(SockParam *param);
-// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ë°??œë²„)???°ê²°???¸ìê°?: IPì£¼ì†Œ
+// ¼­¹ö¿¡ ¿¬°áÇÔ param->serverip ¹Ù²ãÁà¾ß µÊ
 void HandleClient(SockParam *param);
-// ?°ë ˆ???œë²„?„ìš© - ?´ë¼?´ì–¸?¸ì—ê²Œì„œ ?°ì´?°ë? ê³„ì† ë°›ì•„?¨ë‹¤ ?¸ìê°?: ?´ë¼?´ì–¸??ë²ˆí˜¸ 
+// ¼­¹ö°¡ Å¬¶óÀÌ¾ğÆ® °ü¸®ÇÔ
 void sendall(SockParam *param);
-// ?œë²„?„ìš© - ëª¨ë“  ?´ë¼?´ì–¸?¸ì—ê²??°ì´?°ë? ë³´ë‚¸???¸ìê°?: ?„ì†¡???°ì´?? ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸
-// ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸??sendall ? ë•Œ ?ê¸° ?ì‹ ?ê²Œ??ë³´ë‚´ì§€ ?Šê¸° ?„í•´ ë§Œë“ ê²?
+// ¼­¹ö°¡ ¿¬°áµÈ Å¬¶óÀÌ¾ğÆ®ÇÑÅ× ÆĞÅ¶ Àü¼ÛÇÔ
 void Clientrecv(SockParam *param);
-// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ?œë²„?ê²Œ???°ì´?°ë? ë°›ì•„?¨ë‹¤
+// Å¬¶óÀÌ¾ğÆ®°¡ ¼­¹ö°¡ º¸³½ ÆĞÅ¶¹ŞÀ½
+void hostChange(SockParam *param);
 
 //ÁÖÁ¦Áß¿¡ ·£´ıÀ¸·Î ÇÏ³ª¸¦ ºÒ·¯¿Í ¹®ÀÚ¿­·Î ¹İÈ¯
 char * Get_Random_Topic(MYSQL *cons);
@@ -299,17 +302,3 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //¹æÀ» ¸¸µë, ¹æÀÌ¸§, ºñ¹Ğ¹øÈ£, ¸ğµå, ¹®Á¦ °³¼ö, ¹®Á¦ ½Ã°£ ÀÌ ÇÊ¿äÇÔ
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
-//---------------Socket ÇÔ¼ö--------------
-
-// ¾²·¹µå,¼­¹öÀü¿ë - ¹æ(¼­¹ö)¸¦ ¿¬´Ù
-void OpenServer(SockParam *param);
-
-// ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¹æ(¼­¹ö)¿¡ ¿¬°áÇÔ ÀÎÀÚ°ª : IPÁÖ¼Ò
-void connectServer(SockParam *param);
-// ¾²·¹µå,¼­¹öÀü¿ë - Å¬¶óÀÌ¾ğÆ®¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ °è¼Ó ¹Ş¾Æ¿Â´Ù ÀÎÀÚ°ª : Å¬¶óÀÌ¾ğÆ® ¹øÈ£ 
-void HandleClient(SockParam *param);
-// ¼­¹öÀü¿ë - ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô µ¥ÀÌÅÍ¸¦ º¸³½´Ù ÀÎÀÚ°ª : Àü¼ÛÇÒ µ¥ÀÌÅÍ, ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£
-// ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£´Â sendall ÇÒ¶§ ÀÚ±â ÀÚ½Å¿¡°Ô´Â º¸³»Áö ¾Ê±â À§ÇØ ¸¸µç°Í
-void sendall(SockParam *param);
-// ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¼­¹ö¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿Â´Ù
-void Clientrecv(SockParam *param);

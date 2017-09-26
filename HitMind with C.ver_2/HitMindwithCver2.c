@@ -52,7 +52,8 @@ int main(int argc, char *argv[])
 	ZeroMemory(&ClientParam, sizeof(SockParam));
 	int bangsang;
 	
-
+	ServerParam.s = &server;
+	ServerParam.c = &client;
 	if (font == 0)
 	{
 		printf("error");
