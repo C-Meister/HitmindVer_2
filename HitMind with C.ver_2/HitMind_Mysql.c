@@ -284,3 +284,42 @@ int Get_Room_List(MYSQL *cons, Hit_Room * rooms) {
 	mysql_free_result(sql_result);
 	return i;
 }
+
+int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer)
+{
+	char char_roomname[128] = { 0 , };
+	char char_roompass[128] = { 0, };
+	char query[384];
+	strcpy(query, UNICODE2UTF8(roomname, wcslen(roomname)));
+	UTF82EUCKR(char_roomname, 128, query, 384);
+	char_roomname[strlen(char_roomname)] = '\0';
+
+	strcpy(query, UNICODE2UTF8(rompass, wcslen(rompass)));
+	UTF82EUCKR(char_roompass, 128, query, 384);
+	char_roompass[strlen(char_roompass)] = '\0';
+
+	MYSQL_ROW rows;
+	sprintf(query, "select * from room where name = '%s'", char_roomname);
+	mysql_query(cons, query);
+	rows = mysql_fetch_row(mysql_store_result(cons));
+	if (rows != 0)
+	{
+		return -1;
+	}
+	char char_mode[10];
+	if (mode == 1)
+	{
+		strcpy(char_mode, "일반");
+	}
+	else if (mode == 2) {
+		strcpy(char_mode, "콘테스트");
+	}
+	else
+		strcpy(char_mode, "FPS");
+	sprintf(query, "insert into room (ip, name, password , mode, time, question, max_people) values ('%s', '%s', '%s', '%s', %d, %d, 4)", GetDefaultMyIP(), char_roomname, char_roompass, char_mode, timer, question);
+	if (mysql_query(cons, query) != 0)
+	{
+		return 0;
+	}
+	return 1;
+}

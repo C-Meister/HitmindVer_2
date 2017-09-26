@@ -57,6 +57,8 @@
 #define RESET(X) ZeroMemory(X, sizeof(X))	//ÃÊ±âÈ­ memset()ÀÌ¶û °°À½
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
+#define MAXPEOPLE 8
+//MouseUp_Wait = PutMenuë¥??¬ìš©? ë•Œ ë§ˆìš°??ë²„íŠ¼???´ë¦­?˜ìë§ì ?˜ì–´ê°€ê¸??Œë¬¸??ë°©ì?ë¥??´ì¤Œ.
 //MouseUp_Wait = PutMenu¸¦ »ç¿ëÇÒ¶§ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏÀÚ¸»ÀÚ ³Ñ¾î°¡±â ¶§¹®¿¡ ¹æÁö¸¦ ÇØÁÜ.
 
 //typedef
@@ -119,6 +121,24 @@ typedef struct SDL_Slider {
 	int Click;
 	int Flag;
 }Slider;
+
+typedef struct Socket_Parameters {
+	WSADATA wsadata;
+	SOCKET Slisten_socket;
+	SOCKET Sconnect_socket[MAXPEOPLE];
+	SOCKET Clisten_socket;
+	SOCKET Cconnect_socket;
+	SOCKADDR_IN listen_addr;
+	SOCKADDR_IN connect_addr;
+	uintptr_t Serverthread[MAXPEOPLE];
+	uintptr_t Clientthread;
+	char playerinfo[8][30];
+	char message[200];
+	char serverip[50];
+	int num;
+}SockParam;
+
+
 typedef struct MYSQL_CHATING {
 	int ownnum;
 	char name[30];
@@ -146,6 +166,8 @@ typedef struct User {
 ±×·¯¹Ç·Î °°Àº º¯¼ö¸¦ °øÀ¯ÇÒ‹š¿¡´Â Àü¿ªº¯¼öÀÎ staticÀ» »ç¿ëÇØ Áà¾ßÇÔ
 */
 
+
+
 //// ¼ÒÄÏ¿ë Àü¿ªº¯¼ö
 //static WSADATA wsaData;
 //static SOCKET Slisten_socket, Sconnect_socket[8];
@@ -156,6 +178,7 @@ typedef struct User {
 //static uintptr_t Serverthread[8];
 //static uintptr_t Clientthread;
 //static char playerinfo[8][30];
+
 
 static int Display_X = 1920;
 static int Display_Y = 1080;
@@ -182,7 +205,7 @@ int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int 
 //SDL - PutMenuÇÔ¼ö ¹öÆ°À» Ãß°¡ÇÔ. ¸¶¿ì½º¸¦ °¡Á®´ÙµÇ¸é Ä¿Áö´Â È¿°ú¿Í Å¬¸¯ÇÏ¸é 1À» ¸®ÅÏ, ¾Æ´Ï¸é 0À» ¸®ÅÏÇÔ
 int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, SDL_Event * event);
 //SDL - PutText ÅØ½ºÆ®¸¦ Ãâ·ÂÇÔ.
-int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b);
+int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
 //SDL - LoadTexture ÀÌ¹ÌÁö¸¦ ºÒ·¯¿È ÀÎÀÚ°ª : ·»´õ·¯, ÆÄÀÏ °æ·Î
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 //SDL - RenderTexture ÀÌ¹ÌÁö¸¦ ·»´õ·¯¿¡ Ãâ·ÂÇÔ Rect·Î x, y, h, w¸¦ ¼³Á¤ °¡´É
@@ -203,7 +226,7 @@ void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color);
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color,int m);
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
 int UpdateSlider(Slider* Slider, SDL_Event *event);
@@ -241,6 +264,24 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 void Thread_MySQL(Connect_status *type);
 //Ã³À½ MySQL¿¡ ¿¬°áÇÔ
 MYSQL * Mysql_Connect(char *ip);
+
+//ì£¼ì œì¤‘ì— ?œë¤?¼ë¡œ ?˜ë‚˜ë¥?ë¶ˆëŸ¬?€ ë¬¸ì?´ë¡œ ë°˜í™˜
+char * Get_Random_Topic(MYSQL *cons);	
+//?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
+Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
+//---------------Socket ?¨ìˆ˜--------------
+void OpenServer(SockParam *param);
+// ?°ë ˆ???œë²„?„ìš© - ë°??œë²„)ë¥??°ë‹¤
+void connectServer(SockParam *param);
+// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ë°??œë²„)???°ê²°???¸ìê°?: IPì£¼ì†Œ
+void HandleClient(SockParam *param);
+// ?°ë ˆ???œë²„?„ìš© - ?´ë¼?´ì–¸?¸ì—ê²Œì„œ ?°ì´?°ë? ê³„ì† ë°›ì•„?¨ë‹¤ ?¸ìê°?: ?´ë¼?´ì–¸??ë²ˆí˜¸ 
+void sendall(SockParam *param);
+// ?œë²„?„ìš© - ëª¨ë“  ?´ë¼?´ì–¸?¸ì—ê²??°ì´?°ë? ë³´ë‚¸???¸ìê°?: ?„ì†¡???°ì´?? ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸
+// ?œë²„???´ë¼?´ì–¸??ë²ˆí˜¸??sendall ? ë•Œ ?ê¸° ?ì‹ ?ê²Œ??ë³´ë‚´ì§€ ?Šê¸° ?„í•´ ë§Œë“ ê²?
+void Clientrecv(SockParam *param);
+// ?°ë ˆ???´ë¼?´ì–¸???„ìš© - ?œë²„?ê²Œ???°ì´?°ë? ë°›ì•„?¨ë‹¤
+
 //ÁÖÁ¦Áß¿¡ ·£´ıÀ¸·Î ÇÏ³ª¸¦ ºÒ·¯¿Í ¹®ÀÚ¿­·Î ¹İÈ¯
 char * Get_Random_Topic(MYSQL *cons);
 //¹æ ¸ñ·ÏÀ» ºÒ·¯¿È
@@ -251,15 +292,19 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
 //ÀüÃ¼ Ã¤ÆÃÀ» ºÒ·¯¿È
 int ReadChating_all(MYSQL *cons, Chating * chatings);
+//¹æÀ» ¸¸µë, ¹æÀÌ¸§, ºñ¹Ğ¹øÈ£, ¸ğµå, ¹®Á¦ °³¼ö, ¹®Á¦ ½Ã°£ ÀÌ ÇÊ¿äÇÔ
+int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
 //---------------Socket ÇÔ¼ö--------------
-void OpenServer();
+
 // ¾²·¹µå,¼­¹öÀü¿ë - ¹æ(¼­¹ö)¸¦ ¿¬´Ù
-void connectServer(char *serverIP);
+void OpenServer(SockParam *param);
+
 // ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¹æ(¼­¹ö)¿¡ ¿¬°áÇÔ ÀÎÀÚ°ª : IPÁÖ¼Ò
-void HandleClient(int num);
+void connectServer(SockParam *param);
 // ¾²·¹µå,¼­¹öÀü¿ë - Å¬¶óÀÌ¾ğÆ®¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ °è¼Ó ¹Ş¾Æ¿Â´Ù ÀÎÀÚ°ª : Å¬¶óÀÌ¾ğÆ® ¹øÈ£ 
-void sendall(char *lmessage, int c);
+void HandleClient(SockParam *param);
 // ¼­¹öÀü¿ë - ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô µ¥ÀÌÅÍ¸¦ º¸³½´Ù ÀÎÀÚ°ª : Àü¼ÛÇÒ µ¥ÀÌÅÍ, ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£
 // ¼­¹öÀÇ Å¬¶óÀÌ¾ğÆ® ¹øÈ£´Â sendall ÇÒ¶§ ÀÚ±â ÀÚ½Å¿¡°Ô´Â º¸³»Áö ¾Ê±â À§ÇØ ¸¸µç°Í
-void Clientrecv();
+void sendall(SockParam *param);
 // ¾²·¹µå,Å¬¶óÀÌ¾ğÆ® Àü¿ë - ¼­¹ö¿¡°Ô¼­ µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¿Â´Ù
+void Clientrecv(SockParam *param);
