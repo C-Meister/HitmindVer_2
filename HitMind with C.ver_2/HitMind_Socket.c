@@ -52,6 +52,15 @@ void OpenServer(SockParam *param) {
 		//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
+		if (param->sockethappen == 5)
+		{
+			for (int i = 0; i < 8; i++)
+				if (param->Serverthread[idx] != 0) {
+					closesocket(param->Serverthread[idx]);
+				}
+			closesocket(param->Slisten_socket);
+			break;
+		}
 		Sleep(1);
 	}
 	// 서버 켜짐
@@ -92,6 +101,10 @@ echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
 	while (1) {
+		if (param->Sconnect_socket[ClientNumber] == 0)
+		{
+			break;
+		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
 
 			printf("Recv()");
@@ -139,6 +152,8 @@ void Clientrecv(SockParam *param) {
 	char query[128] = { 0, };
 	while (1) {
 		int i = 0;
+		if (param->Cconnect_socket == 0)
+			break;
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 
 

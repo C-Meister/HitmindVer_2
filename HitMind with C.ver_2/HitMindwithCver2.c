@@ -259,10 +259,10 @@ int main(int argc, char *argv[])
 	////
 	//// 토픽과 문제수
 	//FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255,1);
+	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255, 1);
 	//SDL_RenderFillRect(renderer,&LineRect);
 	//FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
-	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255,1);
+	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255, 1);
 	////
 	//SDL_RenderPresent(renderer);
 	//while (!quit)//로그인 성공 후 대기창
@@ -533,7 +533,7 @@ int main(int argc, char *argv[])
 	//	}
 	//}
 	//	return 0;
-	//
+	////
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
@@ -1608,7 +1608,8 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-			
+			ZeroMemory(&ServerParam, sizeof(SockParam));
+			ZeroMemory(&ClientParam, sizeof(SockParam));
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
@@ -2651,7 +2652,7 @@ int main(int argc, char *argv[])
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
-					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255,1);
+					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
 					for (i = 0; i < 4; i++) {
 						if (ClientParam.playerstatus[i])
@@ -2672,7 +2673,13 @@ int main(int argc, char *argv[])
 				{
 					loginsuccess = 1;
 					roop = 1;
-
+					if (bangsang == 1) {
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						ServerParam.sockethappen = 5;
+						bangsang = 0;
+					}
+					closesocket(ClientParam.Cconnect_socket);
 					qquit = true;
 				}
 
