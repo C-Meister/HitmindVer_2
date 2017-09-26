@@ -35,6 +35,21 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "fullscreen : %d\n", full);
 }
 
+void HitMind_Timer(Hit_Timer *arg)
+{
+
+	UINT32 now_time = clock();
+	while (*(arg->event) != -1)
+	{
+		if (clock() - now_time > arg->time)
+		{
+			*(arg->event) = 1;
+	//		printf("%d\n", *(arg->event));
+			now_time = clock();
+		}
+		Sleep(10);
+	}
+}
 void changesetting(int bgmusic, int sound, int x, int y, int full) {
 
 	Display_X = x;
