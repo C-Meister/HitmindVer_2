@@ -175,365 +175,365 @@ int main(int argc, char *argv[])
 	char utf8ofchat[128]="";
 	int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
 
-	SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
-	SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
-	SDL_Rect LineRect = { Display_X * 0.8 + 22, 10+Display_Y*0.21*0.633, Display_X * 0.1825, Display_Y * 0.004 };
-	SDL_Rect TopicRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+22, 10 + Display_Y*0.21*0.063, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
-	SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ 22, 10 + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
-	SDL_Rect ChatRect = { Display_X * 0.8 +Display_X*0.1825*0.035+ 22, 10 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
-	SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + 22, 10 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
-	SDL_Color TextColor = { 0,0,0,0 };
+	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
+	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
+	//SDL_Rect LineRect = { Display_X * 0.8 + 22, 10+Display_Y*0.21*0.633, Display_X * 0.1825, Display_Y * 0.004 };
+	//SDL_Rect TopicRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+22, 10 + Display_Y*0.21*0.063, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ 22, 10 + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect ChatRect = { Display_X * 0.8 +Display_X*0.1825*0.035+ 22, 10 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + 22, 10 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
+	//SDL_Color TextColor = { 0,0,0,0 };
 
-	float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
-	
-	SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
-	SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
-	SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
-	SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
-	SDL_Texture * NewTexture = LoadTexture(renderer, ".//design/Newpile.png");
-	SDL_Texture * EraserTexture = LoadTexture(renderer, ".//design//Eraser.png");
-	SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
-	SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
-	SDL_Texture * RgbCode = LoadTexture(renderer, ".//design//RgbCode.png");
-	SDL_Texture * DChatTexture = LoadTexture(renderer, ".//design//defaultchat.png");
-	SDL_Texture * HChatTexture = LoadTexture(renderer, ".//design//onchat.png");
-	SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
-	SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
-	SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
+	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
+	//
+	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
+	//SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
+	//SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
+	//SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
+	//SDL_Texture * NewTexture = LoadTexture(renderer, ".//design/Newpile.png");
+	//SDL_Texture * EraserTexture = LoadTexture(renderer, ".//design//Eraser.png");
+	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
+	//SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
+	//SDL_Texture * RgbCode = LoadTexture(renderer, ".//design//RgbCode.png");
+	//SDL_Texture * DChatTexture = LoadTexture(renderer, ".//design//defaultchat.png");
+	//SDL_Texture * HChatTexture = LoadTexture(renderer, ".//design//onchat.png");
+	//SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
+	//SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
+	//SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
 
-	Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
-	Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
-	Button * PencilButton = (Button *)malloc(sizeof(Button));
-	Button * NewButton = (Button *)malloc(sizeof(Button));
-	Button * EraserButton = (Button *)malloc(sizeof(Button));
-	Button * PassButton = (Button *)malloc(sizeof(Button));
-	Button * MagButton = (Button *)malloc(sizeof(Button));
-	Button * RecycleButton = (Button *)malloc(sizeof(Button));
-	int RenderUpdate = false;
-	CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
-	CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 20.0, HORIZONTAL);
-	CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255,64);
-	CreateButton(EraserButton, renderer, EraserTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + 2*(Display_X*0.1825*0.22), Sample.y -MaxStrong/2.0, MaxStrong,MaxStrong, 0, 0, 255,64);
-	CreateButton(NewButton, renderer, NewTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3*(Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0 ,MaxStrong, MaxStrong, 0, 0, 255,64);
-	CreateButton(MagButton, renderer, MagTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*0.22), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
-	CreateButton(PassButton, renderer, PassTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 +(Display_X*0.1825*(0.22*1.5-0.0095)), 10 + Display_Y * 0.21*0.67, MaxStrong, MaxStrong, 0, 0, 255, 64);
-	CreateButton(RecycleButton, renderer, RecycleTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 -  (Display_X*0.1825*0.019), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
-	SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
-	SDL_RenderClear(renderer);
-	//1번구역
-	FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.8, Display_Y * 0.76, 14);
-	DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, 14, 1);
-	//4번구역
-	FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.77 + 10, Display_X * 0.8, Display_Y * 0.21, 14);
-	DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.77 + 10 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, 14, 1);
-	//5번구역
-	FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.64 + 10, Display_X * 0.1825, Display_Y * 0.34, 14);
-	DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.64 + 9, Display_X * 0.1825 + 2, Display_Y * 0.34 + 2, 14, 1);
-	//3번구역
-	FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.22 + 10, Display_X * 0.1825, Display_Y * 0.41, 14);
-	DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.22 + 9, Display_X * 0.1825 + 2, Display_Y * 0.41 + 2, 14, 1);
-	//2번구역
-	FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, 10, Display_X * 0.1825, Display_Y * 0.21, 3);
-	DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, 9, Display_X * 0.1825 + 2, Display_Y * 0.21 + 2, 3, 1);
-	// Rgb 색상표
-	RenderTexture(renderer, RgbCode, &RgbRect);
-	// 슬라이더와 버튼들
-	DrawSlider(renderer, StrongSlider);
-	DrawButton(PencilButton);
-	DrawButton(EraserButton);
-	DrawButton(NewButton);
-	DrawButton(MagButton);
-	DrawButton(RecycleButton);
-	DrawButton(PassButton);
-	//
-	// 샘플링 
-	canvas->Strong *= PencilStrong / 70.0;
-	SDL_SetRenderDrawColor(renderer,0,0,0, 0);
-	FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
-	SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
-	FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
-	//
-	// 채팅창
-	RenderTexture(renderer,DChatTexture,&ChatRect);
-	RenderTexture(renderer, EnterTexture, &EnterRect);
-	//
-	// 토픽과 문제수
-	FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-	PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255);
-	SDL_RenderFillRect(renderer,&LineRect);
-	FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
-	PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255);
-	//
-	SDL_RenderPresent(renderer);
-	while (!quit)//로그인 성공 후 대기창
-	{
-		SDL_WaitEvent(&event);
-		if (UpdateCanvas(canvas, &event) == 1&&Chat!= ACTIVATED) {
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
-			if (Chat == DEACTIVATED) {
-				wcscpy(InGameChat, L"");
-			}
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-			switch (event.type)
-			{
-				case SDL_TEXTINPUT: // 채팅 입력 이벤트
-					if (Chat != ACTIVATED)
-						break;
-					if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
-					{
-						wcscpy(wchar, L"");
-						sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
-						wchar[0] = sum;
-						wcscat(InGameChat, wchar);
-						if (event.text.text[0] == -29)
-							slice = 1;
-						else
-							slice = 1 + !((wchar[0] - 0xac00) % 28);
-						textinput = true;
-					}
-					else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
-						wcscpy(wchar, L"");
-						swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-						wcscat(InGameChat, wchar);
-						hangeul = false;
-						slice = 0;
-						textinput = true;
-					}
-					break;
-				case SDL_KEYDOWN:
-					if (Chat != ACTIVATED)
-						break;
-					if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-						if (hangeul == true && enter == false) {
-							enter = true;
-						}
-						else {
-							Shift = 0;
-							strcpy(utf8ofchat, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
-							UTF82EUCKR(euckrofchat, strlen(euckrofchat), utf8ofchat, strlen(utf8ofchat));
-							wcscpy(InGameChat, L"");
-							enter = false;
-							textinput = true;
-						}
-					}
-					else if (event.key.keysym.sym == SDLK_RALT)
-						hanyeong = !(hanyeong);
-					else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(InGameChat)>0)// 키보드 백스페이스고 배열의 길이가 1이상일때
-					{
-						if (slice == 0) {
-							if(Shift>0)
-								Shift--;
-							InGameChat[wcslen(InGameChat) - 1] = '\0';
-							textinput = true;
-						}
-						else {
-							slice--;
-						}
-					}
-					else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면			
-							strcpy(utf8, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
-							SDL_SetClipboardText(utf8);// 클립보드에 넣음
-					}
-					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
-						wcscat(InGameChat, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
-						hangeul = false;
-						textinput = true;
-					}
-					else {
-						hangeul = true;
-						slice++;
-					}
-					break;
-			case SDL_QUIT:
-				quit = true;
-				break;
-			case SDL_WINDOWEVENT:
-				switch (event.window.event) {
-				case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-					quit = true;
-					Sleep(100);
-					break;// 브레이크
-				case SDL_WINDOWEVENT_ENTER:// 윈도우
-					SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-					break;
-				case SDL_WINDOWEVENT_LEAVE:
-					//drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-					break;
-				case SDL_WINDOWEVENT_FOCUS_GAINED:
-					break;
-				}
-			}
-		if (textinput == true) {
-			RenderTexture(renderer, ChatTexture, &ChatRect);
-			while (PutText_Unicode_Limit(renderer, InGameChat+Shift, ChatRect.x + Display_Y*0.01, ChatRect.y + ChatRect.h / 5.0, Display_Y*0.02, ChatRect.w-Display_Y*0.013, TextColor)==-1) {
-				Shift++;
-			}
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			textinput = false;
-			continue;
-		}
-		if (UpdateSlider(StrongSlider, &event) == true) {
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-			SDL_Rect rect = {StrongSlider->Bar.x -StrongSlider->Box.w/2.0, StrongSlider->Box.y, StrongSlider->Bar.w+StrongSlider->Box.w, StrongSlider->Box.h};
-			SDL_RenderFillRect(renderer, &rect);
-			DrawSlider(renderer, StrongSlider);
-			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong+2,MaxStrong+2 };
-			SDL_RenderFillRect(renderer, &rect1);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			if (canvas->Flag == ERASER) {
-				canvas->Strong *= EraserStrong / 70.0;
-				SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
-				SDL_RenderDrawRect(renderer, &rect2);
-				SDL_RenderPresent(renderer);
-				printf("render	");
-			}
-			else if (canvas->Flag == PENCIL) {
-				canvas->Strong *= PencilStrong / 70.0;
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
-				SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
-				FillCircle(renderer, Sample.x,Sample.y,canvas->Strong/2.0);
-				SDL_RenderPresent(renderer);
-				printf("render	");
-			}
-			continue;
-		}
-		if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			if (canvas->Flag == ERASER) {
-				SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
-				SDL_RenderDrawRect(renderer, &rect2);
-				SDL_RenderPresent(renderer);
-				printf("render	");
-			}
-			else if (canvas->Flag == PENCIL){
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0+1);
-				SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
-				SDL_RenderPresent(renderer);
-				printf("render	");
-			}
-			continue;
-		}
-		if (UpdateButton(PencilButton, &event) == 1) {
-			DrawButton(PencilButton);
-			if (PencilButton->Flag == ACTIVATED){
-				EraserButton->Flag = DEACTIVATED;
-				DrawButton(EraserButton);
-				canvas->Flag = PENCIL;
-				canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-				SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
-				SDL_RenderFillRect(renderer, &rect1);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
-				SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
-			}
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (UpdateButton(EraserButton, &event) == 1) {
-			DrawButton(EraserButton);
-			if (EraserButton->Flag == ACTIVATED) {
-				PencilButton->Flag = DEACTIVATED;
-				DrawButton(PencilButton);
-				canvas->Flag = ERASER;
-				canvas->Strong = SDL_floor((float)canvas->Strong*EraserStrong / PencilStrong);
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-				SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
-				SDL_RenderFillRect(renderer, &rect1);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-				SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
-				SDL_RenderDrawRect(renderer, &rect2);
-			}
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (UpdateButton(NewButton, &event) == 1) {
-			DrawButton(NewButton);
-			SDL_RenderPresent(renderer);
-			if (NewButton->Flag == ACTIVATED) {
-				SDL_Delay(100);
-				canvas->Flag = PENCIL;
-				PencilButton->Flag = ACTIVATED;
-				EraserButton->Flag = DEACTIVATED;
-				NewButton->Flag = HIGHLIGHT;
-				SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
-				SDL_RenderFillRect(canvas->Renderer,&canvas->Rect);
-				canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-				SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
-				SDL_RenderFillRect(renderer, &rect1);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
-				SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
-				FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
-			}
-			DrawButton(NewButton);
-			DrawButton(EraserButton);
-			DrawButton(PencilButton);
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (UpdateButton(MagButton,&event)==1) {
-			DrawButton(MagButton);
-			SDL_RenderPresent(renderer);
-			if (MagButton->Flag == ACTIVATED) {
-				MagButton->Flag = HIGHLIGHT;
-				SDL_Delay(100);
-			}
-			DrawButton(MagButton);
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (UpdateButton(RecycleButton, &event) == 1) {
-			DrawButton(RecycleButton);
-			SDL_RenderPresent(renderer);
-			if (RecycleButton->Flag == ACTIVATED) {
-				RecycleButton->Flag = HIGHLIGHT;
-				SDL_Delay(100);
-			}
-			DrawButton(RecycleButton);
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (UpdateButton(PassButton, &event) == 1) {
-			DrawButton(PassButton);
-			SDL_RenderPresent(renderer);
-			if (PassButton->Flag == ACTIVATED) {
-				PassButton->Flag = HIGHLIGHT;
-				SDL_Delay(100);
-			}
-			DrawButton(PassButton);
-			SDL_RenderPresent(renderer);
-			printf("render	");
-			continue;
-		}
-		if (PutButtonWithImage(renderer, EnterTexture,HEnterTexture,NULL,EnterRect.x,EnterRect.y,EnterRect.w,EnterRect.h,&event,&Enter )) {
-			if (Enter == ACTIVATED) {
-				wcscpy(InGameChat, L"");
-				Enter = HIGHLIGHT;
-			}
-			SDL_RenderPresent(renderer);
-			printf("render   ");
-			continue;
-		}
-	}
-		return 0;
-	//
+	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
+	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
+	//Button * PencilButton = (Button *)malloc(sizeof(Button));
+	//Button * NewButton = (Button *)malloc(sizeof(Button));
+	//Button * EraserButton = (Button *)malloc(sizeof(Button));
+	//Button * PassButton = (Button *)malloc(sizeof(Button));
+	//Button * MagButton = (Button *)malloc(sizeof(Button));
+	//Button * RecycleButton = (Button *)malloc(sizeof(Button));
+	//int RenderUpdate = false;
+	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
+	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 20.0, HORIZONTAL);
+	//CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255,64);
+	//CreateButton(EraserButton, renderer, EraserTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + 2*(Display_X*0.1825*0.22), Sample.y -MaxStrong/2.0, MaxStrong,MaxStrong, 0, 0, 255,64);
+	//CreateButton(NewButton, renderer, NewTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3*(Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0 ,MaxStrong, MaxStrong, 0, 0, 255,64);
+	//CreateButton(MagButton, renderer, MagTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*0.22), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
+	//CreateButton(PassButton, renderer, PassTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 +(Display_X*0.1825*(0.22*1.5-0.0095)), 10 + Display_Y * 0.21*0.67, MaxStrong, MaxStrong, 0, 0, 255, 64);
+	//CreateButton(RecycleButton, renderer, RecycleTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 -  (Display_X*0.1825*0.019), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
+	//SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
+	//SDL_RenderClear(renderer);
+	////1번구역
+	//FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.8, Display_Y * 0.76, 14);
+	//DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, 14, 1);
+	////4번구역
+	//FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.77 + 10, Display_X * 0.8, Display_Y * 0.21, 14);
+	//DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.77 + 10 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, 14, 1);
+	////5번구역
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.64 + 10, Display_X * 0.1825, Display_Y * 0.34, 14);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.64 + 9, Display_X * 0.1825 + 2, Display_Y * 0.34 + 2, 14, 1);
+	////3번구역
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.22 + 10, Display_X * 0.1825, Display_Y * 0.41, 14);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.22 + 9, Display_X * 0.1825 + 2, Display_Y * 0.41 + 2, 14, 1);
+	////2번구역
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, 10, Display_X * 0.1825, Display_Y * 0.21, 3);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, 9, Display_X * 0.1825 + 2, Display_Y * 0.21 + 2, 3, 1);
+	//// Rgb 색상표
+	//RenderTexture(renderer, RgbCode, &RgbRect);
+	//// 슬라이더와 버튼들
+	//DrawSlider(renderer, StrongSlider);
+	//DrawButton(PencilButton);
+	//DrawButton(EraserButton);
+	//DrawButton(NewButton);
+	//DrawButton(MagButton);
+	//DrawButton(RecycleButton);
+	//DrawButton(PassButton);
+	////
+	//// 샘플링 
+	//canvas->Strong *= PencilStrong / 70.0;
+	//SDL_SetRenderDrawColor(renderer,0,0,0, 0);
+	//FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+	////
+	//// 채팅창
+	//RenderTexture(renderer,DChatTexture,&ChatRect);
+	//RenderTexture(renderer, EnterTexture, &EnterRect);
+	////
+	//// 토픽과 문제수
+	//FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
+	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255, 1);
+	//SDL_RenderFillRect(renderer,&LineRect);
+	//FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
+	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255, 1);
+	////
+	//SDL_RenderPresent(renderer);
+	//while (!quit)//로그인 성공 후 대기창
+	//{
+	//	SDL_WaitEvent(&event);
+	//	if (UpdateCanvas(canvas, &event) == 1&&Chat!= ACTIVATED) {
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
+	//		if (Chat == DEACTIVATED) {
+	//			wcscpy(InGameChat, L"");
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//		switch (event.type)
+	//		{
+	//			case SDL_TEXTINPUT: // 채팅 입력 이벤트
+	//				if (Chat != ACTIVATED)
+	//					break;
+	//				if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+	//				{
+	//					wcscpy(wchar, L"");
+	//					sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+	//					wchar[0] = sum;
+	//					wcscat(InGameChat, wchar);
+	//					if (event.text.text[0] == -29)
+	//						slice = 1;
+	//					else
+	//						slice = 1 + !((wchar[0] - 0xac00) % 28);
+	//					textinput = true;
+	//				}
+	//				else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+	//					wcscpy(wchar, L"");
+	//					swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+	//					wcscat(InGameChat, wchar);
+	//					hangeul = false;
+	//					slice = 0;
+	//					textinput = true;
+	//				}
+	//				break;
+	//			case SDL_KEYDOWN:
+	//				if (Chat != ACTIVATED)
+	//					break;
+	//				if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+	//					if (hangeul == true && enter == false) {
+	//						enter = true;
+	//					}
+	//					else {
+	//						Shift = 0;
+	//						strcpy(utf8ofchat, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
+	//						UTF82EUCKR(euckrofchat, strlen(euckrofchat), utf8ofchat, strlen(utf8ofchat));
+	//						wcscpy(InGameChat, L"");
+	//						enter = false;
+	//						textinput = true;
+	//					}
+	//				}
+	//				else if (event.key.keysym.sym == SDLK_RALT)
+	//					hanyeong = !(hanyeong);
+	//				else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(InGameChat)>0)// 키보드 백스페이스고 배열의 길이가 1이상일때
+	//				{
+	//					if (slice == 0) {
+	//						if(Shift>0)
+	//							Shift--;
+	//						InGameChat[wcslen(InGameChat) - 1] = '\0';
+	//						textinput = true;
+	//					}
+	//					else {
+	//						slice--;
+	//					}
+	//				}
+	//				else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면			
+	//						strcpy(utf8, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
+	//						SDL_SetClipboardText(utf8);// 클립보드에 넣음
+	//				}
+	//				else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+	//					wcscat(InGameChat, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
+	//					hangeul = false;
+	//					textinput = true;
+	//				}
+	//				else {
+	//					hangeul = true;
+	//					slice++;
+	//				}
+	//				break;
+	//		case SDL_QUIT:
+	//			quit = true;
+	//			break;
+	//		case SDL_WINDOWEVENT:
+	//			switch (event.window.event) {
+	//			case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+	//				quit = true;
+	//				Sleep(100);
+	//				break;// 브레이크
+	//			case SDL_WINDOWEVENT_ENTER:// 윈도우
+	//				SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+	//				break;
+	//			case SDL_WINDOWEVENT_LEAVE:
+	//				//drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+	//				break;
+	//			case SDL_WINDOWEVENT_FOCUS_GAINED:
+	//				break;
+	//			}
+	//		}
+	//	if (textinput == true) {
+	//		RenderTexture(renderer, ChatTexture, &ChatRect);
+	//		while (PutText_Unicode_Limit(renderer, InGameChat+Shift, ChatRect.x + Display_Y*0.01, ChatRect.y + ChatRect.h / 5.0, Display_Y*0.02, ChatRect.w-Display_Y*0.013, TextColor)==-1) {
+	//			Shift++;
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		textinput = false;
+	//		continue;
+	//	}
+	//	if (UpdateSlider(StrongSlider, &event) == true) {
+	//		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//		SDL_Rect rect = {StrongSlider->Bar.x -StrongSlider->Box.w/2.0, StrongSlider->Box.y, StrongSlider->Bar.w+StrongSlider->Box.w, StrongSlider->Box.h};
+	//		SDL_RenderFillRect(renderer, &rect);
+	//		DrawSlider(renderer, StrongSlider);
+	//		SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong+2,MaxStrong+2 };
+	//		SDL_RenderFillRect(renderer, &rect1);
+	//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//		if (canvas->Flag == ERASER) {
+	//			canvas->Strong *= EraserStrong / 70.0;
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderDrawRect(renderer, &rect2);
+	//			SDL_RenderPresent(renderer);
+	//			printf("render	");
+	//		}
+	//		else if (canvas->Flag == PENCIL) {
+	//			canvas->Strong *= PencilStrong / 70.0;
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x,Sample.y,canvas->Strong/2.0);
+	//			SDL_RenderPresent(renderer);
+	//			printf("render	");
+	//		}
+	//		continue;
+	//	}
+	//	if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
+	//		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//		if (canvas->Flag == ERASER) {
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderDrawRect(renderer, &rect2);
+	//			SDL_RenderPresent(renderer);
+	//			printf("render	");
+	//		}
+	//		else if (canvas->Flag == PENCIL){
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0+1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+	//			SDL_RenderPresent(renderer);
+	//			printf("render	");
+	//		}
+	//		continue;
+	//	}
+	//	if (UpdateButton(PencilButton, &event) == 1) {
+	//		DrawButton(PencilButton);
+	//		if (PencilButton->Flag == ACTIVATED){
+	//			EraserButton->Flag = DEACTIVATED;
+	//			DrawButton(EraserButton);
+	//			canvas->Flag = PENCIL;
+	//			canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (UpdateButton(EraserButton, &event) == 1) {
+	//		DrawButton(EraserButton);
+	//		if (EraserButton->Flag == ACTIVATED) {
+	//			PencilButton->Flag = DEACTIVATED;
+	//			DrawButton(PencilButton);
+	//			canvas->Flag = ERASER;
+	//			canvas->Strong = SDL_floor((float)canvas->Strong*EraserStrong / PencilStrong);
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+	//			SDL_RenderDrawRect(renderer, &rect2);
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (UpdateButton(NewButton, &event) == 1) {
+	//		DrawButton(NewButton);
+	//		SDL_RenderPresent(renderer);
+	//		if (NewButton->Flag == ACTIVATED) {
+	//			SDL_Delay(100);
+	//			canvas->Flag = PENCIL;
+	//			PencilButton->Flag = ACTIVATED;
+	//			EraserButton->Flag = DEACTIVATED;
+	//			NewButton->Flag = HIGHLIGHT;
+	//			SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
+	//			SDL_RenderFillRect(canvas->Renderer,&canvas->Rect);
+	//			canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+	//			SDL_RenderFillRect(renderer, &rect1);
+	//			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+	//		}
+	//		DrawButton(NewButton);
+	//		DrawButton(EraserButton);
+	//		DrawButton(PencilButton);
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (UpdateButton(MagButton,&event)==1) {
+	//		DrawButton(MagButton);
+	//		SDL_RenderPresent(renderer);
+	//		if (MagButton->Flag == ACTIVATED) {
+	//			MagButton->Flag = HIGHLIGHT;
+	//			SDL_Delay(100);
+	//		}
+	//		DrawButton(MagButton);
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (UpdateButton(RecycleButton, &event) == 1) {
+	//		DrawButton(RecycleButton);
+	//		SDL_RenderPresent(renderer);
+	//		if (RecycleButton->Flag == ACTIVATED) {
+	//			RecycleButton->Flag = HIGHLIGHT;
+	//			SDL_Delay(100);
+	//		}
+	//		DrawButton(RecycleButton);
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (UpdateButton(PassButton, &event) == 1) {
+	//		DrawButton(PassButton);
+	//		SDL_RenderPresent(renderer);
+	//		if (PassButton->Flag == ACTIVATED) {
+	//			PassButton->Flag = HIGHLIGHT;
+	//			SDL_Delay(100);
+	//		}
+	//		DrawButton(PassButton);
+	//		SDL_RenderPresent(renderer);
+	//		printf("render	");
+	//		continue;
+	//	}
+	//	if (PutButtonWithImage(renderer, EnterTexture,HEnterTexture,NULL,EnterRect.x,EnterRect.y,EnterRect.w,EnterRect.h,&event,&Enter )) {
+	//		if (Enter == ACTIVATED) {
+	//			wcscpy(InGameChat, L"");
+	//			Enter = HIGHLIGHT;
+	//		}
+	//		SDL_RenderPresent(renderer);
+	//		printf("render   ");
+	//		continue;
+	//	}
+	//}
+	//	return 0;
+	////
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
@@ -1608,7 +1608,8 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-			
+			ZeroMemory(&ServerParam, sizeof(SockParam));
+			ZeroMemory(&ClientParam, sizeof(SockParam));
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
@@ -2651,7 +2652,7 @@ int main(int argc, char *argv[])
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
-					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255);
+					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
 					for (i = 0; i < 4; i++) {
 						if (ClientParam.playerstatus[i])
@@ -2672,7 +2673,13 @@ int main(int argc, char *argv[])
 				{
 					loginsuccess = 1;
 					roop = 1;
-
+					if (bangsang == 1) {
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						ServerParam.sockethappen = 5;
+						bangsang = 0;
+					}
+					closesocket(ClientParam.Cconnect_socket);
 					qquit = true;
 				}
 
