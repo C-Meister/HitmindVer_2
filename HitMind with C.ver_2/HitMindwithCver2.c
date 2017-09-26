@@ -1947,7 +1947,7 @@ int main(int argc, char *argv[])
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.027, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0,1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,1);	//제목 출력
+						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,2);	//제목 출력
 
 						PutText(renderer, rooms[i].mode, Display_X * 0.085, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0,1);	//모드 출력
 
@@ -1976,7 +1976,7 @@ int main(int argc, char *argv[])
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, Display_X * 0.372, Display_Y * (0.107 + 0.16 * (i / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0,1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,1);	//제목 출력
+						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.16 * (i / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0,2);	//제목 출력
 
 						PutText(renderer, rooms[i].mode, Display_X * 0.43, Display_Y * (0.165 + 0.16 * (i / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0,1);	//모드 출력
 						sprintf(db_id, "%d문제", rooms[i].question);
