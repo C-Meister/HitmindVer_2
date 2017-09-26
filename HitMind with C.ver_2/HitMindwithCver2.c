@@ -1618,12 +1618,17 @@ int main(int argc, char *argv[])
 			int roomcount = Get_Room_List(cons, rooms);
 			int pastroomcount = roomcount;
 			char MemBerList[30][30] = { 0, };
+			int RefrashEvent = 1;
+			Hit_Timer Refrash;
+			Refrash.event = &RefrashEvent;
+			Refrash.time = 500;
+			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &Refrash, 0, NULL);
 			Chating chatings[12] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
-
+			
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -1642,6 +1647,7 @@ int main(int argc, char *argv[])
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
 			warning.ison = 0;
+			long long firsttime = SDL_GetTicks();
 			int nonhappen = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			int pastusercount = usercount;
@@ -1673,7 +1679,7 @@ int main(int argc, char *argv[])
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
-				SDL_WaitEventTimeout(&event, 1000);
+				SDL_WaitEventTimeout(&event, 500);
 				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
@@ -1824,10 +1830,8 @@ int main(int argc, char *argv[])
 			|
 			|
 			*/
-				if (timer < SDL_GetTicks() % 1000)
+				if (RefrashEvent)
 				{
-
-					timer++;
 					usercount = getUesrStatus(cons, MemBerList);
 					if (usercount != pastusercount) {
 						newdata[2] = 1;
@@ -1837,13 +1841,19 @@ int main(int argc, char *argv[])
 					if (allchating_cnt != pastchating_cnt) {
 						newdata[1] = 1;
 						pastchating_cnt = allchating_cnt;
+
+						chatmovehappen = 1;
+
 					}
 					roomcount = Get_Room_List(cons, rooms);
 					if (roomcount != pastroomcount)
 					{
 						newdata[0] = 1;
 						pastroomcount = roomcount;
+						
 					}
+					RefrashEvent = 0;
+					
 				}
 
 
@@ -2605,7 +2615,7 @@ int main(int argc, char *argv[])
 			system("cls");
 
 			while (!qquit) {
-				SDL_WaitEvent(&event);
+				SDL_WaitEventTimeout(&event, 500);
 				switch (event.type)
 				{
 				case SDL_MOUSEMOTION:
@@ -2649,6 +2659,7 @@ int main(int argc, char *argv[])
 
 				if (ClientParam.sockethappen == 1)
 				{
+
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
@@ -2657,7 +2668,7 @@ int main(int argc, char *argv[])
 					for (i = 0; i < 4; i++) {
 						if (ClientParam.playerstatus[i])
 						{
-							FillRoundRect(renderer, 255, 255, 255, Display_X * 0.01, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
+							FillRoundRect(renderer, 233, 233, 233, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
 
 						}
 					}
