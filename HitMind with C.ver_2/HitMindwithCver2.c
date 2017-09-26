@@ -2103,8 +2103,8 @@ int main(int argc, char *argv[])
 				{
 					qquit = false;
 				}
-				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,1);
-				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,1);
+				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,2);
+				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.03, 35 * ((float)Display_X) / 1920, 255, 255, 255,2);
 
 				if (PutButtonImage(renderer, WaitRoom_setting_noclick, WaitRoom_setting_click, Display_X * 0.92 + 10, Display_Y * 0.02, 86 * ((float)Display_X / 1920), 82 * ((float)Display_X / 1920), &event, &happen))//설정 버튼
 				{
