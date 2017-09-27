@@ -813,6 +813,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
+					SDL_SetRenderDrawColor(Canvas->Renderer, 255, 255, 255, 0);
 					LineThick(Renderer,Strong,Last_x,Last_y,x,y);
 					Canvas->Last.x = x; Canvas->Last.y = y;
 					return 1;

@@ -35,24 +35,23 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "fullscreen : %d\n", full);
 }
 uintptr_t CreateTimer(unsigned int time, int * event) {
-	Hit_Timer arg;
-	arg.event = event;
-	arg.time = time;
-	
-	return _beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &arg, 0, NULL);
+	Hit_Timer *arg=(Hit_Timer*)malloc(sizeof(arg));
+	arg->event = event;
+	arg->time = time;
+	return _beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, arg, 0, NULL);
 }
 void HitMind_Timer(Hit_Timer *arg)
 {
 	UINT32 now_time = clock();
 	while (*(arg->event) != -1)
 	{
-		if (clock() - now_time > arg->time)
-		{
+		if (clock() - now_time > arg->time){
 			*(arg->event) = 1;
-			printf("%d\n", *(arg->event));
 			now_time = clock();
 		}
+		Sleep(1);
 	}
+	free(arg);
 }
 void changesetting(int bgmusic, int sound, int x, int y, int full) {
 
