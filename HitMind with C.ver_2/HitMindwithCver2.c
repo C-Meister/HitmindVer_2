@@ -200,7 +200,8 @@ int main(int argc, char *argv[])
 	//SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
 	//SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
 	//SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
-
+	int modee = 0;
+	
 	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 	//Button * PencilButton = (Button *)malloc(sizeof(Button));
@@ -849,11 +850,13 @@ int main(int argc, char *argv[])
 							strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 							UTF82EUCKR(db_id, 512, utf8, 768);
 							db_id[strlen(db_id)] = '\0';
-							strcpy(utf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
+							strcpy(utf8, U NICODE2UTF8(Password_put, wcslen(Password_put)));
 							UTF82EUCKR(db_password, 512, utf8, 768);
 							db_password[strlen(db_password)] = '\0';
-							if (myuser != 0)
+							if (myuser != 0) {
 								free(myuser);
+								myuser = 0;
+							}
 							myuser = User_Login_sql(cons, db_id, db_password);
 							if (myuser == -1)
 							{
@@ -866,6 +869,7 @@ int main(int argc, char *argv[])
 								warning.r = 255;
 								warning.g = 0;
 								warning.b = 0;
+								myuser = 0;
 
 							}
 							else if (myuser == 0)
@@ -2680,7 +2684,7 @@ int main(int argc, char *argv[])
 					for (i = 0; i < 4; i++) {
 						if (ClientParam.playerstatus[i])
 						{
-							FillRoundRect(renderer, 233, 233, 233, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
+							FillRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
 
 						}
 					}

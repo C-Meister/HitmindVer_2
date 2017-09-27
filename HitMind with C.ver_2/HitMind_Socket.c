@@ -59,6 +59,7 @@ void OpenServer(SockParam *param) {
 					closesocket(param->Serverthread[idx]);
 				}
 			closesocket(param->Slisten_socket);
+			WSACleanup();
 			break;
 		}
 		Sleep(1);
@@ -187,6 +188,7 @@ void Clientrecv(SockParam *param) {
 				closesocket(param->Cconnect_socket);
 				// 오픈 서버
 				_endthreadex(param->c);
+				WSACleanup(param->wsadata);
 				OpenServer(param);
 			}
 			if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
@@ -196,12 +198,14 @@ void Clientrecv(SockParam *param) {
 				closesocket(param->Cconnect_socket);
 				// 서버 연결
 				_endthreadex(param->c);
+				WSACleanup(param->wsadata);
 				connectServer(param);
 				
 			}
 
 		}
 	}
+	
 }
 /*
 서버를 연 호스트가 나갔을 때 호스트를 바꿈
