@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 	int PASSWORD_INPUT;
 	int PressButton = 0;
 	int autologin_checking;
-	// 테스트 코드
+//	 테스트 코드
 	//User Player[4] = {
 	//	{
 	//		"신상호",
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 	//SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ 22, 10 + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
 	//SDL_Rect ChatRect = { Display_X * 0.8 +Display_X*0.1825*0.035+ 22, 10 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
 	//SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + 22, 10 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
-	//SDL_Rect TimerRect = {Display_X*0.017,Display_Y*0.76,Display_X*0.8-Display_X*0.017,Display_Y*0.004};
+	//SDL_Rect TimerRect = {Display_X*0.011,Display_Y*0.76,Display_X*0.8-Display_X*0.017,Display_Y*0.01};
 	//SDL_Color TextColor = { 0,0,0,0 };
 
 	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
@@ -266,16 +266,35 @@ int main(int argc, char *argv[])
 	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255,1);
 	////
 	//SDL_RenderPresent(renderer);
+	//// 타이머 생성
+	//int Event = 0;
+	//int LimitTime = 10; // 초단위 (최소 1초 이상이여야한다 )
+	//if (LimitTime < 1) {
+	//	printf("LimitTime은 최소 1초이상이여야합니다\n");
+	//}
+	//int Time = 50; // ms 단위
+	//float TimerRate = (TimerRect.w)/ (LimitTime)*Time/1000.0; // 타이머가 Time(ms)초 마다 줄어드는 길이
+	//CreateTimer(Time, &Event);
+	//// 
 	//while (!quit)//로그인 성공 후 대기창
 	//{
-	//	if (SDL_WaitEventTimeout(&event, 50)==0) {
+	//	//	SDL_WaitEvent(&event);
+	//	if (SDL_WaitEventTimeout(&event, 50)==0||Event == 1) {
 	//		SDL_SetRenderDrawColor(renderer, 255,255,255, 0);
 	//		SDL_RenderFillRect(renderer, &TimerRect);
-	//		TimerRect.w -= 1;
+	//		TimerRect.w -= TimerRate;// 반응형으로 바꾸어야함
+	//		if (TimerRect.w <= 0) {
+	//			// 시간 초과!!
+	//		}
 	//		SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
 	//		SDL_RenderFillRect(renderer,&TimerRect);
 	//		SDL_RenderPresent(renderer);
-	//		continue;
+	//		if (Event == 1) {
+	//			Event = 0;// 일정시간(ms)동안 이벤트가 일어났을 때
+	//		}
+	//		else {
+	//			continue;// 일정시간(ms) 동안 이벤트가 일어나지 않았을 때
+	//		}
 	//	}
 	//	if (UpdateCanvas(canvas, &event) == 1&&Chat!= ACTIVATED) {
 	//		SDL_RenderPresent(renderer);
@@ -542,7 +561,7 @@ int main(int argc, char *argv[])
 	//	}
 	//}
 	//	return 0;
-	
+	//
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
