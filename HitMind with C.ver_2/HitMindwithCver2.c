@@ -1929,6 +1929,9 @@ int main(int argc, char *argv[])
 						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
 						memset(&ID_put, 0, sizeof(ID_put));
 					}
+					else if (wstrcmp(ID_put, "") == 0) {
+
+					}
 					else {
 						FillUpRoundRect(renderer, 255, 255, 255, 61, 810, 1080, 177, 0);
 						RenderTextureXYWH(renderer, Chating_noput, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07);
@@ -1942,7 +1945,7 @@ int main(int argc, char *argv[])
 						chatmovehappen = 1;
 
 					}
-					MouseUP_Wait;
+					//MouseUP_Wait;
 
 				}
 
