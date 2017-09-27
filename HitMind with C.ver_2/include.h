@@ -203,7 +203,6 @@ void settings(int *x, int *y, int *music, int *sound, int *full);
 void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
-uintptr_t CreateTimer(unsigned int time, int * event);
 void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
 //---------------그래픽 함수--------------

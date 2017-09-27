@@ -101,7 +101,7 @@ echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
 	while (1) {
-		if (param->Sconnect_socket[ClientNumber] == 0)
+		if (param->sockethappen == 5)
 		{
 			break;
 		}
@@ -155,14 +155,16 @@ void sendall(SockParam *param) {
 */
 void Clientrecv(SockParam *param) {
 	char query[128] = { 0, };
+	int i = 0;
 	while (1) {
-		int i = 0;
+		
 		if (param->Cconnect_socket == 0)
 			break;
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 
 
 			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
+				i = 0;
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
 					printf("%s\n", param->message);
@@ -224,5 +226,4 @@ void hostChange(SockParam *param) {
 	}
 		
 }	
-
 

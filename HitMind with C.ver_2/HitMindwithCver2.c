@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 	//	getchar();
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -1643,6 +1643,7 @@ int main(int argc, char *argv[])
 			int pastroomcount = roomcount;
 			char MemBerList[30][30] = { 0, };
 			int RefrashEvent = 1;
+
 			Hit_Timer Refrash;
 			Refrash.event = &RefrashEvent;
 			Refrash.time = 500;
@@ -1668,6 +1669,7 @@ int main(int argc, char *argv[])
 			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
 			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
 			quit = 0;
+			int maxchating = 0;
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
 			warning.ison = 0;
@@ -1675,7 +1677,8 @@ int main(int argc, char *argv[])
 			int nonhappen = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			int pastusercount = usercount;
-			allchating_cnt = ReadChating_all(cons, chatings);
+			if (ReadChating_all(cons, chatings) != 0)
+				allchating_cnt = chatings[0].ownnum;
 			int pastchating_cnt = allchating_cnt;
 			int chatmovehappen = 0;
 			int newdataed = 1;
@@ -1703,12 +1706,37 @@ int main(int argc, char *argv[])
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
-				SDL_WaitEventTimeout(&event, 500);
+				SDL_WaitEventTimeout(&event, 1000);
 				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
 				}
+				if (RefrashEvent)
+				{
+					usercount = getUesrStatus(cons, MemBerList);
+					if (usercount != pastusercount) {
+						newdata[2] = 1;
+						pastusercount = usercount;
+					}
+					if ((maxchating = ReadChating_all(cons, chatings)) != 0)
+						allchating_cnt = chatings[0].ownnum;
+					if (allchating_cnt != pastchating_cnt) {
+						newdata[1] = 1;
+						pastchating_cnt = allchating_cnt;
 
+						chatmovehappen = 1;
+
+					}
+					roomcount = Get_Room_List(cons, rooms);
+					if (roomcount != pastroomcount)
+					{
+						newdata[0] = 1;
+						pastroomcount = roomcount;
+
+					}
+					RefrashEvent = 0;
+
+				}
 				switch (event.type)
 				{
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -1754,7 +1782,8 @@ int main(int argc, char *argv[])
 									memset(&ID_put, 0, sizeof(ID_put));
 									enter = false;
 									textinput = true;
-									allchating_cnt = ReadChating_all(cons, chatings);
+									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
+										allchating_cnt = chatings[0].ownnum;
 									MoveSlider_value(chatslide, chatslide->End);
 									chatmovehappen = 1;
 								}
@@ -1854,32 +1883,8 @@ int main(int argc, char *argv[])
 			|
 			|
 			*/
-				if (RefrashEvent)
-				{
-					usercount = getUesrStatus(cons, MemBerList);
-					if (usercount != pastusercount) {
-						newdata[2] = 1;
-						pastusercount = usercount;
-					}
-					allchating_cnt = ReadChating_all(cons, chatings);
-					if (allchating_cnt != pastchating_cnt) {
-						newdata[1] = 1;
-						pastchating_cnt = allchating_cnt;
-
-						chatmovehappen = 1;
-
-					}
-					roomcount = Get_Room_List(cons, rooms);
-					if (roomcount != pastroomcount)
-					{
-						newdata[0] = 1;
-						pastroomcount = roomcount;
-						
-					}
-					RefrashEvent = 0;
-					
-				}
-
+				
+			
 
 				//1번구역
 				if (newdata[0])
@@ -1901,7 +1906,18 @@ int main(int argc, char *argv[])
 				}
 				//5번구역
 
+				if (newdata[1] || chatmovehappen) {
+					for (i = 0; i < maxchating; i++)
+					{
 
+						sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
+						if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
+							PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					}
+					newdata[1] = 0;
+					chatmovehappen = 0;
+					happen = true;
+				}
 				//3번구역
 				if (newdata[2]) {
 					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
@@ -1912,7 +1928,32 @@ int main(int argc, char *argv[])
 				}
 				//2번구역
 
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
+				{
 
+					if (wstrcmp(ID_put, "/clear") == 0)
+					{
+						mysql_query(cons, "delete from all_chating");
+						mysql_query(cons, "alter table all_chating auto_increment = 1");
+						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
+						memset(&ID_put, 0, sizeof(ID_put));
+					}
+					else {
+						FillUpRoundRect(renderer, 255, 255, 255, 61, 810, 1080, 177, 0);
+						RenderTextureXYWH(renderer, Chating_noput, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07);
+						InsertChating_all(cons, myuser->name, ID_put);
+						memset(&ID_put, 0, sizeof(ID_put));
+						enter = false;
+						textinput = true;
+						allchating_cnt = ReadChating_all(cons, chatings);
+						MoveSlider_value(chatslide, chatslide->End);
+						newdata[1] = 1;
+						chatmovehappen = 1;
+
+					}
+					MouseUP_Wait;
+
+				}
 				
 
 
@@ -1929,31 +1970,7 @@ int main(int argc, char *argv[])
 					PutText_Unicode(renderer, ID_put, Display_X * 0.04, Display_Y * 0.92, 30 * ((float)Display_X / 1920), color,1);
 
 				}
-				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
-				{
-
-					if (wstrcmp(ID_put, "/clear") == 0)
-					{
-						mysql_query(cons, "delete from all_chating");
-						mysql_query(cons, "alter table all_chating auto_increment = 1");
-						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
-						memset(&ID_put, 0, sizeof(ID_put));
-					}
-					else {
-						FillUpRoundRect(renderer,255,255,255,61,810,1080,177,0);
-						RenderTextureXYWH(renderer, Chating_noput, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07);
-						InsertChating_all(cons, myuser->name, ID_put);
-						memset(&ID_put, 0, sizeof(ID_put));
-						enter = false;
-						textinput = true;
-						allchating_cnt = ReadChating_all(cons, chatings);
-						MoveSlider_value(chatslide, chatslide->End);
-						chatmovehappen = 1;
-						
-					}
-					MouseUP_Wait;
-
-				}
+				
 				PutText(renderer, "전송", Display_X * 0.62, Display_Y * 0.925, 30 * ((float)Display_X / 1920), 255, 255, 255,1);
 
 				/*	for (i = 0; i < roomcount; i++)
@@ -2026,18 +2043,7 @@ int main(int argc, char *argv[])
 				}
 				newdata[0] = 0;
 				//	}
-				if (newdata[1] || chatmovehappen) {
-					for (i = 0; i < allchating_cnt; i++)
-					{
-
-						sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
-						if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
-							PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0,1);
-					}
-					newdata[1] = 0;
-					chatmovehappen = 0;
-					happen = true;
-				}
+				
 				if (newdata[2]) {
 					for (i = 0; i < usercount; i++)
 					{
@@ -2588,6 +2594,7 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(Room_Back_click);
 			SDL_DestroyTexture(Room_Back_noclick);
 			SDL_DestroyTexture(Chating_noput);
+			RefrashEvent = -1;
 			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 		}
@@ -2715,6 +2722,8 @@ int main(int argc, char *argv[])
 						bangsang = 0;
 					}
 					closesocket(ClientParam.Cconnect_socket);
+					ClientParam.Cconnect_socket = 0;
+					
 					qquit = true;
 				}
 

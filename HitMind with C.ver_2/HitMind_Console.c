@@ -42,6 +42,7 @@ uintptr_t CreateTimer(unsigned int time, int * event) {
 }
 void HitMind_Timer(Hit_Timer *arg)
 {
+
 	UINT32 now_time = clock();
 	while (*(arg->event) != -1)
 	{
@@ -49,9 +50,8 @@ void HitMind_Timer(Hit_Timer *arg)
 			*(arg->event) = 1;
 			now_time = clock();
 		}
-		Sleep(1);
+		Sleep(10);
 	}
-	free(arg);
 }
 void changesetting(int bgmusic, int sound, int x, int y, int full) {
 
