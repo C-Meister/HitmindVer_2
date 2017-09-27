@@ -164,6 +164,7 @@ typedef struct User {
 	int Level;
 	int Turn;
 	int Count;
+	int status;
 }User;
 typedef struct HitMind_Time {
 	unsigned int time;
