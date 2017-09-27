@@ -24,10 +24,11 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 */
 
 #include "include.h"
+#include "resource.h"
+
 int main(int argc, char *argv[])
 {
 	//	getchar();
-
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic);
 
-
+	
 	//_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
@@ -187,209 +188,25 @@ int main(int argc, char *argv[])
 	//SDL_Color TextColor = { 0,0,0,0 };
 
 	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
-	//
-	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
-	//SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
-	//SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
-	//SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
-	//SDL_Texture * NewTexture = LoadTexture(renderer, ".//design/Newpile.png");
-	//SDL_Texture * EraserTexture = LoadTexture(renderer, ".//design//Eraser.png");
-	//SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
-	//SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
-	//SDL_Texture * RgbCode = LoadTexture(renderer, ".//design//RgbCode.png");
-	//SDL_Texture * DChatTexture = LoadTexture(renderer, ".//design//defaultchat.png");
-	//SDL_Texture * HChatTexture = LoadTexture(renderer, ".//design//onchat.png");
-	//SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
-	//SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
-	//SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
-	//int modee = 0;
-	//User Player[4] = {
-	//	{
-	//		"신상호",
-	//		1, //master
-	//		1, //level
-	//		0, //turn
-	//		0,//count
-	//		2
-	//	},
-	//	{
-	//		"장민석",
-	//		0,
-	//		0,
-	//		1,
-	//		0,
-	//		2
-	//	},
-	//	{
-	//		"배수한",
-	//		0,
-	//		0,
-	//		1,
-	//		0,
-	//		2
-	//	},
-	//	{
-	//		"서상희",
-	//		0,
-	//		1,
-	//		1,
-	//		0,
-	//		2
-	//	}
-	//};
-	//User * Me = &Player[1];
-	////test
-	//isplaygame = 1;
-	//if (isplaygame)
-	//{
-	//	qquit = 0;
-	//	/*if (ClientParam.Cconnect_socket == 0)
-	//	{
-	//	loginsuccess = 1;
-	//	roop = 1;
-	//	qquit = 1;
-	//	}*/
-	//	SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
-
-
-	//	//배경
-	//	SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
-	//	SDL_RenderClear(renderer);
-	//	//1번구역
-	//	FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
-	//	DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
-	//	FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
-	//	PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-	//	//1
-	//	if (Player[0].status) {
-	//		FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
-	//		FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-	//		if (Player[0].status == 2)
-	//			PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-	//	}
-	//	//2
-	//	if (Player[1].status) {
-	//		FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
-	//		FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-	//		if (Player[1].status == 2)
-	//			PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-	//	}
-	//	//3
-	//	if (Player[2].status) {
-	//		FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
-	//		FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-	//		if (Player[2].status == 2)
-	//			PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
-	//	}
-	//	//4
-	//	if (Player[3].status) {
-	//		FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
-	//		FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-	//		if (Player[3].status == 2)
-	//			PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-	//	}
-	//	//2번구역
-	//	FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
-	//	RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
-	//	DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
-	//	FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
-	//	PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
-	//	//방 정보 출력
-	//	PutText(renderer, My_Room.mode, Display_X * (0.77 - strlen(My_Room.mode) * 0.005), Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-	//	sprintf(query, "%d문제", My_Room.question);
-	//	PutText(renderer, query, Display_X * 0.823, Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-	//	sprintf(query, "%d초", My_Room.time);
-	//	PutText(renderer, query, Display_X * 0.92, Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-	//	//3번구역
-	//	FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
-	//	DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
-	//	FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
-	//	PutText(renderer, "채팅", (Display_X * 0.335), Display_Y * 0.7 + 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
-	//	//4번구역
-	//	FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
-	//	DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
-	//	system("cls");
-
-	//	while (!qquit) {
-	//		SDL_WaitEventTimeout(&event, 500);
-	//		switch (event.type)
-	//		{
-	//		case SDL_MOUSEMOTION:
-
-	//			break;
-	//		case SDL_QUIT:
-	//			qquit = true;
-	//			break;
-	//		case SDL_WINDOWEVENT:
-	//			switch (event.window.event) {
-	//			case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-	//				qquit = true;
-	//				Sleep(100);
-	//				break;// 브레이크
-	//			case SDL_WINDOWEVENT_ENTER:// 윈도우
-	//				SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-	//				break;
-	//			case SDL_WINDOWEVENT_LEAVE:
-	//				//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-	//				break;
-	//			case SDL_WINDOWEVENT_FOCUS_GAINED:
-	//				break;
-	//			}
-	//		}
-
-
-	//		/*
-	//		화면을 전체적으로 4등분함
-
-	//		|
-	//		1번구역		 |
-	//		|
-	//		|    2번구역
-	//		|
-	//		---------------------|-----------------
-	//		3번구역		 |
-	//		|     4번구역
-	//		|
-	//		|
-	//		*/
-
-
-
-
-
-	//		if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
-	//		{
-	//			/*	loginsuccess = 1;
-	//				roop = 1;
-	//				if (bangsang == 1) {
-	//					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-	//					mysql_query(cons, query);
-	//					ServerParam.sockethappen = 5;
-	//					bangsang = 0;
-	//				}
-	//				closesocket(ClientParam.Cconnect_socket);
-	//				ClientParam.Cconnect_socket = 0;
-	//				*/
-	//			qquit = true;
-	//		}
-
-	//		if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
-	//		{
-	//			qquit = true;
-	//		}
-
-	//		PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
-	//		PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
-
-
-	//		SDL_RenderPresent(renderer);
-	//	}
-	//	SDL_DestroyTexture(can);
-	//	isplaygame = 0;
-	//}
+	
+	SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
+	SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
+	SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
+	SDL_Texture * MagTexture = LoadTexture(renderer, ".//design//magnifying.png");
+	SDL_Texture * NewTexture = LoadTexture(renderer, ".//design/Newpile.png");
+	SDL_Texture * EraserTexture = LoadTexture(renderer, ".//design//Eraser.png");
+	SDL_Texture * BarTexture = LoadTexture(renderer, ".//design//slider.png");
+	SDL_Texture * BoxTexture = LoadTexture(renderer, ".//design//val4.png");
+	SDL_Texture * RgbCode = LoadTexture(renderer, ".//design//RgbCode.png");
+	SDL_Texture * DChatTexture = LoadTexture(renderer, ".//design//defaultchat.png");
+	SDL_Texture * HChatTexture = LoadTexture(renderer, ".//design//onchat.png");
+	SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
+	SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
+	SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
+	int modee = 0;
+	//test
+	isplaygame = 1;
+	
 	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 	//Button * PencilButton = (Button *)malloc(sizeof(Button));
@@ -2824,18 +2641,16 @@ int main(int argc, char *argv[])
 			mysql_query(cons, query);
 		}
 
-
 		if (isplaygame)
 		{
 			qquit = 0;
-			/*if (ClientParam.Cconnect_socket == 0)
+			if (ClientParam.Cconnect_socket == 0)
 			{
-				loginsuccess = 1;
-				roop = 1;
-				qquit = 1;
-			}*/
+			loginsuccess = 1;
+			roop = 1;
+			qquit = 1;
+			}
 			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
-
 
 			//배경
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
@@ -2845,7 +2660,47 @@ int main(int argc, char *argv[])
 			DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 			FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 			PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+			//1
+			/*if (Player[0].status) {
+				FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
+				FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
+				if (Player[0].status == 2)
+					PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				PutText(renderer, Player[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+				sprintf(query, "Lv %.2d", Player[0].Level);
+				PutText(renderer, query, Display_X * 0.2, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+			}
+			//2
+			if (Player[1].status) {
+				FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
+				FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
+				if (Player[1].status == 2)
+					PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				PutText(renderer, Player[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+				sprintf(query, "Lv %.2d", Player[1].Level);
+				PutText(renderer, query, Display_X * 0.55, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+			}
+			//3
+			if (Player[2].status) {
+				FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
+				FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
+				if (Player[2].status == 2)
+					PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				PutText(renderer, Player[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+				sprintf(query, "Lv %.2d", Player[2].Level);
+				PutText(renderer, query, Display_X * 0.2, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 
+			}
+			//4
+			if (Player[3].status) {
+				FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
+				FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
+				if (Player[3].status == 2)
+					PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				PutText(renderer, Player[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+				sprintf(query, "Lv %.2d", Player[3].Level);
+				PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+			}*/
 			//2번구역
 			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
 			RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
@@ -2899,43 +2754,70 @@ int main(int argc, char *argv[])
 
 
 
+
+
 				if (ClientParam.sockethappen == 1)
 				{
-
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
-					for (i = 0; i < 4; i++) {
-						if (ClientParam.playerstatus[i])
-						{
-							FillRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.1, Display_X * 0.35, Display_Y * 0.2, 14);
-
-						}
+					//1
+					/*if (Player[0].status) {
+						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
+						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
+						if (Player[0].status == 2)
+							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						PutText(renderer, Player[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", Player[0].Level);
+						PutText(renderer, query, Display_X * 0.2, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
-					ClientParam.sockethappen = false;
-				}
-				if (ClientParam.sockethappen == -1)
-				{
-					loginsuccess = 1;
-					roop = 1;
-					qquit = true;
+					//2
+					if (Player[1].status) {
+						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
+						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
+						if (Player[1].status == 2)
+							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						PutText(renderer, Player[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", Player[1].Level);
+						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					}
+					//3
+					if (Player[2].status) {
+						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
+						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
+						if (Player[2].status == 2)
+							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						PutText(renderer, Player[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", Player[2].Level);
+						PutText(renderer, query, Display_X * 0.2, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+
+					}
+					//4
+					if (Player[3].status) {
+						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
+						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
+						if (Player[3].status == 2)
+							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						PutText(renderer, Player[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", Player[3].Level);
+						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					}*/
 				}
 
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
-					loginsuccess = 1;
+						loginsuccess = 1;
 					roop = 1;
 					if (bangsang == 1) {
-						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
-						ServerParam.sockethappen = 5;
-						bangsang = 0;
+					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+					mysql_query(cons, query);
+					ServerParam.sockethappen = 5;
+					bangsang = 0;
 					}
 					closesocket(ClientParam.Cconnect_socket);
 					ClientParam.Cconnect_socket = 0;
-
+					
 					qquit = true;
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
@@ -2953,7 +2835,6 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
-	}
 	HitMind_TTF_Close();
 	HitMind_TTF2_Close();
 	if (myuser != 0)

@@ -34,5 +34,59 @@
     <ClInclude Include="include.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="design\bangcreate.png" />
+    <Image Include="design\batang.png" />
+    <Image Include="design\Box.png" />
+    <Image Include="design\Box_up.png" />
+    <Image Include="design\can.png" />
+    <Image Include="design\chatting.png" />
+    <Image Include="design\chatting1.png" />
+    <Image Include="design\chatting2.png" />
+    <Image Include="design\chattingput.png" />
+    <Image Include="design\credit.png" />
+    <Image Include="design\defaultchat.png" />
+    <Image Include="design\Enter.png" />
+    <Image Include="design\Enter2.png" />
+    <Image Include="design\Eraser.png" />
+    <Image Include="design\inoutpassword.png" />
+    <Image Include="design\inputpasswordmain.png" />
+    <Image Include="design\lockicon.png" />
+    <Image Include="design\magnifying.png" />
+    <Image Include="design\New.png" />
+    <Image Include="design\Newpile.png" />
+    <Image Include="design\notice.png" />
+    <Image Include="design\Nowpile.png" />
+    <Image Include="design\onchat.png" />
+    <Image Include="design\pencil.bmp" />
+    <Image Include="design\pencil.png" />
+    <Image Include="design\pencil2.png" />
+    <Image Include="design\RgbCode.png" />
+    <Image Include="design\room1.png" />
+    <Image Include="design\room2.png" />
+    <Image Include="design\settingicon1.png" />
+    <Image Include="design\settingicon2.png" />
+    <Image Include="design\settingmain.png" />
+    <Image Include="design\slider.png" />
+    <Image Include="design\slider_up.png" />
+    <Image Include="design\Track.png" />
+    <Image Include="design\val1.png" />
+    <Image Include="design\val2.png" />
+    <Image Include="design\val3.png" />
+    <Image Include="design\val4.png" />
+    <Image Include="design\Character.jpg" />
+    <Image Include="design\Pass.jpg" />
+    <Image Include="design\Recycle.jpg" />
+    <Image Include="mainicon\main_wallpaper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="HitMind with C.ver_2.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="design\imagefil.bin" />
   </ItemGroup>
 </Project>
