@@ -6,7 +6,7 @@
 소켓을 열고 클라이언트가 올 때까지 대기하고있다가 클라이언트가 접속하면
 비어있는 쓰레드에 할당 후 클라이언트가 보내는 패킷을 계속 받음
 */
-void OpenServer(SockParam *param) {	
+void OpenServer(SockParam *param) {
 	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
 	printf("WSAStartup() %d\n", param->Slisten_socket);
 
@@ -49,7 +49,7 @@ void OpenServer(SockParam *param) {
 		else if (param->Sconnect_socket[idx] != 0) {
 
 			param->num = idx;
-		//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
+			//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
 		if (param->sockethappen == 5)
@@ -92,7 +92,7 @@ void connectServer(SockParam *param) {
 	send(param->Cconnect_socket, "player connect", 40, 0);
 	printf("send\n");
 	param->Clientthread = _beginthreadex(0, 0, (_beginthreadex_proc_type)Clientrecv, param, 0, 0);
-	
+
 }
 /*
 각각의 클라이언트를 제어하는 함수
@@ -158,7 +158,7 @@ void Clientrecv(SockParam *param) {
 	char query[128] = { 0, };
 	int i = 0;
 	while (1) {
-		
+
 		if (param->Cconnect_socket == 0)
 			break;
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
@@ -202,12 +202,12 @@ void Clientrecv(SockParam *param) {
 				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				connectServer(param);
-				
+
 			}
 
 		}
 	}
-	
+
 }
 /*
 서버를 연 호스트가 나갔을 때 호스트를 바꿈
@@ -224,12 +224,12 @@ void hostChange(SockParam *param) {
 	}
 	// 다음 호스트에게 nexthost를 보냄
 	if (param->Sconnect_socket[nexthost] != 0) {
-			send(param->Sconnect_socket[nexthost], "nexthost", 180, 0);
+		send(param->Sconnect_socket[nexthost], "nexthost", 180, 0);
 	}
 	else { // 만약 다음 호스트가 없을경우(나갔을경우) 다시 뽑음 (의미없을듯)
-			hostChange(param);
-			return;
+		hostChange(param);
+		return;
 	}
-		
-}	
+
+}
 
