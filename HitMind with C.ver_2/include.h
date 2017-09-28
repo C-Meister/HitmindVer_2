@@ -167,6 +167,7 @@ typedef struct User {
 	int Turn;
 	int Count;
 	int Th;
+	int status;
 }User;
 typedef struct Text {
 	SDL_Renderer *Renderer;
