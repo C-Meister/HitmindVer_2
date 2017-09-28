@@ -159,12 +159,25 @@ typedef struct Button {
 	int Flag;
 }Button;
 typedef struct User {
+	SDL_Texture* Profile;
+	SDL_Texture* Status;
 	char Nickname[20];
 	int Master;
 	int Level;
 	int Turn;
 	int Count;
+	int Th;
 }User;
+typedef struct Text {
+	SDL_Renderer *Renderer;
+	SDL_Rect Limit;
+	SDL_Rect Rect;
+	SDL_Color Color;
+	char sentence[128];
+	int size; 
+	int size_fixed;
+	int m;
+}Text;
 typedef struct HitMind_Time {
 	unsigned int time;
 	int * event;
@@ -205,6 +218,7 @@ void changesetting(int bgmusic, int sound, int x, int y, int full);
 int wstrcmp(wchar_t *First, char *second);
 void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
+uintptr_t CreateTimer(unsigned int time, int * event);
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
@@ -264,6 +278,11 @@ void Line(SDL_Renderer* Renderer, float x1, float y1, float x2, float y2);
 void LineThick(SDL_Renderer* Renderer, int Thick,float x1, float y1, float x2, float y2);
 void LineCircle(SDL_Renderer*Renderer, int Thick, float x1, float y1, float x2, float y2);
 void swap(float *a, float * b);
+void PrintUserInfo(SDL_Renderer* Renderer, User *User, SDL_Rect UserRect);
+void CenterArrange(Text * Text);
+void CreateText(Text* Text, SDL_Renderer * Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
+void RenderText( Text * Text);
+void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
 //---------------MySql 함수---------------
 //자동 로그인인지 체크하는 함수

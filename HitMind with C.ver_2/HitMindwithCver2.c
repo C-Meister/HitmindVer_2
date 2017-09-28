@@ -127,46 +127,15 @@ int main(int argc, char *argv[])
 	int PressButton = 0;
 	int autologin_checking;
 //	 테스트 코드
-	//User Player[4] = {
-	//	{
-	//		"신상호",
-	//		1, //master
-	//		1, //level
-	//		0, //turn
-	//		0//count
-	//	},
-	//	{
-	//		"장민석",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"배수한",
-	//		0,
-	//		0,
-	//		1,
-	//		0
-	//	},
-	//	{
-	//		"서상희",
-	//		0,
-	//		1,
-	//		1,
-	//		0
-	//	}
-	//};
-	//User * Me = &Player[1];
-	//char Topics[5][20] = {
+	//char Topics[5][30] = {
 	//	"하스스톤",
-	//	"리그오브레전드",
-	//	"배틀그라운드",
+	//	"대구소프트웨어고등학교",
+	//	"기모",
 	//	"마인크래프트",
 	//	"스타크래프트"
 	//};
 	//int MaxTopic = 5; //총 토픽 개수
-	//int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
+	//int NowTopic = 2; // 현재 토픽이 몇번째 토픽인지 보여줌
 	//char Now_Max[10];
 	//sprintf(Now_Max,"%d/%d", NowTopic,MaxTopic);
 	//wchar_t InGameChat[128]=L"";
@@ -174,17 +143,18 @@ int main(int argc, char *argv[])
 	//char utf8ofchat[128]="";
 	//int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
 
-	//SDL_Point Sample = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07) + (Display_X*0.1825*0.11), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.13) };
-	//SDL_Rect RgbRect = { Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
-	//SDL_Rect LineRect = { Display_X * 0.8 + 22, 10+Display_Y*0.21*0.633, Display_X * 0.1825, Display_Y * 0.004 };
-	//SDL_Rect TopicRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+22, 10 + Display_Y*0.21*0.063, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
-	//SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ 22, 10 + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
-	//SDL_Rect ChatRect = { Display_X * 0.8 +Display_X*0.1825*0.035+ 22, 10 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
-	//SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + 22, 10 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
-	//SDL_Rect TimerRect = {Display_X*0.011,Display_Y*0.76,Display_X*0.8-Display_X*0.017,Display_Y*0.01};
+	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
+	//SDL_Point Sample = { Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07) +MaxStrong/2, Display_Y * 0.64 + Display_X*0.005 + (Display_Y * 0.34*0.13) };
+	//SDL_Rect RgbRect = { Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + Display_X*0.005 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
+	//SDL_Rect LineRect = { Display_X * 0.8 + Display_X*0.011, Display_X*0.005 +Display_Y*0.21*0.633, Display_X * 0.1825, Display_Y * 0.004 };
+	//SDL_Rect TopicRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ Display_X*0.011, Display_X*0.005  + Display_Y*0.21*0.063, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1+ Display_X*0.011, Display_X*0.005  + Display_Y*0.21*0.333, Display_X * 0.1825-2* Display_X * 0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect ChatRect = { Display_X * 0.8 + Display_X*0.1825*0.035+ Display_X*0.011, Display_X*0.005 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96-2*Display_X*0.1825*0.1, Display_Y * 0.05 };
+	//SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + Display_X*0.011, Display_X*0.005 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
+	//SDL_Rect TimerRect = { Display_X*0.011,Display_Y*0.76,Display_X*0.8 - Display_X*0.017,Display_Y*0.007 };
+	//SDL_Rect UserRect = { Display_X*0.011,Display_Y*0.79,Display_X*0.8*0.24,Display_Y*0.19 };
 	//SDL_Color TextColor = { 0,0,0,0 };
 
-	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
 	//
 	//SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
 	//SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
@@ -200,7 +170,52 @@ int main(int argc, char *argv[])
 	//SDL_Texture * ChatTexture = LoadTexture(renderer, ".//design//chatting.png");
 	//SDL_Texture * EnterTexture = LoadTexture(renderer, ".//design//Enter.png");
 	//SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
+	//SDL_Texture * CharacterTexture = LoadTextureEx(renderer, ".//design//Character.png",255,255,255);
+	//SDL_Texture * StatusTexture = LoadTexture(renderer, ".//design//Status.png");
 
+	//User Player[4] = {
+	//	{
+	//		CharacterTexture,
+	//		StatusTexture,
+	//		"신상호",
+	//		1, //master
+	//		1, //level
+	//		0, //turn
+	//		0,//count
+	//		1// Th
+	//	},
+	//	{
+	//		CharacterTexture,
+	//		StatusTexture,
+	//		"장민석",
+	//		0,
+	//		1,
+	//		1,
+	//		0,
+	//		2
+	//	},
+	//	{
+	//		CharacterTexture,
+	//		StatusTexture,
+	//		"배수한",
+	//		0,
+	//		1,
+	//		0,
+	//		0,
+	//		3
+	//	},
+	//	{
+	//		CharacterTexture,
+	//		StatusTexture,
+	//		"서상희",
+	//		0,
+	//		1,
+	//		0,
+	//		0,
+	//		4
+	//	}
+	//};
+	//User * Me = &Player[1];
 	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 	//Button * PencilButton = (Button *)malloc(sizeof(Button));
@@ -209,32 +224,38 @@ int main(int argc, char *argv[])
 	//Button * PassButton = (Button *)malloc(sizeof(Button));
 	//Button * MagButton = (Button *)malloc(sizeof(Button));
 	//Button * RecycleButton = (Button *)malloc(sizeof(Button));
+	//Text * TopicText = (Text *)malloc(sizeof(Text));
+	//Text * CountText = (Text *)malloc(sizeof(Text));
 	//int RenderUpdate = false;
+	//
 	//CreateCanvas(canvas,renderer,10+14,10+14, Display_X * 0.8-2*14, Display_Y * 0.76-2*14,10);
-	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + 22 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 20.0, HORIZONTAL);
+	//CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong,1.0, MaxStrong, 20.0/70*MaxStrong, HORIZONTAL);
 	//CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255,64);
 	//CreateButton(EraserButton, renderer, EraserTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + 2*(Display_X*0.1825*0.22), Sample.y -MaxStrong/2.0, MaxStrong,MaxStrong, 0, 0, 255,64);
 	//CreateButton(NewButton, renderer, NewTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3*(Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0 ,MaxStrong, MaxStrong, 0, 0, 255,64);
-	//CreateButton(MagButton, renderer, MagTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*0.22), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
-	//CreateButton(PassButton, renderer, PassTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 +(Display_X*0.1825*(0.22*1.5-0.0095)), 10 + Display_Y * 0.21*0.67, MaxStrong, MaxStrong, 0, 0, 255, 64);
-	//CreateButton(RecycleButton, renderer, RecycleTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 -  (Display_X*0.1825*0.019), 10+ Display_Y * 0.21*0.67 , MaxStrong, MaxStrong, 0, 0, 255, 64);
+	//CreateButton(MagButton, renderer, MagTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*(0.22-0.019/3)), Display_X*0.005 + Display_Y * 0.21*0.67 , MaxStrong*70/70.0, MaxStrong * 70 / 70.0, 0, 0, 255, 64);
+	//CreateButton(PassButton, renderer, PassTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 +(Display_X*0.1825*(0.22*1.5-0.019)), Display_X*0.005 + Display_Y * 0.21*0.67, MaxStrong * 70 / 70.0, MaxStrong * 70 / 70.0, 0, 0, 255, 64);
+	//CreateButton(RecycleButton, renderer, RecycleTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 -  (Display_X*0.1825*0.019), Display_X*0.005 + Display_Y * 0.21*0.67 , MaxStrong * 70 / 70.0, MaxStrong *70 / 70.0, 0, 0, 255, 64);
+	//CreateText(TopicText, renderer, Topics[NowTopic - 1], TopicRect.x, TopicRect.y , TopicRect.w ,TopicRect.h,255, 255, 255, Display_Y*0.035,1);
+	//CreateText(CountText, renderer, Now_Max, CountRect.x, CountRect.y, CountRect.w, CountRect.h, 255, 255, 255, Display_Y*0.035, 1);
+
 	//SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 	//SDL_RenderClear(renderer);
 	////1번구역
-	//FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.8, Display_Y * 0.76, 14);
-	//DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, 14, 1);
+	//FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
 	////4번구역
-	//FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.77 + 10, Display_X * 0.8, Display_Y * 0.21, 14);
-	//DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.77 + 10 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, 14, 1);
+	//FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
 	////5번구역
-	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.64 + 10, Display_X * 0.1825, Display_Y * 0.34, 14);
-	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.64 + 9, Display_X * 0.1825 + 2, Display_Y * 0.34 + 2, 14, 1);
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + Display_X*0.011, Display_Y * 0.64 + Display_X*0.005, Display_X * 0.1825, Display_Y * 0.34, Display_X*0.007);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + Display_X*0.011-1, Display_Y * 0.64 + Display_X*0.005 - 1, Display_X * 0.1825 + 2, Display_Y * 0.34 + 2, Display_X*0.007, 1);
 	////3번구역
-	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, Display_Y * 0.22 + 10, Display_X * 0.1825, Display_Y * 0.41, 14);
-	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, Display_Y * 0.22 + 9, Display_X * 0.1825 + 2, Display_Y * 0.41 + 2, 14, 1);
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + Display_X*0.011, Display_Y * 0.22 + Display_X*0.005, Display_X * 0.1825, Display_Y * 0.41, Display_X*0.007);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + Display_X*0.011-1, Display_Y * 0.22 + Display_X*0.005 - 1, Display_X * 0.1825 + 2, Display_Y * 0.41 + 2, Display_X*0.007, 1);
 	////2번구역
-	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + 22, 10, Display_X * 0.1825, Display_Y * 0.21, 3);
-	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + 21, 9, Display_X * 0.1825 + 2, Display_Y * 0.21 + 2, 3, 1);
+	//FillRoundRect(renderer, 255, 255, 255, Display_X * 0.8 + Display_X*0.011, Display_X*0.005, Display_X * 0.1825, Display_Y * 0.21, Display_X*0.005);
+	//DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.8 + Display_X*0.011-1, Display_X*0.005 - 1, Display_X * 0.1825 + 2, Display_Y * 0.21 + 2, 3, 1);
 	//// Rgb 색상표
 	//RenderTexture(renderer, RgbCode, &RgbRect);
 	//// 슬라이더와 버튼들
@@ -257,13 +278,21 @@ int main(int argc, char *argv[])
 	//RenderTexture(renderer,DChatTexture,&ChatRect);
 	//RenderTexture(renderer, EnterTexture, &EnterRect);
 	////
+	//for(int i=0;i<4;i++)
+	//	PrintUserInfo(renderer,Player+i,UserRect);
+	//// 유저정보
+	////
 	//// 토픽과 문제수
 	//FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-	//PutText(renderer, Topics[NowTopic], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255,1);
+	//CenterArrange(TopicText);
+	//RenderText(TopicText);
+	////	PutText(renderer, Topics[NowTopic-1], TopicRect.x+TopicRect.w*0.05, TopicRect.y + TopicRect.h*0.07, Display_Y*0.035,255,255,255,1);
 	//SDL_RenderFillRect(renderer,&LineRect);
 	//FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);	
-	//PutText(renderer, Now_Max, CountRect.x+CountRect.w*0.385, CountRect.y+CountRect.h*0.07, Display_Y*0.035, 255, 255, 255,1);
+	//CenterArrange(CountText);
+	//RenderText(CountText);
 	////
+	//
 	//SDL_RenderPresent(renderer);
 	//// 타이머 생성
 	//int Event = 0;
@@ -271,19 +300,19 @@ int main(int argc, char *argv[])
 	//if (LimitTime < 1) {
 	//	printf("LimitTime은 최소 1초이상이여야합니다\n");
 	//}
-	//int Time = 50; // ms 단위
-	//float TimerRate = (TimerRect.w)/ (LimitTime)*Time/1000.0; // 타이머가 Time(ms)초 마다 줄어드는 길이
+	//int Time = 10; // ms 단위
+	//float TimerRate = (TimerRect.w/LimitTime)*(Time/1000.0); // 타이머가 Time(ms)초 마다 줄어드는 길이
 	//CreateTimer(Time, &Event);
 	//// 
 	//while (!quit)//로그인 성공 후 대기창
 	//{
 	//	//	SDL_WaitEvent(&event);
-	//	if (SDL_WaitEventTimeout(&event, 50)==0||Event == 1) {
+	//	if (SDL_WaitEventTimeout(&event, Time)==0||Event == 1) {
 	//		SDL_SetRenderDrawColor(renderer, 255,255,255, 0);
 	//		SDL_RenderFillRect(renderer, &TimerRect);
-	//		TimerRect.w -= TimerRate;// 반응형으로 바꾸어야함
-	//		if (TimerRect.w <= 0) {
-	//			// 시간 초과!!
+	//		TimerRect.w -= TimerRate;
+	//		if (TimerRect.w < 0) {
+	//			// 끝
 	//		}
 	//		SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
 	//		SDL_RenderFillRect(renderer,&TimerRect);
