@@ -43,7 +43,9 @@ void OpenServer(SockParam *param) {
 		if (param->Sconnect_socket[idx] == -1) {
 			printf("error\n");
 			closesocket(param->Slisten_socket);
+			
 			Sleep(2000);
+
 			exit(1);
 		}
 		else if (param->Sconnect_socket[idx] != 0) {
@@ -64,6 +66,7 @@ void OpenServer(SockParam *param) {
 		}
 		Sleep(1);
 	}
+
 	// 서버 켜짐
 }
 /*
@@ -85,6 +88,7 @@ void connectServer(SockParam *param) {
 	{
 		printf("connecterror\n");
 		param->sockethappen = -1;
+		return;
 	}
 	printf("connect()\n");
 	Sleep(10);
@@ -140,6 +144,7 @@ void HandleClient(SockParam *param) {
 			*/
 		}
 	}
+
 }
 /*
 접속해있는 모든 클라이언트에게 패킷을 전송함
@@ -159,7 +164,7 @@ void Clientrecv(SockParam *param) {
 	int i = 0;
 	while (1) {
 
-		if (param->Cconnect_socket == 0)
+		if (param->sockethappen == 5)
 			break;
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 

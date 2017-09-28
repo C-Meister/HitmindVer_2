@@ -24,7 +24,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 */
 
 #include "include.h"
-#include "resource.h"
 
 int main(int argc, char *argv[])
 {
@@ -63,7 +62,6 @@ int main(int argc, char *argv[])
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic);
 
-	
 	//_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
 	else
 		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_SOFTWARE/* | SDL_RENDERER_PRESENTVSYNC*/);
-
+	
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
 	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
@@ -83,6 +81,7 @@ int main(int argc, char *argv[])
 		printf("loadbmp");
 
 	}
+	
 	SDL_Cursor*cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 	if (!cursor)
 	{
@@ -188,7 +187,7 @@ int main(int argc, char *argv[])
 	//SDL_Color TextColor = { 0,0,0,0 };
 
 	//float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
-	
+
 	SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
 	SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
 	SDL_Texture * PassTexture = LoadTexture(renderer, ".//design//Pass.jpg");
@@ -205,8 +204,7 @@ int main(int argc, char *argv[])
 	SDL_Texture * HEnterTexture = LoadTexture(renderer, ".//design//Enter2.png");
 	int modee = 0;
 	//test
-	isplaygame = 1;
-	
+
 	//Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 	//Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 	//Button * PencilButton = (Button *)malloc(sizeof(Button));
@@ -2598,12 +2596,12 @@ int main(int argc, char *argv[])
 			qquit = 0;
 			if (ClientParam.Cconnect_socket == 0)
 			{
-			loginsuccess = 1;
-			roop = 1;
-			qquit = 1;
+				loginsuccess = 1;
+				roop = 1;
+				qquit = 1;
 			}
 			SDL_Texture * can = LoadTexture(renderer, ".\\design\\can.png");
-
+			
 			//배경
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 			SDL_RenderClear(renderer);
@@ -2770,20 +2768,27 @@ int main(int argc, char *argv[])
 						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}*/
 				}
-
+				if (ClientParam.sockethappen == -1)
+				{
+					loginsuccess = 1;
+					roop = 1;
+					qquit = true;
+				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
-						loginsuccess = 1;
+					loginsuccess = 1;
 					roop = 1;
 					if (bangsang == 1) {
-					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-					mysql_query(cons, query);
-					ServerParam.sockethappen = 5;
-					bangsang = 0;
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						ServerParam.sockethappen = 5;
+						bangsang = 0;
 					}
+					ClientParam.sockethappen = 5;
 					closesocket(ClientParam.Cconnect_socket);
 					ClientParam.Cconnect_socket = 0;
 					
+
 					qquit = true;
 				}
 
@@ -2798,9 +2803,12 @@ int main(int argc, char *argv[])
 
 				SDL_RenderPresent(renderer);
 			}
+
+
 			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
+	}
 	HitMind_TTF_Close();
 	HitMind_TTF2_Close();
 	if (myuser != 0)
