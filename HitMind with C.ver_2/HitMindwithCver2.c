@@ -1671,6 +1671,9 @@ int main(int argc, char *argv[])
 			int pastchating_cnt = allchating_cnt;
 			int chatmovehappen = 0;
 			int newdataed = 1;
+			ZeroMemory(&ServerParam, sizeof(SockParam));
+			ZeroMemory(&ClientParam, sizeof(SockParam));
+
 			while (loginsuccess && !quit && !isplaygame)	//로그인 성공 후 대기창
 			{
 				if (newdataed)
@@ -2750,10 +2753,6 @@ int main(int argc, char *argv[])
 					}
 				}
 
-
-
-
-
 				if (ClientParam.sockethappen == 1)
 				{
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
@@ -2812,17 +2811,22 @@ int main(int argc, char *argv[])
 				{
 					loginsuccess = 1;
 					roop = 1;
-					if (bangsang == 1) {
-						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
-						ServerParam.sockethappen = 5;
-						bangsang = 0;
-					}
+					
 					ClientParam.sockethappen = 5;
 					closesocket(ClientParam.Cconnect_socket);
 					ClientParam.Cconnect_socket = 0;
-					
 
+					ServerParam.sockethappen = 5;
+					if (bangsang == 1) {
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+				//		_endthreadex(server);
+				//		ExitThread(server);
+						closesocket(ServerParam.Slisten_socket);
+					
+						bangsang = 0;
+					}
+					WSACleanup();
 					qquit = true;
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
