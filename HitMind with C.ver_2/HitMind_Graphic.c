@@ -382,39 +382,37 @@ void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color,
 }
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-	int left_x, left_y;
+	int Left_Center_x, Left_Center_y, Right_Center_x, Right_Center_y;
 	double y;
-	double Center_x, Center_y;
-	Center_x = Rect->x + Rect->w - radius;
-	Center_y = Rect->y + radius;
-	for (y = 0; y <= radius; y++) {
-		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius - y*y));
-		left_y = Center_y - y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+	Right_Center_x = Rect->x + Rect->w - radius;
+	Right_Center_y = Rect->y + radius;
+	Left_Center_x = Rect->x + radius;
+	Left_Center_y = Rect->y + radius;
+	for (y = 0; y < radius; y++) {
+		SDL_RenderDrawLine(Renderer, Left_Center_x - (int)sqrt(radius*radius - y*y) + !y, Left_Center_y - y, Right_Center_x + (int)sqrt(radius*radius - y*y) - !y, Right_Center_y - y);
 	}
-	Center_x = Rect->x + radius;
-	Center_y = Rect->y + Rect->h - radius;
-	for (y = 0; y <= radius; y++) {
-		left_x = floor(Center_x + Rect->w - 2 * radius + sqrt(radius*radius - y*y));
-		left_y = Center_y + y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x - sqrt(radius*radius - y*y)), Center_y + y);
+	Left_Center_y = Rect->y + Rect->h - radius;
+	Right_Center_y = Rect->y + Rect->h - radius;
+	for (y = 0; y < radius; y++) {
+		SDL_RenderDrawLine(Renderer, Left_Center_x - (int)sqrt(radius*radius - y*y) + !y, Left_Center_y + y, Right_Center_x + (int)sqrt(radius*radius - y*y) - !y, Right_Center_y + y);
 	}
+	return;
 }
 void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong) {
 	SDL_Rect rect = { x + strong,y + strong,w - 2 * strong,h - 2 * strong };
 	SDL_Color color = { r,g,b,0 };
-	SDL_DrawRoundRect(Renderer, &rect, color, radius, strong);
+//	SDL_DrawRoundRect(Renderer, &rect, color, radius, strong);
 	rect.x = x; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * (strong + radius) + 2;
-	SDL_RenderFillRect(Renderer, &rect);
+//	SDL_RenderFillRect(Renderer, &rect);
 	rect.x = x + w - strong; rect.w = strong; rect.y = y + strong + radius - 1; rect.h = h - 2 * (strong + radius) + 2;
-	SDL_RenderFillRect(Renderer, &rect);
+//s	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
 void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius) {
 	SDL_Rect rect = { x,y  ,w,h };
 	SDL_Color color = { r,g,b, 0 };
 	SDL_FillRoundRect(Renderer, &rect, color, radius);
-	rect.x = x; rect.y = y + radius - 1; rect.w = w; rect.h = h - 2 * radius + 2;
+	rect.x = x+1; rect.y = y + radius; rect.w = w-1; rect.h = h - 2 * radius;
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
@@ -445,15 +443,14 @@ void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color colo
 }
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
-	int left_x, left_y;
+	int Left_Center_x, Left_Center_y,Right_Center_x,Right_Center_y;
 	double y;
-	double Center_x, Center_y;
-	Center_x = Rect->x + Rect->w - radius;
-	Center_y = Rect->y + radius;
+	Right_Center_x = Rect->x + Rect->w - radius;
+	Right_Center_y = Rect->y + radius;
+	Left_Center_x = Rect->x + radius;
+	Left_Center_y = Rect->y + radius;
 	for (y = 0; y < radius; y++) {
-		left_x = floor(Center_x - Rect->w + 2 * radius - sqrt(radius*radius - y*y));
-		left_y = Center_y - y;
-		SDL_RenderDrawLine(Renderer, left_x, left_y, floor(Center_x + sqrt(radius*radius - y*y)), Center_y - y);
+		SDL_RenderDrawLine(Renderer, Left_Center_x- (int)sqrt(radius*radius - y*y)+!y, Left_Center_y-y, Right_Center_x + (int)sqrt(radius*radius - y*y)-!y, Right_Center_y - y);
 	}
 }
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int *happen)
@@ -482,7 +479,7 @@ void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, 
 	SDL_Rect rect = { x,y  ,w,h };
 	SDL_Color color = { r,g,b, 0 };
 	SDL_FillUpRoundRect(Renderer, &rect, color, radius);
-	rect.x = x; rect.y = y + radius - 1; rect.w = w; rect.h = h - radius + 2;
+	rect.x = x+1; rect.y = y + radius; rect.w = w-1; rect.h = h - radius;
 	SDL_RenderFillRect(Renderer, &rect);
 	return;
 }
@@ -1077,4 +1074,105 @@ void swap(float  *a, float *b) {
 	*a = *b;
 	*b = tmp;
 	return;
+}
+void PrintUserInfo(SDL_Renderer* Renderer,User *User,SDL_Rect UserRect) {
+	SDL_Color color;
+	if (User->Turn == 1) {
+		color.r = 0; color.g = 112; color.b = 192;
+	}
+	else {
+		color.r = 0; color.g = 176; color.b = 240;
+	}
+	FillRoundRect(Renderer, 242, 242, 242, UserRect.x + (User->Th-1) * (UserRect.w + UserRect.w / 24.0), UserRect.y, UserRect.w, UserRect.h, Display_X*0.011);
+	FillUpRoundRect(Renderer, color.r, color.g, color.b, UserRect.x+ (User->Th - 1)*(UserRect.w+UserRect.w/24.0), UserRect.y, UserRect.w, Display_X*0.018, Display_X*0.018);
+	RenderTextureXYWH(Renderer, User->Profile, UserRect.x +(User->Th-1) * (UserRect.w + UserRect.w / 24.0)+UserRect.w*0.05, UserRect.y+ Display_X*0.018, UserRect.w/2.0-UserRect.w*0.1, UserRect.h- UserRect.h * 3 / 20.0);
+	RenderTextureXYWH(Renderer, User->Status, UserRect.x +(User->Th-1)* (UserRect.w + UserRect.w / 24.0)+UserRect.w/2.0, UserRect.y+ Display_X*0.018, UserRect.w/2.0, UserRect.h- Display_X*0.018);
+	char User_Level[10],User_Count[10];
+	_itoa(User->Level, User_Level, 10);
+	_itoa(User->Count, User_Count, 10);
+	Put_Text_Center(Renderer, User->Nickname, UserRect.x + (User->Th - 1)*(UserRect.w + UserRect.w / 24.0), UserRect.y, UserRect.w, Display_X*0.018, 255,255,255, Display_X*0.011,2);
+	Put_Text_Center(Renderer, User_Count, UserRect.x + (User->Th - 1)*(UserRect.w + UserRect.w / 24.0) +UserRect.w*0.75, UserRect.y + Display_X*0.018, UserRect.w*0.25, 0.5*(UserRect.h - Display_X*0.018), 0,0,0, Display_X*0.02, 1);
+	Put_Text_Center(Renderer, User_Level, UserRect.x + (User->Th - 1)*(UserRect.w + UserRect.w / 24.0) +UserRect.w*0.75, UserRect.y + Display_X*0.018+(UserRect.h - Display_X*0.018)*0.5 , UserRect.w*0.25, 0.5*(UserRect.h - Display_X*0.018), 0,0,0, Display_X*0.02, 1);
+	return;
+}
+void CreateText(Text* Text, SDL_Renderer * Renderer,char *sentence, int x,int y,int w, int h, int r,int g, int b,int size, int m ) {
+	Text->Renderer = Renderer;
+	strcpy(Text->sentence, sentence);
+	Text->Limit.x =Text->Rect.x= x; Text->Limit.y =Text->Rect.y= y; Text->Limit.w =Text->Rect.w= w; Text->Limit.h = Text->Rect.h = h;
+	Text->Color.r = r; Text->Color.g = g; Text->Color.b = b; 
+	Text->size = Text->size_fixed=size;  size; Text->m = m;
+	return;
+}
+void CenterArrange(Text * Text) {
+	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	han2unicode(Text->sentence, unicode);	//옮긴다
+	SDL_Surface * Surface;
+	SDL_Texture* Texture;
+	SDL_Rect Src;
+	Src.x = 0;
+	Src.y = 0;
+	while (1) {
+		if (Text->m == 1) 
+			Surface = TTF_RenderUNICODE_Blended(Font_Size[Text->size_fixed], unicode, Text->Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (Text->m == 2)
+			Surface = TTF_RenderUNICODE_Blended(Font_Size2[Text->size_fixed], unicode, Text->Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Texture = SDL_CreateTextureFromSurface(Text->Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+		if ((Src.w > Text->Limit.w||Src.h>Text->Limit.h)&&Text->size_fixed>1) {				
+			Text->size_fixed--;
+		}
+		else {
+			break;
+		}
+	}
+	Text->Rect.x = Text->Limit.x + Text->Limit.w/2.0 - Src.w / 2.0;
+	Text->Rect.y = Text->Limit.y + Text->Limit.h/2.0 - Src.h / 2.0;
+	Text->Rect.w = Src.w;
+	Text->Rect.h = Src.h;
+//	SDL_RenderCopy(Text->Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return;	//평소에도 0을 리턴
+}
+void RenderText( Text * Text) {
+	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	han2unicode(Text->sentence, unicode);	//옮긴다
+	if (Text->m == 1)
+		TTF_DrawText(Text->Renderer, Font_Size[Text->size_fixed], unicode, Text->Rect.x, Text->Rect.y, Text->Color);			//Text를 적음
+	else if (Text->m == 2)
+		TTF_DrawText(Text->Renderer, Font_Size2[Text->size_fixed], unicode, Text->Rect.x, Text->Rect.y, Text->Color);         //볼드체
+	return;	//평소에도 0을 리턴
+}
+void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w,int h,int r,int g,int b,int size,int m) {
+	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	han2unicode(sentence, unicode);	//옮긴다
+	SDL_Color Color = { r,g,b,0 };
+	SDL_Surface * Surface;
+	SDL_Texture* Texture;
+	SDL_Rect Src;
+	SDL_Rect Dst;
+	Src.x = 0;
+	Src.y = 0;
+	while (1) {
+		if (m == 1)
+			Surface = TTF_RenderUNICODE_Blended(Font_Size[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (m == 2)
+			Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+		if ((Src.w > w||Src.h > h)&&size>1) {
+			size--;
+		}
+		else {
+			break;
+		}
+	}
+	Dst.x = x + w / 2.0 - Src.w / 2.0;
+	Dst.y = y + h / 2.0 - Src.h / 2.0;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return;	//평소에도 0을 리턴
 }
