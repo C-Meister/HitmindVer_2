@@ -163,6 +163,7 @@ typedef struct Text {
 typedef struct HitMind_Time {
 	unsigned int time;
 	int * event;
+	unsigned int* now;
 }Hit_Timer;
 
 typedef struct Socket_Parameters {
