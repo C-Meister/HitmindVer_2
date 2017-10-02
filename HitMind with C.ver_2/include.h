@@ -177,7 +177,6 @@ typedef struct Socket_Parameters {
 	uintptr_t Serverthread[MAXPEOPLE];
 	uintptr_t Clientthread;
 	char playerinfo[MAXPEOPLE][30];
-	int playerstatus[MAXPEOPLE];
 	char message[200];
 	char serverip[50];
 	char nextserverip[50];

@@ -127,7 +127,7 @@ void HandleClient(SockParam *param) {
 				for (int i = 0; i < 8; i++) {
 					if (param->Sconnect_socket[i] != 0) { // 클라이언트가 접속해있을때
 						printf("%d online\n", i);
-						sprintf(param->message, "%d online", i);
+						sprintf(param->message, "%d online %d", i, param->gameuser[ClientNumber].ownnum);
 						send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 					}
 					else {	// 아닐때
@@ -180,15 +180,19 @@ void Clientrecv(SockParam *param) {
 				i = 0;
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
+					
 					printf("%s\n", param->message);
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
-					sprintf(query, "%d online", i);
-					if (!(strcmp(param->message, query)))
-						param->playerstatus[i] = 1;
+					
+					sprintf(query, "%d online %%d", i);
+					if (strncmp(query, param->message, 7) == 0) {
+						sscanf(param->message, query, &(param->gameuser[i].ownnum));
+						param->gameuser[i].status = 1;
+					}
 					else
-						param->playerstatus[i] = 0;
+						param->gameuser[i].status = 0;
 					i++;
 				}
 				param->sockethappen = true;
