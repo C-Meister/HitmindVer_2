@@ -146,34 +146,32 @@ void HandleClient(SockParam *param) {
 				sendall(param);
 
 			}
-			if (strcmp(param->message, "ready") == 0)
+			else if (strcmp(param->message, "ready") == 0)
 			{
 				sprintf(param->message, "ready %d", ClientNumber);
 				sendall(param);
 			}
-			if (strcmp(param->message, "noready") == 0)
+			else if (strcmp(param->message, "noready") == 0)
 			{
 				sprintf(param->message, "noready %d", ClientNumber);
 				sendall(param);
 			}
-			if (strcmp(param->message, "exit") == 0) {
-				
+			else if (strcmp(param->message, "exit") == 0) {
 				sprintf(param->message, "exit %d", ClientNumber);
-
 				sendall(param);
 				closesocket(param->Sconnect_socket[ClientNumber]);
 				param->Sconnect_socket[ClientNumber] = 0;
 				break;
 			}
-			if (strcmp(param->message, "nexthostip") == 0) {
-				strcpy(param->message, "nexthostis");
+			else if (strcmp(param->message, "nexthostip") == 0) {
 				recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+
 				sendall(param);
 			}
-			
+			else
+				sendall(param->message);
 		}
 	}
-
 }
 /*
 접속해있는 모든 클라이언트에게 패킷을 전송함
@@ -262,9 +260,7 @@ void Clientrecv(SockParam *param) {
 				send(param->Cconnect_socket, param->message, 180, 0);
 				param->sockethappen = 12;
 				// 소켓 닫음
-				closesocket(param->Cconnect_socket);
 				// 오픈 서버
-				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				OpenServer(param);
 				break;
@@ -275,12 +271,13 @@ void Clientrecv(SockParam *param) {
 				// 소켓 닫음
 				closesocket(param->Cconnect_socket);
 				// 서버 연결
-				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				connectServer(param);
 				break;
 			}
-
+			if (strcmp(param->message, "game start") == 0) {
+				param->sockethappen = 20;
+			}
 		}
 	}
 
@@ -293,7 +290,7 @@ void hostChange(SockParam *param) {
 
 	// 다음 호스트를 정함(랜덤)
 	while (1) {
-		int nexthost = rand() % 4;
+		nexthost = rand() % 4;
 		if (param->Sconnect_socket[nexthost] != 0) {
 			break;
 		}
