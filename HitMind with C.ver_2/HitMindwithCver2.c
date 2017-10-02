@@ -1930,7 +1930,7 @@ int main(int argc, char *argv[])
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 					PutText(renderer, "방 목록", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 					sprintf(roomtmp, "%d", roomchange);
-					Put_Text_Center(renderer, roomtmp, 10, Display_Y * 0.66, Display_X * 0.7, Display_Y * 0.05, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);
+					Put_Text_Center(renderer, roomtmp, 10, Display_Y * 0.655, Display_X * 0.7, Display_Y * 0.05, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);
 					happen = true;
 				}
 				//4번구역
@@ -2045,13 +2045,13 @@ int main(int argc, char *argv[])
 
 						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
 
-						PutText(renderer, rooms[i].mode, Display_X * 0.085, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//모드 출력
+						Put_Text_Center(renderer, rooms[i].mode, Display_X * 0.085, Display_Y * (0.165 + 0.15 * (j / 2)),Display_X*0.058,Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920),  1);	//모드 출력
 
 						sprintf(db_id, "%d문제", rooms[i].question);
-						PutText(renderer, db_id, Display_X * 0.15, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
+						PutText(renderer, db_id, Display_X * 0.16, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
 
 						sprintf(db_id, "%d초", rooms[i].time);
-						PutText(renderer, db_id, Display_X * 0.23, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 시간 출력
+						Put_Text_Center(renderer, db_id, Display_X * 0.23, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);	//문제 시간 출력
 
 						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
 						PutText(renderer, db_id, Display_X * 0.305, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
@@ -2074,12 +2074,12 @@ int main(int argc, char *argv[])
 
 						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
 
-						PutText(renderer, rooms[i].mode, Display_X * 0.43, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//모드 출력
+						Put_Text_Center(renderer, rooms[i].mode, Display_X * 0.43, Display_Y * (0.165 + 0.15 * (j / 2)),Display_X*0.058, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);;	//모드 출력
 						sprintf(db_id, "%d문제", rooms[i].question);
 						PutText(renderer, db_id, Display_X * 0.505, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
 
 						sprintf(db_id, "%d초", rooms[i].time);
-						PutText(renderer, db_id, Display_X * 0.575, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 시간 출력
+						Put_Text_Center(renderer, db_id, Display_X * 0.575, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920),1);	//문제 시간 출력
 
 						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
 						PutText(renderer, db_id, Display_X * 0.65, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
@@ -2089,12 +2089,12 @@ int main(int argc, char *argv[])
 
 				newdata[0] = 0;
 
-				if (PutButtonImage(renderer, left1, left2, Display_X * 0.25, Display_Y * 0.66, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange != 1) {
+				if (PutButtonImage(renderer, left1, left2, Display_X * 0.25, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange != 1) {
 					roomchange--;
 					newdata[0] = 1;
 					
 				}
-				else if (PutButtonImage(renderer, right1, right2, Display_X * 0.4, Display_Y * 0.66, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange * 8 < roomcount) {
+				else if (PutButtonImage(renderer, right1, right2, Display_X * 0.4, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange * 8 < roomcount) {
 					roomchange++;
 					newdata[0] = 1;
 					
