@@ -81,10 +81,10 @@ void changesetting(int bgmusic, int sound, int x, int y, int full) {
 	fclose(set);
 }
 int wstrcmp(wchar_t *First, char *second) {
-	char query[384];
-	char euc_kr[128];
-	strcpy(query, UNICODE2UTF8(First, 128));
-	UTF82EUCKR(euc_kr, 128, query, 384);
+	char query[768];
+	char euc_kr[512];
+	strcpy(query, UNICODE2UTF8(First, wcslen(First)));
+	UTF82EUCKR(euc_kr, 512, query,768 );
 	euc_kr[strlen(euc_kr)] = 0;
 	return strcmp(euc_kr, second);
 }

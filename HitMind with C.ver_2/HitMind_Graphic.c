@@ -195,7 +195,7 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, 
 	{	//마우스의 위치가 글씨 위에 있으면
 		plussize = 5;	//커지는 효과
 	}
-	Unicode unicode[128] = L"";	//han2unicode를 쓰기 위해 unsigned short(UNICODE)를 생성
+	Unicode unicode[256] = L"";	//han2unicode를 쓰기 위해 unsigned short(UNICODE)를 생성
 	han2unicode(sentence, unicode);		//옮김
 
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", size + plussize);	 //폰트를 불러온다. 하지만 Draw할때마다 불러오는건 비효율적이긴 함.
@@ -206,7 +206,7 @@ int PutButton(SDL_Renderer * renderer, char * sentence, int x, int y, int size, 
 int PutText(SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m)
 {
 	SDL_Color color = { r, g, b };
-	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	Unicode unicode[512] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	if(m==1)
 		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
@@ -1107,7 +1107,7 @@ void CreateText(Text* Text, SDL_Renderer * Renderer,char *sentence, int x,int y,
 	return;
 }
 void CenterArrange(Text * Text) {
-	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(Text->sentence, unicode);	//옮긴다
 	SDL_Surface * Surface;
 	SDL_Texture* Texture;
@@ -1139,7 +1139,7 @@ void CenterArrange(Text * Text) {
 	return;	//평소에도 0을 리턴
 }
 void RenderText( Text * Text) {
-	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(Text->sentence, unicode);	//옮긴다
 	if (Text->m == 1)
 		TTF_DrawText(Text->Renderer, Font_Size[Text->size_fixed], unicode, Text->Rect.x, Text->Rect.y, Text->Color);			//Text를 적음
@@ -1148,7 +1148,7 @@ void RenderText( Text * Text) {
 	return;	//평소에도 0을 리턴
 }
 void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w,int h,int r,int g,int b,int size,int m) {
-	Unicode unicode[128] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	SDL_Color Color = { r,g,b,0 };
 	SDL_Surface * Surface;
