@@ -54,12 +54,12 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 void HitMind_Timer(Hit_Timer *arg)
 {
 
-	*(arg->now) = clock();
+	unsigned int now = clock();
 	while (*(arg->event) != -1)
 	{
-		if (clock() - *(arg->now) > arg->time){
+		if (clock() - now > arg->time){
 			*(arg->event) = 1;
-			*(arg->now) = clock();
+			now = clock();
 		}
 		Sleep(10);
 	}
