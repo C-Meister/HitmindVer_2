@@ -232,10 +232,10 @@ uintptr_t CreateTimer(unsigned int time, int * event);
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
-
 void HitMind_TTF2_Init();
 void HitMind_TTF2_Close();
 void Timer(unsigned int time);
+void UpdateUserInfo(User* Player, User * Me, char(*Topics)[30], SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
 //SDL - 텍스트를 출력하는함수
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
