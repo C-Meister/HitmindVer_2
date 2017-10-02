@@ -7,9 +7,9 @@ char * GetDefaultMyIP()
 
 	char localhostname[MAX_PATH];
 	IN_ADDR addr = { 0, };
-
 	if (gethostname(localhostname, MAX_PATH) == SOCKET_ERROR)//호스트 이름 얻어오기
 	{
+
 		return inet_ntoa(addr);
 	}
 	HOSTENT *ptr = gethostbyname(localhostname);//호스트 엔트리 얻어오기
@@ -22,9 +22,25 @@ char * GetDefaultMyIP()
 		}
 		ptr++;
 	}
+	
 	return inet_ntoa(addr);
+	
 }
+char * GetExternalIP() {
+	HINTERNET hInternet, hFile;
+	DWORD rSize;
+	char buffer[32];
 
+	hInternet = InternetOpen(NULL, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	hFile = InternetOpenUrl(hInternet, "http://automation.whatismyip.com/n09230945.asp", NULL, 0, INTERNET_FLAG_RELOAD, 0);
+	InternetReadFile(hFile, &buffer, sizeof(buffer), &rSize);
+	buffer[rSize] = '\0';
+
+	InternetCloseHandle(hFile);
+	InternetCloseHandle(hInternet);
+	printf("%s", buffer);
+	return buffer;
+}
 void settings(int *x, int *y, int *music, int *sound, int *full) {
 	FILE *set = fopen("setting.txt", "rt");
 	fscanf(set, "<HitMid_Setting>\n");

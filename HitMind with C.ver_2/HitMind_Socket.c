@@ -101,6 +101,7 @@ void HandleClient(SockParam *param) {
 	while (1) {
 		if (param->sockethappen == 5)
 		{
+			closesocket(param->Sconnect_socket[ClientNumber]);
 			break;
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
@@ -157,8 +158,10 @@ void Clientrecv(SockParam *param) {
 	int i = 0;
 	while (1) {
 
-		if (param->sockethappen == 5)
- 			break;
+		if (param->sockethappen == 5) {
+			closesocket(param->Cconnect_socket);
+			break;
+		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 
 
