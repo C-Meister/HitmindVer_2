@@ -2856,7 +2856,13 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-
+				if (ClientParam.sockethappen == 12)
+				{
+					sprintf(query, "update room set ip = '%s' where ownnum = %d", GetDefaultMyIP(), My_Room.ownnum);
+					mysql_query(cons, query);
+					bangsang = 1;
+					ClientParam.sockethappen = 0;
+				}
 				if (ClientParam.sockethappen == 1)
 				{
 
@@ -2917,6 +2923,9 @@ int main(int argc, char *argv[])
 					loginsuccess = 1;
 					roop = 1;
 					qquit = true;
+					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+					mysql_query(cons, query);
+
 				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
@@ -2931,11 +2940,16 @@ int main(int argc, char *argv[])
 
 					ServerParam.sockethappen = 5;
 					if (bangsang == 1) {
-						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-						ServerParam.sockethappen = 5;
-						mysql_query(cons, query);
-						closesocket(ServerParam.Slisten_socket);
-
+						if (gameuser[0].status || gameuser[1].status || gameuser[2].status || gameuser[3].status)
+						{
+							hostChange(&ServerParam);
+						}
+						else {
+							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+							ServerParam.sockethappen = 5;
+							mysql_query(cons, query);
+							closesocket(ServerParam.Slisten_socket);						
+						}
 						bangsang = 0;
 					}
 					WSACleanup();
@@ -2957,8 +2971,6 @@ int main(int argc, char *argv[])
 					}
 				}
 				PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
-
-
 				SDL_RenderPresent(renderer);
 			}
 
