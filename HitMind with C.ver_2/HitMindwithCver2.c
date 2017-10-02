@@ -1,4 +1,4 @@
-﻿ /*
+﻿/*
 HitMind with C.ver_2 프로젝트를 시작합니다.
 조원: 장민석, 배수한, 신상호, 서상희
 
@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-//	getchar();
+	//	getchar();
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -99,8 +99,6 @@ int main(int argc, char *argv[])
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	User gameuser[4] = { 0, };
-	ClientParam.gameuser = gameuser;
-	ServerParam.gameuser = gameuser;
 	int i, j;
 	Hit_Room My_Room;
 	memset(&My_Room, 0, sizeof(My_Room));
@@ -584,7 +582,7 @@ int main(int argc, char *argv[])
 	//	}
 	//}
 	//return 0;
-	
+
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
@@ -1660,18 +1658,19 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
+
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
-			Hit_Room rooms[8];
+			Hit_Room rooms[20];
 			int newdata[3] = { 1, 1, 1 };
 			int roomcount = Get_Room_List(cons, rooms);
 			int pastroomcount = roomcount;
 			char MemBerList[30][30] = { 0, };
 			int RefrashEvent = 1;
-			
+
 			Hit_Timer Refrash = { 0, };
 			Refrash.event = &RefrashEvent;
 			Refrash.time = 500;
@@ -1681,6 +1680,7 @@ int main(int argc, char *argv[])
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
+
 			ClientParam.myuser = myuser;
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
@@ -1698,10 +1698,13 @@ int main(int argc, char *argv[])
 			SDL_Texture * left2 = LoadTexture(renderer, ".\\design\\left2.png");
 			SDL_Texture * right1 = LoadTexture(renderer, ".\\design\\right1.png");
 			SDL_Texture * right2 = LoadTexture(renderer, ".\\design\\right2.png");
-
+			SDL_Texture * myProfile = LoadTextureEx(renderer, myuser->profile, 255, 255, 255);
 			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
 			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
 			quit = 0;
+			ClientParam.gameuser = gameuser;
+			ServerParam.gameuser = gameuser;
+
 			int maxchating = 0;
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
@@ -1715,9 +1718,7 @@ int main(int argc, char *argv[])
 			int pastchating_cnt = allchating_cnt;
 			int chatmovehappen = 0;
 			int newdataed = 1;
-			ZeroMemory(&ServerParam, sizeof(SockParam));
-			ZeroMemory(&ClientParam, sizeof(SockParam));
-
+			SDL_Delay(100);
 			while (loginsuccess && !quit && !isplaygame)	//로그인 성공 후 대기창
 			{
 				if (newdataed)
@@ -1732,6 +1733,7 @@ int main(int argc, char *argv[])
 					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
 					PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);	//개인정보 - 이름 출력
 					PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//개인정보 - 이름 출력
+					RenderTextureXYWH(renderer, myProfile, Display_X * 0.75, Display_Y * 0.75, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
 					newdata[0] = 1;
 					newdata[1] = 1;
 					newdata[2] = 1;
@@ -2026,10 +2028,10 @@ int main(int argc, char *argv[])
 					}*/
 					//if (newdata[0]) {
 
-				
 
-			
-				for (i = roomchange*8-8, j = 0; i < roomcount && j<8; i++,j++)
+
+
+				for (i = roomchange * 8 - 8, j = 0; i < roomcount && j < 8; i++, j++)
 				{
 					if (i % 2 == 0)
 					{
@@ -2092,16 +2094,16 @@ int main(int argc, char *argv[])
 				if (PutButtonImage(renderer, left1, left2, Display_X * 0.25, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange != 1) {
 					roomchange--;
 					newdata[0] = 1;
-					
+
 				}
 				else if (PutButtonImage(renderer, right1, right2, Display_X * 0.4, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && roomchange * 8 < roomcount) {
 					roomchange++;
 					newdata[0] = 1;
-					
+
 				}
 
 
-				
+
 				//	}
 
 				if (newdata[2]) {
@@ -2244,6 +2246,7 @@ int main(int argc, char *argv[])
 											else
 											{
 												bangsang = 1;
+												gameuser[0].Master = 1;
 												server = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)OpenServer, &ServerParam, 0, NULL);
 
 												roomcount = Get_Room_List(cons, rooms);
@@ -2702,11 +2705,12 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(Room_Back_click);
 			SDL_DestroyTexture(Room_Back_noclick);
 			SDL_DestroyTexture(Chating_noput);
+			SDL_DestroyTexture(myProfile);
 			RefrashEvent = -1;
 			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 		}
-
+		system("cls");
 		if (isplaygame)
 		{
 			qquit = 0;
@@ -2727,48 +2731,7 @@ int main(int argc, char *argv[])
 			FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 			PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 			//1
-			if (ClientParam.sockethappen == 1) {
-				if (gameuser[0].status) {
-					FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
-					FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-					if (gameuser[0].status == 2)
-						PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					PutText(renderer, gameuser[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					sprintf(query, "Lv %.2d", gameuser[0].Level);
-					PutText(renderer, query, Display_X * 0.2, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-				}
-				//2
-				if (gameuser[1].status) {
-					FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
-					FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-					if (gameuser[1].status == 2)
-						PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					PutText(renderer, gameuser[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					sprintf(query, "Lv %.2d", gameuser[1].Level);
-					PutText(renderer, query, Display_X * 0.55, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-				}
-				//3
-				if (gameuser[2].status) {
-					FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
-					FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-					if (gameuser[2].status == 2)
-						PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					PutText(renderer, gameuser[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					sprintf(query, "Lv %.2d", gameuser[2].Level);
-					PutText(renderer, query, Display_X * 0.2, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 
-				}
-				//4
-				if (gameuser[3].status) {
-					FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
-					FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-					if (gameuser[3].status == 2)
-						PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					PutText(renderer, gameuser[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					sprintf(query, "Lv %.2d", gameuser[3].Level);
-					PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-				}
-			}
 			//2번구역
 			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
 			RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
@@ -2791,7 +2754,7 @@ int main(int argc, char *argv[])
 			//4번구역
 			FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
 			DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.7 + 9, Display_X * 0.275 + 2, Display_Y * 0.27 + 2, 14, 1);
-			system("cls");
+
 
 			while (!qquit) {
 				SDL_WaitEventTimeout(&event, 500);
@@ -2822,51 +2785,58 @@ int main(int argc, char *argv[])
 
 				if (ClientParam.sockethappen == 1)
 				{
+
+					GetRoomUser(cons, gameuser, renderer);
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					//1
-					/*if (Player[0].status) {
+
+					if (gameuser[0].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-						if (Player[0].status == 2)
+						RenderTextureXYWH(renderer, gameuser[0].Profile, Display_X * 0.08, Display_Y * 0.12, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						if (gameuser[0].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, Player[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-						sprintf(query, "Lv %.2d", Player[0].Level);
+						PutText(renderer, gameuser[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", gameuser[0].Level);
 						PutText(renderer, query, Display_X * 0.2, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
 					//2
-					if (Player[1].status) {
+					if (gameuser[1].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-						if (Player[1].status == 2)
+						RenderTextureXYWH(renderer, gameuser[1].Profile, Display_X * 0.42, Display_Y * 0.12, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						if (gameuser[1].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, Player[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-						sprintf(query, "Lv %.2d", Player[1].Level);
+						PutText(renderer, gameuser[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", gameuser[1].Level);
 						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.25, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
 					//3
-					if (Player[2].status) {
+					if (gameuser[2].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-						if (Player[2].status == 2)
+						RenderTextureXYWH(renderer, gameuser[2].Profile, Display_X * 0.08, Display_Y * 0.42, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						if (gameuser[2].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, Player[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-						sprintf(query, "Lv %.2d", Player[2].Level);
+						PutText(renderer, gameuser[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", gameuser[2].Level);
 						PutText(renderer, query, Display_X * 0.2, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 
 					}
 					//4
-					if (Player[3].status) {
+					if (gameuser[3].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-						if (Player[3].status == 2)
+						RenderTextureXYWH(renderer, gameuser[3].Profile, Display_X * 0.42, Display_Y * 0.42, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						if (gameuser[3].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, Player[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
-						sprintf(query, "Lv %.2d", Player[3].Level);
+						PutText(renderer, gameuser[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "Lv %.2d", gameuser[3].Level);
 						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					}*/
+					}
+					ClientParam.sockethappen = 0;
 				}
 				if (ClientParam.sockethappen == -1)
 				{
@@ -2878,9 +2848,9 @@ int main(int argc, char *argv[])
 				{
 					loginsuccess = 1;
 					roop = 1;
-
+					send(ClientParam.Cconnect_socket, "exit", 30, 0);
+					Sleep(100);
 					ClientParam.sockethappen = 5;
-					closesocket(ClientParam.Cconnect_socket);
 					ClientParam.Cconnect_socket = 0;
 
 					ServerParam.sockethappen = 5;
@@ -2888,8 +2858,6 @@ int main(int argc, char *argv[])
 						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 						ServerParam.sockethappen = 5;
 						mysql_query(cons, query);
-						//		_endthreadex(server);
-						//		ExitThread(server);
 						closesocket(ServerParam.Slisten_socket);
 
 						bangsang = 0;
@@ -2902,7 +2870,8 @@ int main(int argc, char *argv[])
 
 				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 				{
-					qquit = true;
+
+					send(ClientParam.Cconnect_socket, "ready", 40, 0);
 				}
 				PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
 

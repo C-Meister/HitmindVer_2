@@ -76,6 +76,7 @@ typedef struct Hitmind_User {	//HitMind_User 구조체이다. 접속자의 정보를 저장함
 	int money;		//money : 접속자의 돈
 	char ownip[42];
 	int pass_length;
+	char profile[60];
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
@@ -295,6 +296,7 @@ void RenderText( Text * Text);
 void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
 //---------------MySql 함수---------------
+int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
 //자동 로그인인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);
 int getUesrStatus(MYSQL *cons, char arr[30][30]);

@@ -80,7 +80,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
 		My_User->pass_length = atoi(rows[8]);
-
+		strcpy(My_User->profile, rows[10]);
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
@@ -227,6 +227,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		My_User->money = atoi(rows[5]);
 		My_User->pass_length = atoi(rows[8]);
 		strcpy(My_User->ownip, rows[6]);
+		strcpy(My_User->profile, rows[10]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
 	}
@@ -252,7 +253,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	mysql_free_result(sql_result);
 	return i;
 }
-int GetRoomUser(MYSQL * cons, User * friends) {
+int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer) {
 	int i;
 	char query[64];
 	MYSQL_ROW rows;
@@ -267,6 +268,7 @@ int GetRoomUser(MYSQL * cons, User * friends) {
 			{
 				strcpy(friends[i].Nickname, rows[1]);
 				friends[i].Level = atoi(rows[4]);
+				friends[i].Profile = LoadTextureEx(renderer, rows[10], 255, 255, 255);
 			}
 		}
 	}
