@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	getchar();
+//	getchar();
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -98,6 +98,9 @@ int main(int argc, char *argv[])
 	int find_password_status = false;
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
+	User gameuser[4] = { 0, };
+	ClientParam.gameuser = gameuser;
+	ServerParam.gameuser = gameuser;
 	int i, j;
 	Hit_Room My_Room;
 	memset(&My_Room, 0, sizeof(My_Room));
@@ -577,7 +580,7 @@ int main(int argc, char *argv[])
 	//		if (Enter == ACTIVATED) {
 	//			wcscpy(InGameChat, L"");
 	//			Enter = HIGHLIGHT;
-	//		}
+	//		} 
 	//		SDL_RenderPresent(renderer);
 	//		printf("render   ");
 	//		continue;
@@ -1681,7 +1684,7 @@ int main(int argc, char *argv[])
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
 			int chattingdrag = 0;
-
+			ClientParam.myuser = myuser;
 			long long timer = SDL_GetTicks() % 1000;
 			SDL_Texture * WaitRoom_setting_noclick = LoadTexture(renderer, ".\\design\\settingicon1.png");
 			SDL_Texture * WaitRoom_setting_click = LoadTexture(renderer, ".\\design\\settingicon2.png");
@@ -2858,6 +2861,7 @@ int main(int argc, char *argv[])
 					ServerParam.sockethappen = 5;
 					if (bangsang == 1) {
 						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						ServerParam.sockethappen = 5;
 						mysql_query(cons, query);
 						//		_endthreadex(server);
 						//		ExitThread(server);
