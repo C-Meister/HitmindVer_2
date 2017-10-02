@@ -596,7 +596,7 @@ int UpdateSlider(Slider* Slider,  SDL_Event * event) {
 	return 0;
 }
 wchar_t* UTF82UNICODE(char* UTF8, int len) {
-	wchar_t wstr[256] = L"";
+	wchar_t wstr[768] = L"";
 	wchar_t wchar[2] = L"";
 	int temp;
 	int i;
