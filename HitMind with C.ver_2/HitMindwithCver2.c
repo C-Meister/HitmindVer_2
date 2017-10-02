@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
 	memset(&My_Room, 0, sizeof(My_Room));
 	int happen = 0;
 	int backspacehappen = false;
+	int isstartgame = 0;
 	int pass_reset_mode = 1;
 	int hangeul = false; // 현재 입력하고 있는 글자가 한글인지 아닌지 식별해주는 불 변수
 	int textinput = true; // 글자가 하나 더 입력되었는지 알려주는 불 변수
@@ -2870,6 +2871,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == 12)
 				{
+
 					sprintf(query, "update room set ip = '%s' where ownnum = %d", GetDefaultMyIP(), My_Room.ownnum);
 					mysql_query(cons, query);
 					bangsang = 1;
@@ -2939,6 +2941,10 @@ int main(int argc, char *argv[])
 					mysql_query(cons, query);
 
 				}
+				if (ClientParam.sockethappen == 20) {
+					isstartgame = 1;
+					isplaygame = 0;
+				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
 				{
 					loginsuccess = 1;
@@ -2950,11 +2956,13 @@ int main(int argc, char *argv[])
 					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
 					mysql_query(cons, query);
 
-					ServerParam.sockethappen = 5;
 					if (bangsang == 1) {
 						if (gameuser[0].status || gameuser[1].status || gameuser[2].status || gameuser[3].status)
 						{
 							hostChange(&ServerParam);
+							Sleep(200);
+							ServerParam.sockethappen = 5;
+
 						}
 						else {
 							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
@@ -2968,21 +2976,35 @@ int main(int argc, char *argv[])
 					qquit = true;
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
-
-
-				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+				if (bangsang == 1 && isready)
 				{
-					if (isready == 0) {
-						send(ClientParam.Cconnect_socket, "ready", 40, 0);
-						isready = 1;
-					}
-					else
+					if (gameuser[0].status != 1 && gameuser[1].status != 1 && gameuser[2].status != 1 && gameuser[3].status != 1)
 					{
-						send(ClientParam.Cconnect_socket, "noready", 40, 0);
-						isready = 0;
+						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+						{
+							send(ServerParam.Cconnect_socket, "game start", 60, 0);
+							MouseUP_Wait;
+						}
+						PutText(renderer, "시작하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
+
 					}
 				}
-				PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
+				else {
+					if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
+					{
+						if (isready == 0) {
+							send(ClientParam.Cconnect_socket, "ready", 40, 0);
+							isready = 1;
+						}
+						else
+						{
+							send(ClientParam.Cconnect_socket, "noready", 40, 0);
+							isready = 0;
+						}
+						MouseUP_Wait;
+					}
+					PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
+				}
 				SDL_RenderPresent(renderer);
 			}
 
@@ -2990,7 +3012,14 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
+		if (isstartgame)
+		{
+			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
+			mysql_query(cons, query);
+			
+		}
 	}
+	
 	HitMind_TTF_Close();
 	HitMind_TTF2_Close();
 	if (myuser != 0)
