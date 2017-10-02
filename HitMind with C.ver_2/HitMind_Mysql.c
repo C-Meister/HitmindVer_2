@@ -247,7 +247,6 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 		strcpy(chatings[i].name, rows[1]);
 		strcpy(chatings[i].message, rows[2]);
 		strcpy(chatings[i].time, rows[3]);
-		
 		i++;
 	}
 	mysql_free_result(sql_result);
@@ -276,10 +275,10 @@ int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer) {
 }
 
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
-	char char_message[128];
-	char query[128];
+	char char_message[512];
+	char query[768];
 	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
-	UTF82EUCKR(char_message, 128, query, 384);
+	UTF82EUCKR(char_message, 512, query, 768);
 	char_message[strlen(char_message)] = '\0';
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)

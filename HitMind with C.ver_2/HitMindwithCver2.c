@@ -112,12 +112,12 @@ int main(int argc, char *argv[])
 	wchar_t change_password[5][256] = { L"", L"", L"", L"" };
 	Unicode ID_put[256] = L"";
 	Unicode Password_put[256] = L"";
-	char db_id[256] = "";
+	char db_id[512]= "";
 	char db_password[256] = "";
 	int setting_main = 0;
 	int isplaygame = 0;
 	int pass_length = 0;
-	char query[128];
+	char query[128]; 
 	char utf8[256] = ""; // utf8 변환에 필요한 배열
 	int slice = 0;
 	int sum;
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
 	//			wcscpy(wchar, L"");
 	//			sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 	//			wchar[0] = sum;
-	//			if(wcslen(InGameChat)<256)
+	//			if(wcslen(InGameChat)<255)
 
 	//				wcscat(InGameChat, wchar);
 	//			if (event.text.text[0] == -29)
@@ -371,7 +371,7 @@ int main(int argc, char *argv[])
 	//		else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 	//			wcscpy(wchar, L"");
 	//			swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-	//			if (wcslen(InGameChat)<256)
+	//			if (wcslen(InGameChat)<255)
 	//				wcscat(InGameChat, wchar);
 	//			hangeul = false;
 	//			slice = 0;
@@ -425,7 +425,10 @@ int main(int argc, char *argv[])
 	//			SDL_SetClipboardText(utf8);// 클립보드에 넣음
 	//		}
 	//		else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+	//			if(strlen(SDL_GetClipboardText())>=256)
+	//				break;
 	//			wcscat(InGameChat, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
+	//			slice = 0;
 	//			hangeul = false;
 	//			textinput = true;
 	//		}
@@ -867,18 +870,21 @@ int main(int argc, char *argv[])
 									}
 								}
 							}
-
 							else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 								if (ID_INPUT)
 								{
 									strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+									
 									SDL_SetClipboardText(utf8);// 클립보드에 넣음
 								}
 							}
 							else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
-								if (ID_INPUT)
+								if (ID_INPUT) {
+									if (strlen(SDL_GetClipboardText()) >= 256)
+										break;
 									wcscat(ID_put, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
-
+								}
+								slice = 0;
 								hangeul = false;
 								textinput = true;
 							}
@@ -1842,7 +1848,8 @@ int main(int argc, char *argv[])
 							wcscpy(wchar, L"");
 							sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 							wchar[0] = sum;
-							wcscat(ID_put, wchar);
+							if(wcslen(ID_put)<255)
+							wcscat(ID_put, wchar);// 전체채팅
 
 
 							if (event.text.text[0] == -29)
@@ -1853,6 +1860,7 @@ int main(int argc, char *argv[])
 						else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 							wcscpy(wchar, L"");
 							swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+							if (wcslen(ID_put)<255)
 							wcscat(ID_put, wchar);
 							hangeul = false;
 							slice = 0;
@@ -1863,9 +1871,11 @@ int main(int argc, char *argv[])
 				case SDL_KEYDOWN:
 					if (chattingput) {
 						if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+
 							if (hangeul == true && enter == false)
 								enter = true;
 							else if (wcslen(ID_put) > 0) {
+
 								if (wstrcmp(ID_put, "/clear") == 0)
 								{
 									mysql_query(cons, "delete from all_chating");
@@ -1914,8 +1924,10 @@ int main(int argc, char *argv[])
 
 						}
 						else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+							if (strlen(SDL_GetClipboardText()) >= 256)
+								break;
 							wcscat(ID_put, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));// 클립보드에서 가져옴
-
+							slice = 0;
 							hangeul = false;
 							textinput = true;
 						}

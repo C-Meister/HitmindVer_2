@@ -128,7 +128,7 @@ typedef struct SDL_Slider {
 typedef struct MYSQL_CHATING {
 	int ownnum;
 	char name[30];
-	char message[128];
+	char message[512];
 	char time[30];
 }Chating;
 typedef struct Button {
@@ -228,7 +228,6 @@ void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
-uintptr_t CreateTimer(unsigned int time, int * event);
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
