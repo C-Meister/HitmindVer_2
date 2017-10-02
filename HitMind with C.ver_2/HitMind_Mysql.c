@@ -5,7 +5,7 @@
 
 void Thread_MySQL(Connect_status *type)
 {
-	(MYSQL *)type->arg = Mysql_Connect("10.80.162.92");
+	(MYSQL *)type->arg = Mysql_Connect("220.81.115.2");
 	type->ishappen = true;
 }
 MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL구조체
@@ -51,6 +51,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
 	sprintf(query, "select * from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
+	printf("%s\n", GetDefaultMyIP());
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));

@@ -27,20 +27,22 @@ void OpenServer(SockParam *param) {
 
 	int sockaddr_in_size = sizeof(param->connect_addr);
 	int idx = 0;
-
+	int bye = 1;
 	/*
 	여기서부터 무한 반복을 하는데
 	연결요청이 올때까지 계속 대기함
 	연결요청이 들어오면 빈 쓰레드,소켓에 할당하는 역할을 하고있음
 	*/
-	while (1) {
+	memset(&(param->Sconnect_socket), 0, sizeof(param->Sconnect_socket));
+	while (bye) {
 		idx = 0;
-
+		
 		while (param->Sconnect_socket[idx] != 0)
 			idx++;
 		param->Sconnect_socket[idx] = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
 		printf("accept()\n");
 		if (param->Sconnect_socket[idx] == -1) {
+
 			printf("error\n");
 			closesocket(param->Slisten_socket);
 			
@@ -54,16 +56,7 @@ void OpenServer(SockParam *param) {
 			//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
-		if (param->sockethappen == 5)
-		{
-			for (int i = 0; i < 8; i++)
-				if (param->Serverthread[idx] != 0) {
-					closesocket(param->Serverthread[idx]);
-				}
-			closesocket(param->Slisten_socket);
-			WSACleanup();
-			break;
-		}
+		
 		Sleep(1);
 	}
 
@@ -108,6 +101,7 @@ void HandleClient(SockParam *param) {
 	while (1) {
 		if (param->sockethappen == 5)
 		{
+			closesocket(param->Sconnect_socket[ClientNumber]);
 			break;
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
@@ -164,8 +158,10 @@ void Clientrecv(SockParam *param) {
 	int i = 0;
 	while (1) {
 
-		if (param->sockethappen == 5)
+		if (param->sockethappen == 5) {
+			closesocket(param->Cconnect_socket);
 			break;
+		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 
 

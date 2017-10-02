@@ -26,6 +26,7 @@
 #include <stdbool.h>			//Bool 사용 함수
 #include <stdint.h>				//여러 typedef 관련 타입 함수
 #include <direct.h>				//폴더 관련 함수
+#include <WinInet.h>
 #include "mysql/mysql.h"//MySQL 함수들
 #include <tchar.h>
 #include "lib//iconv.h"
@@ -49,6 +50,7 @@
 #pragma comment (lib, "lib/SDL2_mixer.lib")	//그래픽 사운드 라이브러리 5
 #pragma comment (lib, "ws2_32.lib")			//소켓 라이브러리
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL 라이브러리
+#pragma comment (lib, "wininet")
 
 #define nullptr 0 //c++에만 있는 nullptr  0으로 지정
 #define CHOP(x) x[strlen(x) - 1] = ' '	//fgets를 쓰면 엔터도 배열에남음. 엔터를 배열에서 삭제해주는것
@@ -220,7 +222,9 @@ void changesetting(int bgmusic, int sound, int x, int y, int full);
 int wstrcmp(wchar_t *First, char *second);
 void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
-uintptr_t CreateTimer(unsigned int* now, unsigned int time, int * event);
+//외부 ip를 받아옴
+char * GetExternalIP();
+uintptr_t CreateTimer(unsigned int time, int * event);
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
