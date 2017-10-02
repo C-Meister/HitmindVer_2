@@ -50,13 +50,7 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "Display_Y : %d\n", y);
 	fscanf(set, "fullscreen : %d\n", full);
 }
-uintptr_t CreateTimer(unsigned int* now,unsigned int time, int * event) {
-	Hit_Timer *arg=(Hit_Timer*)malloc(sizeof(Hit_Timer));
-	arg->event = event;
-	arg->now = now;
-	arg->time = time;
-	return _beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, arg, 0, NULL);
-}
+
 void HitMind_Timer(Hit_Timer *arg)
 {
 

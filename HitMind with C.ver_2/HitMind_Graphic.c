@@ -1176,3 +1176,11 @@ void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w
 	SDL_DestroyTexture(Texture);
 	return;	//평소에도 0을 리턴
 }
+void Timer(unsigned int time) {
+	SDL_Event event;
+	event.type = SDL_USEREVENT;
+	while (1) {
+		Sleep(time);
+		SDL_PushEvent(&event);
+	}
+}
