@@ -60,7 +60,6 @@ void OpenServer(SockParam *param) {
 		else if (param->Sconnect_socket[idx] != 0) {
 
 			param->num = idx;
-			//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
 
@@ -154,14 +153,20 @@ void HandleClient(SockParam *param) {
 				sprintf(param->message, "ready %d", ClientNumber);
 				sendall(param);
 			}
+			if (strcmp(param->message, "exit") == 0) {
+				
+				sprintf(param->message, "exit %d", ClientNumber);
+
+				sendall(param);
+				closesocket(param->Sconnect_socket[ClientNumber]);
+				break;
+			}
 			if (strcmp(param->message, "nexthostip") == 0) {
 				strcpy(param->message, "nexthostis");
 				recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 				sendall(param);
 			}
-			/*
-			여기서부터 작성하면 됨
-			*/
+			
 		}
 	}
 
@@ -191,7 +196,7 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-
+			 
 
 			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
@@ -235,6 +240,12 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "ready %d", &num);
 				param->gameuser[num].status = 2;
 				param->sockethappen = true;
+			}
+			if (strncmp(param->message, "exit ", 5) == 0)
+			{
+				sscanf(param->message, "exit %d", &num);
+				param->gameuser[num].status = 0;
+				param->sockethappen = 1;
 			}
 			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
