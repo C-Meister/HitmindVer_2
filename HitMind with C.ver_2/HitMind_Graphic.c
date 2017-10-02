@@ -1084,7 +1084,7 @@ void PrintUserInfo(SDL_Renderer* Renderer,User *User,SDL_Rect UserRect) {
 		color.r = 0; color.g = 176; color.b = 240;
 	}
 	FillRoundRect(Renderer, 242, 242, 242, UserRect.x + (User->Th-1) * (UserRect.w + UserRect.w / 24.0), UserRect.y, UserRect.w, UserRect.h, Display_X*0.011);
-	FillUpRoundRect(Renderer, color.r, color.g, color.b, UserRect.x+ (User->Th - 1)*(UserRect.w+UserRect.w/24.0), UserRect.y, UserRect.w, Display_X*0.018, Display_X*0.018);
+	FillUpRoundRect(Renderer, color.r, color.g, color.b, UserRect.x+ (User->Th - 1)*(UserRect.w+UserRect.w/24.0), UserRect.y, UserRect.w, Display_X*0.018, Display_X*0.011);
 	RenderTextureXYWH(Renderer, User->Profile, UserRect.x +(User->Th-1) * (UserRect.w + UserRect.w / 24.0)+UserRect.w*0.05, UserRect.y+ Display_X*0.018, UserRect.w/2.0-UserRect.w*0.1, UserRect.h- UserRect.h * 3 / 20.0);
 	RenderTextureXYWH(Renderer, User->Status, UserRect.x +(User->Th-1)* (UserRect.w + UserRect.w / 24.0)+UserRect.w/2.0, UserRect.y+ Display_X*0.018, UserRect.w/2.0, UserRect.h- Display_X*0.018);
 	char User_Level[10],User_Count[10];

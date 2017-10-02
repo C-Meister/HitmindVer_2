@@ -1,4 +1,4 @@
-﻿/*
+﻿ /*
 HitMind with C.ver_2 프로젝트를 시작합니다.
 조원: 장민석, 배수한, 신상호, 서상희
 
@@ -260,6 +260,7 @@ int main(int argc, char *argv[])
 	//RenderTexture(renderer, RgbCode, &RgbRect);
 	//// 슬라이더와 버튼들
 	//DrawSlider(renderer, StrongSlider);
+	//PencilButton->Flag=ACTIVATED;
 	//DrawButton(PencilButton);
 	//DrawButton(EraserButton);
 	//DrawButton(NewButton);
@@ -292,32 +293,62 @@ int main(int argc, char *argv[])
 	//CenterArrange(CountText);
 	//RenderText(CountText);
 	////
-	//
-	//SDL_RenderPresent(renderer);
 	//// 타이머 생성
-	//int Event = 0;
-	//int LimitTime = 10; // 초단위 (최소 1초 이상이여야한다 )
-	//if (LimitTime < 1) {
-	//	printf("LimitTime은 최소 1초이상이여야합니다\n");
-	//}
-	//int Time = 10; // ms 단위
-	//float TimerRate = (TimerRect.w/LimitTime)*(Time/1000.0); // 타이머가 Time(ms)초 마다 줄어드는 길이
-	//CreateTimer(Time, &Event);
+	//int LimitTime = 30; // 초단위 (최소 1초 이상이여야한다 )
+	//int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
+	//int Event = 0; unsigned int Now; 
+	//double TimerTemp = (double)TimerRect.w;
+	//double TimerRate = (TimerRect.w/(double)LimitTime)*(Time/(double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
+	//int cnt = 0;
 	//// 
+	//SDL_RenderPresent(renderer);
+	//CreateTimer(&Now,Time, &Event);
 	//while (!quit)//로그인 성공 후 대기창
 	//{
 	//	//	SDL_WaitEvent(&event);
-	//	if (SDL_WaitEventTimeout(&event, Time)==0||Event == 1) {
-	//		SDL_SetRenderDrawColor(renderer, 255,255,255, 0);
-	//		SDL_RenderFillRect(renderer, &TimerRect);
-	//		TimerRect.w -= TimerRate;
-	//		if (TimerRect.w < 0) {
-	//			// 끝
+	//	if (SDL_WaitEventTimeout(&event, Time) == 0) {
+	//		if (Event==1) {
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_RenderFillRect(renderer, &TimerRect);
+	//			TimerTemp -= TimerRate;
+	//			TimerRect.w = TimerTemp;
+	//			SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+	//			SDL_RenderFillRect(renderer, &TimerRect);
+	//			SDL_RenderPresent(renderer);
+	//			Event = 0;
+	//			cnt++;
+	//			if (Time*cnt % 1000 == 0) {
+	//				printf("%d\n", Time*cnt / 1000);
+	//			}
+	//			if (TimerRect.w < 0) {
+	//				// 끝
+	//				while (getch() != 'k');
+	//				return 0;
+	//			}
+	//			continue;
 	//		}
-	//		SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
-	//		SDL_RenderFillRect(renderer,&TimerRect);
-	//		SDL_RenderPresent(renderer);
-	//		continue;
+	//	}
+	//	else {
+	//		if (Event==1) {
+	//			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+	//			SDL_RenderFillRect(renderer, &TimerRect);
+	//			TimerTemp -= TimerRate;
+	//			TimerRect.w = TimerTemp;
+	//			SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+	//			SDL_RenderFillRect(renderer, &TimerRect);
+	//			SDL_RenderPresent(renderer);
+	//			Event = 0;
+	//			cnt++;
+	//			if (Time*cnt % 1000 == 0) {
+	//				printf("%d\n", Time*cnt / 1000);
+	//			}
+	//			if (TimerRect.w < 0) {
+	//				// 끝
+	//				while (getch() != 'k');
+	//				return 0;
+	//			}
+	//			Now = clock();
+	//		}
 	//	}
 	//	if (UpdateCanvas(canvas, &event) == 1&&Chat!= ACTIVATED) {
 	//		SDL_RenderPresent(renderer);

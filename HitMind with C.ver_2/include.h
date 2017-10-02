@@ -182,6 +182,7 @@ typedef struct Text {
 typedef struct HitMind_Time {
 	unsigned int time;
 	int * event;
+	unsigned int* now;
 }Hit_Timer;
 /*
 변수에 대한 설명:
@@ -219,7 +220,7 @@ void changesetting(int bgmusic, int sound, int x, int y, int full);
 int wstrcmp(wchar_t *First, char *second);
 void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
-uintptr_t CreateTimer(unsigned int time, int * event);
+uintptr_t CreateTimer(unsigned int* now, unsigned int time, int * event);
 //---------------그래픽 함수--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
