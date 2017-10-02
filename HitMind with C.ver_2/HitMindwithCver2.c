@@ -2038,6 +2038,8 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
 							strcpy(ClientParam.serverip, My_Room.ip);
+							sprintf(query, "update room set people = people + 1 where num = %d", My_Room.ownnum);
+							mysql_query(cons, query);
 							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 
 							isplaygame = true;
@@ -2067,6 +2069,8 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
 							strcpy(ClientParam.serverip, My_Room.ip);
+							sprintf(query, "update room set people = people + 1 where num = %d", My_Room.ownnum);
+							mysql_query(cons, query); 
 							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 
 							isplaygame = true;
@@ -2252,6 +2256,8 @@ int main(int argc, char *argv[])
 												roomcount = Get_Room_List(cons, rooms);
 												memcpy(&My_Room, &rooms[roomcount - 1], sizeof(Hit_Room));
 												strcpy(ClientParam.serverip, My_Room.ip);
+												sprintf(query, "update room set people = people + 1 where num = %d", My_Room.ownnum);
+												mysql_query(cons, query);
 												client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 												createroom = false;
 												isplaygame = true;
@@ -2713,6 +2719,7 @@ int main(int argc, char *argv[])
 		system("cls");
 		if (isplaygame)
 		{
+			int isready = 0;
 			qquit = 0;
 			if (ClientParam.Cconnect_socket == 0)
 			{
@@ -2852,6 +2859,8 @@ int main(int argc, char *argv[])
 					Sleep(100);
 					ClientParam.sockethappen = 5;
 					ClientParam.Cconnect_socket = 0;
+					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					mysql_query(cons, query);
 
 					ServerParam.sockethappen = 5;
 					if (bangsang == 1) {
@@ -2870,8 +2879,15 @@ int main(int argc, char *argv[])
 
 				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 				{
-
-					send(ClientParam.Cconnect_socket, "ready", 40, 0);
+					if (isready == 0) {
+						send(ClientParam.Cconnect_socket, "ready", 40, 0);
+						isready = 1;
+					}
+					else
+					{
+						send(ClientParam.Cconnect_socket, "noready", 40, 0);
+						isready = 0;
+					}
 				}
 				PutText(renderer, "준비하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
 
