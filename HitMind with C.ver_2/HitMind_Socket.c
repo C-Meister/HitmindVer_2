@@ -260,12 +260,14 @@ void Clientrecv(SockParam *param) {
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
 				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
 				send(param->Cconnect_socket, param->message, 180, 0);
+				param->sockethappen = 12;
 				// 소켓 닫음
 				closesocket(param->Cconnect_socket);
 				// 오픈 서버
 				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				OpenServer(param);
+				break;
 			}
 			if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
 				recv(param->Cconnect_socket, param->message, 180, 0); // 호스트의 ip를 받음
@@ -276,7 +278,7 @@ void Clientrecv(SockParam *param) {
 				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				connectServer(param);
-
+				break;
 			}
 
 		}
