@@ -252,6 +252,26 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	mysql_free_result(sql_result);
 	return i;
 }
+int GetRoomUser(MYSQL * cons, User * friends) {
+	int i;
+	char query[64];
+	MYSQL_ROW rows;
+	for (i = 0; i < 4; i++)
+	{
+		if (friends[i].status)
+		{
+			sprintf(query, "select * from user where ownnum = %d", friends[i].ownnum);
+			mysql_query(cons, query);
+			rows = mysql_fetch_row(mysql_store_result(cons));
+			if (rows != 0)
+			{
+				strcpy(friends[i].Nickname, rows[1]);
+				friends[i].Level = atoi(rows[4]);
+			}
+		}
+	}
+	return 1;
+}
 
 int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
 	char char_message[128];

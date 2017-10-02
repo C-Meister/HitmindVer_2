@@ -124,28 +124,6 @@ typedef struct SDL_Slider {
 	int Flag;
 }Slider;
 
-typedef struct Socket_Parameters {
-	WSADATA wsadata;
-	SOCKET Slisten_socket;
-	SOCKET Sconnect_socket[MAXPEOPLE];
-	SOCKET Clisten_socket;
-	SOCKET Cconnect_socket;
-	SOCKADDR_IN listen_addr;
-	SOCKADDR_IN connect_addr;
-	uintptr_t Serverthread[MAXPEOPLE];
-	uintptr_t Clientthread;
-	char playerinfo[MAXPEOPLE][30];
-	int playerstatus[MAXPEOPLE];
-	char message[200];
-	char serverip[50];
-	char nextserverip[50];
-	int sockethappen;
-	int num;
-	uintptr_t *s;
-	uintptr_t *c;
-}SockParam;
-
-
 typedef struct MYSQL_CHATING {
 	int ownnum;
 	char name[30];
@@ -170,6 +148,7 @@ typedef struct User {
 	int Count;
 	int Th;
 	int status;
+	int ownnum;
 }User;
 typedef struct Text {
 	SDL_Renderer *Renderer;
@@ -186,6 +165,30 @@ typedef struct HitMind_Time {
 	int * event;
 	unsigned int* now;
 }Hit_Timer;
+
+typedef struct Socket_Parameters {
+	WSADATA wsadata;
+	SOCKET Slisten_socket;
+	SOCKET Sconnect_socket[MAXPEOPLE];
+	SOCKET Clisten_socket;
+	SOCKET Cconnect_socket;
+	SOCKADDR_IN listen_addr;
+	SOCKADDR_IN connect_addr;
+	uintptr_t Serverthread[MAXPEOPLE];
+	uintptr_t Clientthread;
+	char playerinfo[MAXPEOPLE][30];
+	char message[200];
+	char serverip[50];
+	char nextserverip[50];
+	int sockethappen;
+	int num;
+	Hit_User * myuser;
+	User * gameuser;
+	uintptr_t *s;
+	uintptr_t *c;
+}SockParam;
+
+
 /*
 변수에 대한 설명:
 이 include.h헤더파일은 여러 군데에서 사용을함.
