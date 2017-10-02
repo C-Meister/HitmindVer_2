@@ -36,7 +36,7 @@ void OpenServer(SockParam *param) {
 	memset(&(param->Sconnect_socket), 0, sizeof(param->Sconnect_socket));
 	while (bye) {
 		idx = 0;
-		
+
 		while (param->Sconnect_socket[idx] != 0)
 			idx++;
 		param->Sconnect_socket[idx] = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
@@ -52,7 +52,7 @@ void OpenServer(SockParam *param) {
 
 			printf("error\n");
 			closesocket(param->Slisten_socket);
-			
+
 			Sleep(2000);
 
 			exit(1);
@@ -63,7 +63,7 @@ void OpenServer(SockParam *param) {
 			//	printf("OpenServer: %x\n", &(param->Sconnect_socket[idx]));
 			param->Serverthread[idx] = _beginthreadex(0, 0, (_beginthreadex_proc_type)HandleClient, param, 0, 0);
 		}
-		
+
 		Sleep(1);
 	}
 
@@ -93,6 +93,7 @@ void connectServer(SockParam *param) {
 	printf("connect()\n");
 	Sleep(10);
 	char query[64];
+
 	sprintf(query, "player connect %d", param->myuser->ownnum);
 	send(param->Cconnect_socket, query, 40, 0);
 	printf("send\n");
@@ -106,7 +107,6 @@ echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 
 */
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
-	int saveownnum;
 	while (1) {
 		if (param->sockethappen == 5)
 		{
@@ -124,11 +124,19 @@ void HandleClient(SockParam *param) {
 				클라이언트가 처리할 수 있도록 만듬
 				*/
 				send(param->Sconnect_socket[ClientNumber], "playercheck start", 180, 0);
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0) { // 클라이언트가 접속해있을때
-						printf("%d online\n", i);
-						sprintf(param->message, "%d online %d", i, param->gameuser[ClientNumber].ownnum);
-						send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+						if (param->gameuser[i].status == 1) {
+							printf("%d online\n", i);
+							sprintf(param->message, "%d online %d", i, param->gameuser[i].ownnum);
+							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+						}
+						else if (param->gameuser[i].status == 2)
+						{
+							printf("%d ready\n", i);
+							sprintf(param->message, "%d ready %d", i, param->gameuser[i].ownnum);
+							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+						}
 					}
 					else {	// 아닐때
 						printf("%d offline\n", i);
@@ -137,6 +145,14 @@ void HandleClient(SockParam *param) {
 					}
 				}
 				send(param->Sconnect_socket[ClientNumber], "playercheck finish", 180, 0); // 플레이어 온라인여부가 전송이 완료되었음을 보냄
+				sprintf(param->message, "connect %d %d", ClientNumber, param->gameuser[ClientNumber].ownnum);
+				sendall(param);
+
+			}
+			if (strcmp(param->message, "ready") == 0)
+			{
+				sprintf(param->message, "ready %d", ClientNumber);
+				sendall(param);
 			}
 			if (strcmp(param->message, "nexthostip") == 0) {
 				strcpy(param->message, "nexthostis");
@@ -166,6 +182,8 @@ void sendall(SockParam *param) {
 void Clientrecv(SockParam *param) {
 	char query[128] = { 0, };
 	int i = 0;
+	int num;
+	int num2;
 	while (1) {
 
 		if (param->sockethappen == 5) {
@@ -180,21 +198,42 @@ void Clientrecv(SockParam *param) {
 				i = 0;
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
-					
+
 					printf("%s\n", param->message);
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
-					
+
 					sprintf(query, "%d online %%d", i);
 					if (strncmp(query, param->message, 7) == 0) {
 						sscanf(param->message, query, &(param->gameuser[i].ownnum));
 						param->gameuser[i].status = 1;
 					}
-					else
-						param->gameuser[i].status = 0;
+					else {
+						sprintf(query, "%d ready %%d", i);
+						if (strncmp(query, param->message, 7 == 0)) {
+							sscanf(param->message, query, &(param->gameuser[i].ownnum));
+							param->gameuser[i].status = 2;
+						}
+						else
+							param->gameuser[i].status = 0;
+					 }
 					i++;
 				}
+
+				param->sockethappen = true;
+			}
+			if (strncmp(param->message, "connect ", 7) == 0) {
+
+				sscanf(param->message, "connect %d %d", &num, &num2);
+				param->gameuser[num].status = 1;
+				param->gameuser[num].ownnum = num2;
+				param->sockethappen = 1;
+
+			}
+			if (strncmp(param->message, "ready ", 5) == 0) {
+				sscanf(param->message, "ready %d", &num);
+				param->gameuser[num].status = 2;
 				param->sockethappen = true;
 			}
 			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
