@@ -59,7 +59,7 @@
 #define RESET(X) ZeroMemory(X, sizeof(X))	//ÃÊ±âÈ­ memset()ÀÌ¶û °°À½
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
-#define MAXPEOPLE 8
+#define MAXPEOPLE 4
 //MouseUp_Wait = PutMenuë¥??¬ìš©? ë•Œ ë§ˆìš°??ë²„íŠ¼???´ë¦­?˜ìë§ì ?˜ì–´ê°€ê¸??Œë¬¸??ë°©ì?ë¥??´ì¤Œ.
 //MouseUp_Wait = PutMenu¸¦ »ç¿ëÇÒ¶§ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏÀÚ¸»ÀÚ ³Ñ¾î°¡±â ¶§¹®¿¡ ¹æÁö¸¦ ÇØÁÜ.
 
@@ -128,7 +128,7 @@ typedef struct SDL_Slider {
 typedef struct MYSQL_CHATING {
 	int ownnum;
 	char name[30];
-	char message[128];
+	char message[512];
 	char time[30];
 }Chating;
 typedef struct Button {
@@ -228,14 +228,13 @@ void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
 //¿ÜºÎ ip¸¦ ¹Ş¾Æ¿È
 char * GetExternalIP();
-uintptr_t CreateTimer(unsigned int time, int * event);
 //---------------±×·¡ÇÈ ÇÔ¼ö--------------
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
-
 void HitMind_TTF2_Init();
 void HitMind_TTF2_Close();
 void Timer(unsigned int time);
+void UpdateUserInfo(User* Player, User * Me, char(*Topics)[30], SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
 //SDL - ÅØ½ºÆ®¸¦ Ãâ·ÂÇÏ´ÂÇÔ¼ö
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);

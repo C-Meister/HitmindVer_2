@@ -9,7 +9,7 @@
 void OpenServer(SockParam *param) {
 	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
 	printf("WSAStartup() %d\n", param->Slisten_socket);
-
+	SOCKET temp_socket;
 	param->Slisten_socket = socket(PF_INET, SOCK_STREAM, 0);
 	printf("socket() errcode : %d\n", param->Slisten_socket);
 
@@ -35,11 +35,9 @@ void OpenServer(SockParam *param) {
 	*/
 	memset(&(param->Sconnect_socket), 0, sizeof(param->Sconnect_socket));
 	while (bye) {
-		idx = 0;
-
-		while (param->Sconnect_socket[idx] != 0)
-			idx++;
-		param->Sconnect_socket[idx] = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
+		temp_socket = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
+		for (idx = 0; param->Sconnect_socket[idx] != 0; idx++);
+		param->Sconnect_socket[idx] = temp_socket;
 		printf("accept()\n");
 		if (param->sockethappen == 5)
 		{
@@ -153,12 +151,18 @@ void HandleClient(SockParam *param) {
 				sprintf(param->message, "ready %d", ClientNumber);
 				sendall(param);
 			}
+			if (strcmp(param->message, "noready") == 0)
+			{
+				sprintf(param->message, "noready %d", ClientNumber);
+				sendall(param);
+			}
 			if (strcmp(param->message, "exit") == 0) {
 				
 				sprintf(param->message, "exit %d", ClientNumber);
 
 				sendall(param);
 				closesocket(param->Sconnect_socket[ClientNumber]);
+				param->Sconnect_socket[ClientNumber] = 0;
 				break;
 			}
 			if (strcmp(param->message, "nexthostip") == 0) {
@@ -176,7 +180,7 @@ void HandleClient(SockParam *param) {
 param.message를 수정하면 됨
 */
 void sendall(SockParam *param) {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 4; i++) {
 		if (param->Sconnect_socket[i] != 0)
 			send(param->Sconnect_socket[i], param->message, 180, 0);
 	}
@@ -241,6 +245,11 @@ void Clientrecv(SockParam *param) {
 				param->gameuser[num].status = 2;
 				param->sockethappen = true;
 			}
+			if (strncmp(param->message, "noready ", 7) == 0) {
+				sscanf(param->message, "noready %d", &num);
+				param->gameuser[num].status = 1;
+				param->sockethappen = true;
+			}
 			if (strncmp(param->message, "exit ", 5) == 0)
 			{
 				sscanf(param->message, "exit %d", &num);
@@ -251,12 +260,14 @@ void Clientrecv(SockParam *param) {
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
 				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
 				send(param->Cconnect_socket, param->message, 180, 0);
+				param->sockethappen = 12;
 				// 소켓 닫음
 				closesocket(param->Cconnect_socket);
 				// 오픈 서버
 				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				OpenServer(param);
+				break;
 			}
 			if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
 				recv(param->Cconnect_socket, param->message, 180, 0); // 호스트의 ip를 받음
@@ -267,7 +278,7 @@ void Clientrecv(SockParam *param) {
 				_endthreadex(param->c);
 				WSACleanup(param->wsadata);
 				connectServer(param);
-
+				break;
 			}
 
 		}
@@ -282,7 +293,7 @@ void hostChange(SockParam *param) {
 
 	// 다음 호스트를 정함(랜덤)
 	while (1) {
-		int nexthost = rand() % 8;
+		int nexthost = rand() % 4;
 		if (param->Sconnect_socket[nexthost] != 0) {
 			break;
 		}
