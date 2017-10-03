@@ -308,7 +308,8 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 void Thread_MySQL(Connect_status *type);
 //Ã³À½ MySQL¿¡ ¿¬°áÇÔ
 MYSQL * Mysql_Connect(char *ip);
-
+//wstr·Î Äõ¸®¹®À» ½ÇÇàÇÔ
+int Mysql_wstr_query(MYSQL *cons, wchar_t * query);
 //ì£¼ì œì¤‘ì— ?œë¤?¼ë¡œ ?˜ë‚˜ë¥?ë¶ˆëŸ¬?€ ë¬¸ì?´ë¡œ ë°˜í™˜
 char * Get_Random_Topic(MYSQL *cons);	
 //?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
