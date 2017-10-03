@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	//	getchar();
+
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -2003,16 +2003,20 @@ int main(int argc, char *argv[])
 						//	if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
 						if (chattingdrag > chatslide->Start && chattingdrag <= chatslide->End)
 						{
-							MoveSlider_value(chatslide, chattingdrag - 10);
-							chatmovehappen = true;
+							if (chattingdrag - 10 > chatslide->Start) {
+								MoveSlider_value(chatslide, chattingdrag - 10);
+								chatmovehappen = true;
+							}
 						}
 					}
 					if (event.wheel.y == -1) {
 						//		if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
 						if (chattingdrag >= chatslide->Start && chattingdrag < chatslide->End)
 						{
-							MoveSlider_value(chatslide, chattingdrag + 10);
-							chatmovehappen = true;
+							if (chattingdrag + 10 < chatslide->End) {
+								MoveSlider_value(chatslide, chattingdrag + 10);
+								chatmovehappen = true;
+							}
 						}
 					}
 				}
@@ -3072,7 +3076,8 @@ int main(int argc, char *argv[])
 		}
 		if (isstartgame == 1)
 		{
-			char Topics[20];
+			char Topics[20] = "";
+			//hello
 			ClientParam.topic = Topics;
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
