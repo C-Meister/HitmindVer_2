@@ -1190,10 +1190,10 @@ void Timer(unsigned int time) {
 		SDL_PushEvent(&event);
 	}
 }
-int RenderTextln(Text* Text) {
+void PutText_ln(int w,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m) {
 	
 }
-void UpdateUserInfo(User* Player,User * Me,char **Topics,SDL_Rect UserRect,Text * CountText,Text * TopicText,int NowTopic,int MaxTopic) {
+void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text * CountText,Text * TopicText,int NowTopic,int MaxTopic) {
 	sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
 	//유저정보
 	for (int i = 0; i < 4; i++)
@@ -1205,7 +1205,7 @@ void UpdateUserInfo(User* Player,User * Me,char **Topics,SDL_Rect UserRect,Text 
 		strcpy(TopicText->sentence, "?");
 	}
 	else {
-		strcpy(TopicText->sentence, Topics[NowTopic - 1]);
+		strcpy(TopicText->sentence, Topics);
 	}
 	CenterArrange(TopicText);
 	RenderText(TopicText);

@@ -274,12 +274,17 @@ int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer) {
 	return 1;
 }
 
-int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
-	char char_message[512];
-	char query[768];
-	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
-	UTF82EUCKR(char_message, 512, query, 768);
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int messagelength) {
+	char char_message[512]="";
+	char query[850];
+	strcpy(query, UNICODE2UTF8(message, messagelength));
+	UTF82EUCKR(char_message, 512, query, 850);
 	char_message[strlen(char_message)] = '\0';
+	wchar_t UnicodeOfMessage[256] = L"";
+	han2unicode(char_message, UnicodeOfMessage);
+	if (hannum(message,messagelength)!=hannum(UnicodeOfMessage,wcslen(UnicodeOfMessage))) {
+		strcpy(char_message, "Warning 0x6974 : [InValid Conversion]");
+	}
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)
 		return 0;
