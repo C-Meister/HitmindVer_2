@@ -183,6 +183,7 @@ typedef struct Socket_Parameters {
 	char nextserverip[50];
 	int sockethappen;
 	int num;
+	char * topic;
 	Hit_User * myuser;
 	User * gameuser;
 	uintptr_t *s;
@@ -235,7 +236,7 @@ void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
 void HitMind_TTF2_Close();
 void Timer(unsigned int time);
-void UpdateUserInfo(User* Player, User * Me, char **Topics, SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
+void UpdateUserInfo(User* Player, User * Me, char *Topics, SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
 //SDL - 텍스트를 출력하는함수
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);

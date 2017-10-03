@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	//	getchar();
+
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
 	//Display_X*0.346, Display_Y*0.38
-
+	
 	//	 테스트 코드
 	//int MaxTopic = 5; //총 토픽 개수
 	//int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
@@ -2003,16 +2003,20 @@ int main(int argc, char *argv[])
 						//	if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
 						if (chattingdrag > chatslide->Start && chattingdrag <= chatslide->End)
 						{
-							MoveSlider_value(chatslide, chattingdrag - 10);
-							chatmovehappen = true;
+							if (chattingdrag - 10 > chatslide->Start) {
+								MoveSlider_value(chatslide, chattingdrag - 10);
+								chatmovehappen = true;
+							}
 						}
 					}
 					if (event.wheel.y == -1) {
 						//		if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
 						if (chattingdrag >= chatslide->Start && chattingdrag < chatslide->End)
 						{
-							MoveSlider_value(chatslide, chattingdrag + 10);
-							chatmovehappen = true;
+							if (chattingdrag + 10 < chatslide->End) {
+								MoveSlider_value(chatslide, chattingdrag + 10);
+								chatmovehappen = true;
+							}
 						}
 					}
 				}
@@ -3078,6 +3082,9 @@ int main(int argc, char *argv[])
 		}
 		if (isstartgame == 1)
 		{
+			char Topics[20] = "";
+			//hello
+			ClientParam.topic = Topics;
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			int MaxTopic = My_Room.question; //총 토픽 개수
@@ -3087,6 +3094,8 @@ int main(int argc, char *argv[])
 				sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
 				sendall(&ServerParam);
 			}
+			while (ClientParam.sockethappen != 17);
+			ClientParam.sockethappen = 0;
 			wchar_t InGameChat[256] = L"";
 			wchar_t InGameTopic[256] = L"";
 			int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
@@ -3121,6 +3130,7 @@ int main(int argc, char *argv[])
 			SDL_Texture * CharacterTexture = LoadTextureEx(renderer, ".//design//Character.png", 255, 255, 255);
 			SDL_Texture * StatusTexture = LoadTexture(renderer, ".//design//Status.png");
 
+
 			
 			gameuser[0].Th = 1;
 			gameuser[0].Turn = 1;
@@ -3141,9 +3151,7 @@ int main(int argc, char *argv[])
 			Text * CountText = (Text *)malloc(sizeof(Text));
 			
 			int RenderUpdate = false; 
-			char Topics[20];
-			while (ClientParam.sockethappen != 17);
-			sscanf(ClientParam.message, "topic %s", Topics);
+			
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
 			CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
@@ -3177,7 +3185,7 @@ int main(int argc, char *argv[])
 			RenderTexture(renderer, RgbCode, &RgbRect);
 			// 슬라이더와 버튼들
 			DrawSlider(renderer, StrongSlider);
-			PencilButton->Flag=ACTIVATED;
+			PencilButton->Flag = ACTIVATED;
 			DrawButton(PencilButton);
 			DrawButton(EraserButton);
 			DrawButton(NewButton);
@@ -3196,10 +3204,8 @@ int main(int argc, char *argv[])
 			RenderTexture(renderer, DChatTexture, &ChatRect);
 			RenderTexture(renderer, EnterTexture, &EnterRect);
 			//
-			for (int i = 0; i < 4; i++) {
-				if (gameuser[i].status != 0)
-					PrintUserInfo(renderer, gameuser + i, UserRect);
-			}
+			for (int i = 0; i < 4; i++)
+				PrintUserInfo(renderer, gameuser + i, UserRect);
 			// 유저정보
 			// 토픽과 문제수
 			FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
@@ -3212,11 +3218,11 @@ int main(int argc, char *argv[])
 			//
 			// 타이머 생성
 			int DefaultTimer = TimerRect.w;
-			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
+			int LimitTime = 5; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
 			double TimerTemp = (double)TimerRect.w;
-			double TimerRate = (TimerRect.w/(double)LimitTime)*(Time/(double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
-			// 
+			double TimerRate = (TimerRect.w / (double)LimitTime)*(Time / (double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
+																						// 
 			SDL_RenderPresent(renderer);
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
@@ -3253,7 +3259,7 @@ int main(int argc, char *argv[])
 						}
 						gameuser[NowPlayer - 1].Turn = 1;
 						SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-						
+
 						// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
 						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
@@ -3272,7 +3278,7 @@ int main(int argc, char *argv[])
 						wcscpy(wchar, L"");
 						sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 						wchar[0] = sum;
-						if(wcslen(InGameChat)<255)
+						if (wcslen(InGameChat)<255)
 
 							wcscat(InGameChat, wchar);
 						if (event.text.text[0] == -29)
@@ -3301,8 +3307,8 @@ int main(int argc, char *argv[])
 						else {
 							Shift = 0;
 							han2unicode(Topics, InGameTopic);
-							if (Me->Turn == 0&& wcscmp(InGameTopic,InGameChat)==0) {// DB연동
-								gameuser[NowPlayer-1].Turn = 0;
+							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
+								gameuser[NowPlayer - 1].Turn = 0;
 								Me->Turn = 1;
 								NowPlayer = Me->Th;
 								NowTopic++;
@@ -3339,9 +3345,9 @@ int main(int argc, char *argv[])
 					}
 					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
 						slice = 0;
-						if(strlen(SDL_GetClipboardText())>=256)
+						if (strlen(SDL_GetClipboardText()) >= 256)
 							break;
-						Unicode UnicodeOfClipboard[256]=L"";
+						Unicode UnicodeOfClipboard[256] = L"";
 						wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
 						if (wcslen(UnicodeOfClipboard) + wcslen(InGameChat) >= 256)
 							break;
@@ -3408,7 +3414,7 @@ int main(int argc, char *argv[])
 					}
 					continue;
 				}
-				if ( ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
@@ -3425,7 +3431,7 @@ int main(int argc, char *argv[])
 					}
 					continue;
 				}
-				if ( UpdateButton(PencilButton, &event) == 1) {
+				if (UpdateButton(PencilButton, &event) == 1) {
 					DrawButton(PencilButton);
 					if (PencilButton->Flag == ACTIVATED) {
 						EraserButton->Flag = DEACTIVATED;
@@ -3446,7 +3452,7 @@ int main(int argc, char *argv[])
 				}
 				if (UpdateButton(EraserButton, &event) == 1) {
 					DrawButton(EraserButton);
-					if ( EraserButton->Flag == ACTIVATED) {
+					if (EraserButton->Flag == ACTIVATED) {
 						PencilButton->Flag = DEACTIVATED;
 						DrawButton(PencilButton);
 						canvas->Flag = ERASER;
@@ -3462,16 +3468,16 @@ int main(int argc, char *argv[])
 					printf("render	");
 					continue;
 				}
-				if ( UpdateButton(NewButton, &event) == 1) {
+				if (UpdateButton(NewButton, &event) == 1) {
 					DrawButton(NewButton);
 					SDL_RenderPresent(renderer);
-					if ( NewButton->Flag == ACTIVATED) {
-			//			SDL_Delay(100);
+					if (NewButton->Flag == ACTIVATED) {
+						//			SDL_Delay(100);
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;
 						SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
-						if(Me->Turn == 1)
+						if (Me->Turn == 1)
 							SDL_RenderFillRect(canvas->Renderer, &canvas->Rect);
 						canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
 						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -3495,32 +3501,32 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (MagButton->Flag == ACTIVATED) {
 						if (Me->Turn == 0) {// DB연동
-							// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
-							han2unicode(Topics[NowTopic-1],InGameTopic);
-							wchar_t TheNumber[3]=L"";
-							swprintf(TheNumber, 3, L"%d",wcslen(InGameTopic));
-							wcscpy(InGameChat, TheNumber); 
+											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+							han2unicode(Topics, InGameTopic);
+							wchar_t TheNumber[3] = L"";
+							swprintf(TheNumber, 3, L"%d", wcslen(InGameTopic));
+							wcscpy(InGameChat, TheNumber);
 							textinput = true;
 						}
-			//			SDL_Delay(100);
+						//			SDL_Delay(100);
 					}
 					if (MagButton->Flag == ACTIVATED)
 						MagButton->Flag = HIGHLIGHT;
 					printf("render	");
 					continue;
 				}
-				if ( UpdateButton(RecycleButton, &event) == 1) {
+				if (UpdateButton(RecycleButton, &event) == 1) {
 					DrawButton(RecycleButton);
 					SDL_RenderPresent(renderer);
 					if (RecycleButton->Flag == ACTIVATED) {
 						if (Me->Turn == 1) { // DB연동
-							strcpy(Topics[NowTopic - 1], "체인지!");// Topics[NowTopic-1]의 문자열을 DB에서 바꿔주는 코드가 필요하며 또 바뀐 문자열을 다른 플레이어들에게 모두 전송해야함
+							strcpy(Topics, "체인지!");// Topics의 문자열을 DB에서 바꿔주는 코드가 필요하며 또 바뀐 문자열을 다른 플레이어들에게 모두 전송해야함
 							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
 							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 						}
-				//		SDL_Delay(100);
+						//		SDL_Delay(100);
 					}
 					if (RecycleButton->Flag == ACTIVATED)
 						RecycleButton->Flag = HIGHLIGHT;
@@ -3537,12 +3543,12 @@ int main(int argc, char *argv[])
 							NowPlayer++;
 							Me->Turn = 0;
 							gameuser[NowPlayer - 1].Turn = 1;
-							SDL_FillRectXYWH(renderer,canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
 							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 						}
-			//			SDL_Delay(100);
+						//			SDL_Delay(100);
 					}
 					if (PassButton->Flag == ACTIVATED)
 						PassButton->Flag = HIGHLIGHT;
