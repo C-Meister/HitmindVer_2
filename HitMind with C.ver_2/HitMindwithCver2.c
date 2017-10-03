@@ -1908,7 +1908,6 @@ int main(int argc, char *argv[])
 				case SDL_KEYDOWN:
 					if (chattingput) {
 						if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-
 							if (hangeul == true && enter == false)
 								enter = true;
 							else if (wcslen(ID_put) > 0) {
@@ -2065,10 +2064,10 @@ int main(int argc, char *argv[])
 					int DeltaY= 0;
 					for (i = maxchating-1; i >= 0; i--)
 					{
-		//				sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
-					//	if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
-						DeltaY += PutText_ln(chatings[i].name,Display_X*0.63 ,Display_Y*0.75,Display_Y*0.13,renderer, chatings[i].message, Display_X * 0.04, DeltaY+Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
-	//					PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						//	sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
+						//	if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
+						DeltaY += PutText_ln(chatings[i].name,Display_X*0.63 ,Display_Y*0.75,Display_Y*0.15,renderer, chatings[i].message, Display_X * 0.04, DeltaY+Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);		
+						//	PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
 					newdata[1] = 0;
 					chatmovehappen = 0;
