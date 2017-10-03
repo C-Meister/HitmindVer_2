@@ -1919,6 +1919,13 @@ int main(int argc, char *argv[])
 									mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
 									memset(&ID_put, 0, sizeof(ID_put));
 								}
+								else if (wcsncmp(ID_put, L"/mysql ", 7) == 0)
+								{
+									if (Mysql_wstr_query(cons, ID_put + 7)) {
+
+									}
+									memset(&ID_put, 0, sizeof(ID_put));
+								}
 								else {
 									InsertChating_all(cons, myuser->name, ID_put,wcslen(ID_put));
 									memset(&ID_put, 0, sizeof(ID_put));
@@ -2102,7 +2109,10 @@ int main(int argc, char *argv[])
 					}
 					else if (wcsncmp(ID_put, L"/mysql ", 7) == 0)
 					{
-						Mysql_wstr_query(cons, ID_put + (sizeof(ID_put[0]) * 7));
+						if (Mysql_wstr_query(cons, ID_put + 7)) {
+
+						}
+						memset(&ID_put, 0, sizeof(ID_put));
 					}
 					else if (wstrcmp(ID_put, "") == 0) {
 

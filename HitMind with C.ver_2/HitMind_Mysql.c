@@ -186,6 +186,7 @@ int Mysql_wstr_query(MYSQL *cons, wchar_t * query) {
 	strcpy(buff, UNICODE2UTF8(query, wcslen(query)));
 	UTF82EUCKR(char_query, 128, buff, 384);
 	char_query[strlen(char_query)] = 0;
+	printf("%s", char_query);
 	return mysql_query(cons, char_query);
 }
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
