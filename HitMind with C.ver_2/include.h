@@ -234,7 +234,7 @@ void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
 void HitMind_TTF2_Close();
 void Timer(unsigned int time);
-void UpdateUserInfo(User* Player, User * Me, char(*Topics)[30], SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
+void UpdateUserInfo(User* Player, User * Me, char **Topics, SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
 //SDL - 텍스트를 출력하는함수
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
@@ -331,7 +331,7 @@ int Get_Room_List(MYSQL *cons, Hit_Room * rooms);
 //아이디와 패스워드로 로그인함
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 //전체 채팅을 추가함
-int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int messagelength);
 //전체 채팅을 불러옴
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함

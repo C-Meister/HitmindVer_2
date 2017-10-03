@@ -759,9 +759,9 @@ int main(int argc, char *argv[])
 								wcscpy(wchar, L"");
 								sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 								wchar[0] = sum;
-								if (ID_INPUT == 1)
+								if (ID_INPUT == 1&&wcslen(ID_put)<15)
 									wcscat(ID_put, wchar);
-								else if (PASSWORD_INPUT)
+								else if (PASSWORD_INPUT&&wcslen(Password_put)<30)
 									wcscat(Password_put, wchar);
 
 								if (event.text.text[0] == -29)
@@ -772,9 +772,9 @@ int main(int argc, char *argv[])
 							else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 								wcscpy(wchar, L"");
 								swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-								if (ID_INPUT == 1)
+								if (ID_INPUT == 1&& wcslen(ID_put)<15)
 									wcscat(ID_put, wchar);
-								else if (PASSWORD_INPUT)
+								else if (PASSWORD_INPUT&&wcslen(Password_put)<30)
 									wcscat(Password_put, wchar);
 								hangeul = false;
 								slice = 0;
@@ -1901,7 +1901,7 @@ int main(int argc, char *argv[])
 								enter = true;
 							else if (wcslen(ID_put) > 0) {
 
-								if (wstrcmp(ID_put, "/clear") == 0)
+								if (wcscmp(ID_put, L"/clear") == 0)
 								{
 									mysql_query(cons, "delete from all_chating");
 									mysql_query(cons, "alter table all_chating auto_increment = 1");
@@ -1909,7 +1909,7 @@ int main(int argc, char *argv[])
 									memset(&ID_put, 0, sizeof(ID_put));
 								}
 								else {
-									InsertChating_all(cons, myuser->name, ID_put);
+									InsertChating_all(cons, myuser->name, ID_put,wcslen(ID_put));
 									memset(&ID_put, 0, sizeof(ID_put));
 									enter = false;
 									textinput = true;
@@ -2081,7 +2081,7 @@ int main(int argc, char *argv[])
 					else {
 						FillUpRoundRect(renderer, 255, 255, 255, 61, 810, 1080, 177, 0);
 						RenderTextureXYWH(renderer, Chating_noput, Display_X * 0.03, Display_Y * 0.91, Display_X * 0.56, Display_Y * 0.07);
-						InsertChating_all(cons, myuser->name, ID_put);
+						InsertChating_all(cons, myuser->name, ID_put,wcslen(ID_put));
 						memset(&ID_put, 0, sizeof(ID_put));
 						enter = false;
 						textinput = true;
