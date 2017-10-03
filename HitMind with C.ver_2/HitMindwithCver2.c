@@ -1927,6 +1927,12 @@ int main(int argc, char *argv[])
 									textinput = true;
 									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
 										allchating_cnt = chatings[0].ownnum;
+									if (allchating_cnt != pastchating_cnt) {
+										newdata[1] = 1;
+										pastchating_cnt = allchating_cnt;
+										chatmovehappen = 1;
+
+									}
 									MoveSlider_value(chatslide, chatslide->End);
 									chatmovehappen = 1;
 								}
@@ -2063,6 +2069,7 @@ int main(int argc, char *argv[])
 
 				if (newdata[1] || chatmovehappen) {
 					int DeltaY= 0;
+					printf("happen\n");
 					for (i = maxchating-1; i >= 0; i--)
 					{
 		//				sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
@@ -2094,6 +2101,10 @@ int main(int argc, char *argv[])
 						mysql_query(cons, "insert into all_chating (name, message) values('[관리자]', '채팅을 지웁니다')");
 						memset(&ID_put, 0, sizeof(ID_put));
 					}
+					else if (wcsncmp(ID_put, L"/mysql ", 7))
+					{
+						Mysql_wstr_query(cons, ID_put + (sizeof(ID_put[0]) * 7));
+					}
 					else if (wstrcmp(ID_put, "") == 0) {
 
 					}
@@ -2104,7 +2115,14 @@ int main(int argc, char *argv[])
 						memset(&ID_put, 0, sizeof(ID_put));
 						enter = false;
 						textinput = true;
-						allchating_cnt = ReadChating_all(cons, chatings);
+						if ((maxchating = ReadChating_all(cons, chatings)) != 0)
+							allchating_cnt = chatings[0].ownnum;
+						if (allchating_cnt != pastchating_cnt) {
+							newdata[1] = 1;
+							pastchating_cnt = allchating_cnt;
+							chatmovehappen = 1;
+
+						}
 						MoveSlider_value(chatslide, chatslide->End);
 						newdata[1] = 1;
 						chatmovehappen = 1;
@@ -2907,6 +2925,13 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
+
+				if (ClientParam.sockethappen == 20) {
+
+					isstartgame = 1;
+					qquit = 1;
+					isplaygame = 0;
+				}
 				if (ClientParam.sockethappen == 12)
 				{
 					sprintf(query, "update room set ip = '%s' where ownnum = %d", GetDefaultMyIP(), My_Room.ownnum);
@@ -2916,7 +2941,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == 1)
 				{
-
+					ClientParam.sockethappen = 0;
 					GetRoomUser(cons, gameuser, renderer);
 					if (statusprint == 11)
 					{
@@ -2997,7 +3022,7 @@ int main(int argc, char *argv[])
 						sprintf(query, "Lv %.2d", gameuser[3].Level);
 						PutText(renderer, query, Display_X * 0.55, Display_Y * 0.57, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
-					ClientParam.sockethappen = 0;
+					
 				}
 				if (ClientParam.sockethappen == -1)
 				{
@@ -3006,14 +3031,9 @@ int main(int argc, char *argv[])
 					qquit = true;
 					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 					mysql_query(cons, query);
-
+					ClientParam.sockethappen = 0;
 				}
-				if (ClientParam.sockethappen == 20) {
-
-					isstartgame = 1;
-					qquit = 1;
-					isplaygame = 0;
-				}
+			
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen) || byee) //나가기 버튼 
 				{
 					loginsuccess = 1;
@@ -3137,7 +3157,12 @@ int main(int argc, char *argv[])
 			gameuser[1].Th = 2;
 			gameuser[2].Th = 3;
 			gameuser[3].Th = 4;
-			User * Me = &gameuser[1];
+			User * Me;
+			for (int i = 0; i < 4; i++)
+				if (gameuser[i].ownnum == myuser->ownnum) {
+					Me = &gameuser[i];
+					break;
+				}
 			int NowPlayer = Me->Th;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
@@ -3224,7 +3249,7 @@ int main(int argc, char *argv[])
 			double TimerRate = (TimerRect.w / (double)LimitTime)*(Time / (double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
 																						// 
 			SDL_RenderPresent(renderer);
-			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
+			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, &Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
@@ -3504,7 +3529,7 @@ int main(int argc, char *argv[])
 											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
 							han2unicode(Topics, InGameTopic);
 							wchar_t TheNumber[3] = L"";
-							swprintf(TheNumber, 3, L"%d", wcslen(InGameTopic));
+							swprintf(TheNumber, 3, L"%zd", wcslen(InGameTopic));
 							wcscpy(InGameChat, TheNumber);
 							textinput = true;
 						}

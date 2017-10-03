@@ -180,6 +180,14 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 		return  -2;
 	return 1;
 }
+int Mysql_wstr_query(MYSQL *cons, wchar_t * query) {
+	char char_query[128];
+	char buff[384];
+	strcpy(buff, UNICODE2UTF8(query, wcslen(query)));
+	UTF82EUCKR(char_query, 128, buff, 384);
+	char_query[strlen(char_query)] = 0;
+	return mysql_query(cons, char_query);
+}
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
 {
 
