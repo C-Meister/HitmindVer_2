@@ -299,6 +299,8 @@ void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx,
 	return;
 }
 SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, int g, int b) { // 텍스쳐에 이미지파일 로드하는 함수 선언
+	if (file == 0)
+		return 0;
 	int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;// JPG파일과 PNG파일 로드 가능
 	if (IMG_Init(imgFlags) != imgFlags) {//IMG 초기화하고 초기화 안되면 if문 실행
 		return nullptr;//널포인터 반환
