@@ -130,8 +130,14 @@ void HandleClient(SockParam *param) {
 						}
 						else if (param->gameuser[i].status == 2)
 						{
+
 							printf("%d ready\n", i);
 							sprintf(param->message, "%d ready %d", i, param->gameuser[i].ownnum);
+							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
+						}
+						else {	// 아닐때
+							printf("%d offline\n", i);
+							sprintf(param->message, "%d offline", i);
 							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 						}
 					}
@@ -146,6 +152,7 @@ void HandleClient(SockParam *param) {
 				sendall(param);
 
 			}
+
 			else if (strcmp(param->message, "ready") == 0)
 			{
 				sprintf(param->message, "ready %d", ClientNumber);
@@ -169,7 +176,7 @@ void HandleClient(SockParam *param) {
 				sendall(param);
 			}
 			else
-				sendall(param->message);
+				sendall(param);
 		}
 	}
 }
@@ -218,7 +225,7 @@ void Clientrecv(SockParam *param) {
 					}
 					else {
 						sprintf(query, "%d ready %%d", i);
-						if (strncmp(query, param->message, 7 == 0)) {
+						if (strncmp(query, param->message, 5) == 0) {
 							sscanf(param->message, query, &(param->gameuser[i].ownnum));
 							param->gameuser[i].status = 2;
 						}
@@ -232,11 +239,14 @@ void Clientrecv(SockParam *param) {
 			}
 			if (strncmp(param->message, "connect ", 7) == 0) {
 
-				sscanf(param->message, "connect %d %d", &num, &num2);
-				param->gameuser[num].status = 1;
-				param->gameuser[num].ownnum = num2;
+				sscanf(param->message, "connect %d %d", &param->num, &num2);
+				param->gameuser[param->num].status = 1;
+				param->gameuser[param->num].ownnum = num2;
 				param->sockethappen = 1;
 
+			}
+			if (strncmp(param->message, "topic ", 6) == 0) {
+				param->sockethappen = 17;
 			}
 			if (strncmp(param->message, "ready ", 5) == 0) {
 				sscanf(param->message, "ready %d", &num);
@@ -250,8 +260,8 @@ void Clientrecv(SockParam *param) {
 			}
 			if (strncmp(param->message, "exit ", 5) == 0)
 			{
-				sscanf(param->message, "exit %d", &num);
-				param->gameuser[num].status = 0;
+				sscanf(param->message, "exit %d", &param->num);
+				param->gameuser[param->num].status = 0;
 				param->sockethappen = 1;
 			}
 			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우

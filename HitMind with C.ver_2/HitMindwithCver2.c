@@ -665,7 +665,8 @@ int main(int argc, char *argv[])
 
 		while (!quit && !loginsuccess)
 		{
-			SDL_WaitEvent(&event);
+
+			SDL_WaitEventTimeout(&event, 100);
 
 			switch (event.type) {
 			case SDL_KEYDOWN:
@@ -2832,7 +2833,9 @@ int main(int argc, char *argv[])
 		if (isplaygame)
 		{
 			qquit = 0;
+			int statusprint = 0;
 			int isready = 0;
+			int byee = 0;
 			if (ClientParam.Cconnect_socket == 0)
 			{
 				loginsuccess = 1;
@@ -2883,12 +2886,12 @@ int main(int argc, char *argv[])
 
 					break;
 				case SDL_QUIT:
-					qquit = true;
+					byee = true;
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-						qquit = true;
+						byee = true;
 						Sleep(100);
 						break;// 브레이크
 					case SDL_WINDOWEVENT_ENTER:// 윈도우
@@ -2903,7 +2906,6 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == 12)
 				{
-
 					sprintf(query, "update room set ip = '%s' where ownnum = %d", GetDefaultMyIP(), My_Room.ownnum);
 					mysql_query(cons, query);
 					bangsang = 1;
@@ -2913,10 +2915,40 @@ int main(int argc, char *argv[])
 				{
 
 					GetRoomUser(cons, gameuser, renderer);
+					if (statusprint == 11)
+					{
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.69, 14);
+						RenderTextureXYWH(renderer, can, Display_X * 0.7 + 22, Display_Y*0.042, Display_X*0.277, Display_Y*0.046); //앙
+						DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.69 + 2, 14, 1);
+						FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, 10, Display_X * 0.275, Display_Y * 0.035, 14);
+						PutText(renderer, "방 정보", (Display_X * 0.815), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+
+						//방 정보 출력
+						PutText(renderer, My_Room.mode, Display_X * (0.77 - strlen(My_Room.mode) * 0.005), Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "%d문제", My_Room.question);
+						PutText(renderer, query, Display_X * 0.823, Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						sprintf(query, "%d초", My_Room.time);
+						PutText(renderer, query, Display_X * 0.92, Display_Y * 0.05, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						statusprint = 0;
+					}
+					sprintf(query, "%s님이 ", gameuser[ClientParam.num].Nickname);
+
+					if (strncmp(ClientParam.message, "connect ", 7) == 0) {
+						strcat(query, "입장하셨습니다.");
+						PutText(renderer, query, Display_X * 0.74, Display_Y * (0.12 + (statusprint * 0.05)), 28 * ((float)Display_X / 1920), 169, 165, 165, 1);
+						statusprint++;
+					}
+					else if (strncmp(ClientParam.message, "exit ", 5) == 0) {
+						strcat(query, "퇴장하셨습니다.");
+						PutText(renderer, query, Display_X * 0.74, Display_Y * (0.12 + (statusprint * 0.05)), 28 * ((float)Display_X / 1920), 169, 165, 165, 1);
+						statusprint++;
+					}
+					
 					FillRoundRect(renderer, 255, 255, 255, 10, 10, Display_X * 0.7, Display_Y * 0.69, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, 9, Display_X * 0.7 + 2, Display_Y * 0.69 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, 10, Display_X * 0.7, Display_Y * 0.035, 14);
 					PutText(renderer, "대기실", (Display_X * 0.33), 10, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+
 
 					if (gameuser[0].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
@@ -2974,11 +3006,12 @@ int main(int argc, char *argv[])
 
 				}
 				if (ClientParam.sockethappen == 20) {
+
 					isstartgame = 1;
-					qquit = 0;
+					qquit = 1;
 					isplaygame = 0;
 				}
-				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //나가기 버튼 
+				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen) || byee) //나가기 버튼 
 				{
 					loginsuccess = 1;
 					roop = 1;
@@ -2986,7 +3019,7 @@ int main(int argc, char *argv[])
 					Sleep(100);
 					ClientParam.sockethappen = 5;
 					ClientParam.Cconnect_socket = 0;
-
+					byee = 0;
 					if (bangsang == 1) {
 						if (gameuser[0].status || gameuser[1].status || gameuser[2].status || gameuser[3].status)
 						{
@@ -3013,7 +3046,7 @@ int main(int argc, char *argv[])
 					{
 						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 						{
-							send(ServerParam.Cconnect_socket, "game start", 60, 0);
+							send(ClientParam.Cconnect_socket, "game start", 60, 0);
 							MouseUP_Wait;
 						}
 						PutText(renderer, "시작하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
@@ -3023,6 +3056,7 @@ int main(int argc, char *argv[])
 				else {
 					if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 					{
+				
 						if (isready == 0) {
 							send(ClientParam.Cconnect_socket, "ready", 40, 0);
 							isready = 1;
@@ -3043,22 +3077,17 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
-		if (isstartgame)
+		if (isstartgame == 1)
 		{
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			int MaxTopic = My_Room.question; //총 토픽 개수
 			int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
-			char **Topics = (char**)malloc(sizeof(char*) * MaxTopic);
-			for (int i = 0; i < MaxTopic; i++) {
-				Topics[i] = (char*)malloc(sizeof(char) * 30);
+			if (bangsang == 1)
+			{
+				sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+				sendall(&ServerParam);
 			}
-			strcpy(Topics[0],"상자");
-			strcpy(Topics[1], "히어로즈오브더스톰");
-			strcpy(Topics[2], "하트");
-			strcpy(Topics[3], "가렌");
-			strcpy(Topics[4], "영계백숙");
-
 			wchar_t InGameChat[256] = L"";
 			wchar_t InGameTopic[256] = L"";
 			int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
@@ -3093,49 +3122,13 @@ int main(int argc, char *argv[])
 			SDL_Texture * CharacterTexture = LoadTextureEx(renderer, ".//design//Character.png", 255, 255, 255);
 			SDL_Texture * StatusTexture = LoadTexture(renderer, ".//design//Status.png");
 
-			User Player[4] = {
-				{
-					CharacterTexture,
-					StatusTexture,
-					"신상호",
-					1, //master
-					1, //level
-					0, //turn
-					0,//count
-					1// Th
-				},
-				{
-					CharacterTexture,
-					StatusTexture,
-					"장민석",
-					0,
-					1,
-					1,
-					0,
-					2
-				},
-				{
-					CharacterTexture,
-					StatusTexture,
-					"배수한",
-					0,
-					1,
-					0,
-					0,
-					3
-				},
-				{
-					CharacterTexture,
-					StatusTexture,
-					"서상희",
-					0,
-					1,
-					0,
-					0,
-					4
-				}
-			};
-			User * Me = &Player[1];
+			
+			gameuser[0].Th = 1;
+			gameuser[0].Turn = 1;
+			gameuser[1].Th = 2;
+			gameuser[2].Th = 3;
+			gameuser[3].Th = 4;
+			User * Me = &gameuser[1];
 			int NowPlayer = Me->Th;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
@@ -3147,8 +3140,11 @@ int main(int argc, char *argv[])
 			Button * RecycleButton = (Button *)malloc(sizeof(Button));
 			Text * TopicText = (Text *)malloc(sizeof(Text));
 			Text * CountText = (Text *)malloc(sizeof(Text));
+			
 			int RenderUpdate = false; 
-
+			char Topics[20];
+			while (ClientParam.sockethappen != 17);
+			sscanf(ClientParam.message, "topic %s", Topics);
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
 			CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
@@ -3157,7 +3153,7 @@ int main(int argc, char *argv[])
 			CreateButton(MagButton, renderer, MagTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*(0.22 - 0.019 / 3)), Display_X*0.005 + Display_Y * 0.21*0.67, MaxStrong * 70 / 70.0, MaxStrong * 70 / 70.0, 0, 0, 255, 64);
 			CreateButton(PassButton, renderer, PassTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*(0.22*1.5 - 0.019)), Display_X*0.005 + Display_Y * 0.21*0.67, MaxStrong * 70 / 70.0, MaxStrong * 70 / 70.0, 0, 0, 255, 64);
 			CreateButton(RecycleButton, renderer, RecycleTexture, floor(MaxStrong * 7.5 / 70.0), Display_X*0.0035 + Sample.x - MaxStrong / 2.0 - (Display_X*0.1825*0.019), Display_X*0.005 + Display_Y * 0.21*0.67, MaxStrong * 70 / 70.0, MaxStrong * 70 / 70.0, 0, 0, 255, 64);
-			CreateText(TopicText, renderer, Topics[NowTopic - 1], TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, 255, 255, 255, Display_Y*0.035, 1);
+			CreateText(TopicText, renderer, Topics, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, 255, 255, 255, Display_Y*0.035, 1);
 			CreateText(CountText, renderer, "", CountRect.x, CountRect.y, CountRect.w, CountRect.h, 255, 255, 255, Display_Y*0.035, 1);
 			sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
 
@@ -3201,8 +3197,10 @@ int main(int argc, char *argv[])
 			RenderTexture(renderer, DChatTexture, &ChatRect);
 			RenderTexture(renderer, EnterTexture, &EnterRect);
 			//
-			for (int i = 0; i < 4; i++)
-				PrintUserInfo(renderer, Player + i, UserRect);
+			for (int i = 0; i < 4; i++) {
+				if (gameuser[i].status != 0)
+					PrintUserInfo(renderer, gameuser + i, UserRect);
+			}
 			// 유저정보
 			// 토픽과 문제수
 			FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
@@ -3215,7 +3213,7 @@ int main(int argc, char *argv[])
 			//
 			// 타이머 생성
 			int DefaultTimer = TimerRect.w;
-			int LimitTime = 5; // 초단위 (최소 1초 이상이여야한다 )
+			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
 			double TimerTemp = (double)TimerRect.w;
 			double TimerRate = (TimerRect.w/(double)LimitTime)*(Time/(double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
@@ -3247,18 +3245,18 @@ int main(int argc, char *argv[])
 					TimerRect.w = TimerTemp;
 					//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
 					if (TimerRect.w < 0) { // DB연동해야함
-						Player[NowPlayer - 1].Turn = 0;
+						gameuser[NowPlayer - 1].Turn = 0;
 						NowPlayer %= 4;
 						NowPlayer++;
 						NowTopic++;
 						if (NowTopic > MaxTopic) {
 							return 0;
 						}
-						Player[NowPlayer - 1].Turn = 1;
+						gameuser[NowPlayer - 1].Turn = 1;
 						SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 						
 						// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-						UpdateUserInfo(Player, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					}
 					else {
@@ -3303,9 +3301,9 @@ int main(int argc, char *argv[])
 						}
 						else {
 							Shift = 0;
-							han2unicode(Topics[NowTopic-1], InGameTopic);
+							han2unicode(Topics, InGameTopic);
 							if (Me->Turn == 0&& wcscmp(InGameTopic,InGameChat)==0) {// DB연동
-								Player[NowPlayer-1].Turn = 0;
+								gameuser[NowPlayer-1].Turn = 0;
 								Me->Turn = 1;
 								NowPlayer = Me->Th;
 								NowTopic++;
@@ -3313,7 +3311,7 @@ int main(int argc, char *argv[])
 									return 0;
 								}
 								Me->Count++;
-								UpdateUserInfo(Player, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+								UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 								TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 							}
 							wcscpy(InGameChat, L"");
@@ -3520,7 +3518,7 @@ int main(int argc, char *argv[])
 							strcpy(Topics[NowTopic - 1], "체인지!");// Topics[NowTopic-1]의 문자열을 DB에서 바꿔주는 코드가 필요하며 또 바뀐 문자열을 다른 플레이어들에게 모두 전송해야함
 							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-							UpdateUserInfo(Player, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 						}
 				//		SDL_Delay(100);
@@ -3539,10 +3537,10 @@ int main(int argc, char *argv[])
 							// Topis[NowTopic-1]의 문자열을 DB에서 바꿔주는 코드가 필요
 							NowPlayer++;
 							Me->Turn = 0;
-							Player[NowPlayer - 1].Turn = 1;
+							gameuser[NowPlayer - 1].Turn = 1;
 							SDL_FillRectXYWH(renderer,canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-							UpdateUserInfo(Player, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 						}
 			//			SDL_Delay(100);
@@ -3562,7 +3560,31 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-
+			free(canvas);
+			free(StrongSlider);
+			free(NewButton);
+			free(EraserButton);
+			free(PassButton);
+			free(MagButton);
+			free(RecycleButton);
+			free(TopicText);
+			free(CountText);
+			SDL_DestroyTexture(PencilTexture);
+			SDL_DestroyTexture(RecycleTexture);
+			SDL_DestroyTexture(PassTexture);
+			SDL_DestroyTexture(MagTexture);
+			SDL_DestroyTexture(NewTexture);
+			SDL_DestroyTexture(EraserTexture);
+			SDL_DestroyTexture(BarTexture);
+			SDL_DestroyTexture(BoxTexture);
+			SDL_DestroyTexture(RgbCode);
+			SDL_DestroyTexture(DChatTexture);
+			SDL_DestroyTexture(HChatTexture);
+			SDL_DestroyTexture(ChatTexture);
+			SDL_DestroyTexture(EnterTexture);
+			SDL_DestroyTexture(HEnterTexture);
+			SDL_DestroyTexture(CharacterTexture);
+			SDL_DestroyTexture(StatusTexture);
 		}
 	}
 	
