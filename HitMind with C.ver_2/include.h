@@ -229,6 +229,7 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
+int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 void HitMind_TTF2_Init();

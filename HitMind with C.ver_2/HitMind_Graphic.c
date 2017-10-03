@@ -1190,8 +1190,76 @@ void Timer(unsigned int time) {
 		SDL_PushEvent(&event);
 	}
 }
-void PutText_ln(int w,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m) {
-	
+int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m) {
+	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
+	char NameTemp[30];
+	int DeltaY = 0;
+	sprintf(NameTemp, "%s : ",name);
+	han2unicode(NameTemp, unicode);	//옮긴다
+	SDL_Color Color = { r,g,b,0 };
+	SDL_Surface * Surface;
+	SDL_Texture* NTexture;
+	SDL_Texture* STexture;
+	SDL_Rect Src;
+	SDL_Rect Dst;
+	Src.x = 0;
+	Src.y = 0;
+	if (m == 1)
+		Surface = TTF_RenderUNICODE_Blended(Font_Size[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+	else if (m == 2)
+		Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+	NTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+	SDL_QueryTexture(NTexture, NULL, NULL, &Src.w, &Src.h);
+	Dst.x = x; Dst.y = y; Dst.w = Src.w; Dst.h = Src.h;
+	if (Dst.y < Limit_y || Dst.y > Limit_y+Limit_h) {
+		SDL_DestroyTexture(NTexture);
+			return 0;
+	}
+	SDL_RenderCopy(renderer, NTexture, &Src, &Dst);
+//	SDL_RenderPresent(renderer);
+	int Shift = 0;
+	int length = 150;
+	Dst.x+= Src.w;
+	Limit_w -= Src.w;
+	han2unicode(sentence, unicode);	//옮긴다
+	Unicode SentenceTemp[151] = L"";
+	while (1) {
+		wcsncpy(SentenceTemp, unicode + Shift, length);
+		if (m == 1)
+			Surface = TTF_RenderUNICODE_Blended(Font_Size[size], SentenceTemp, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (m == 2)
+			Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], SentenceTemp, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		STexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(STexture, NULL, NULL, &Src.w, &Src.h);
+		if (Src.w > Limit_w&&length>0) {
+			length--;
+			memset(SentenceTemp, 0, sizeof(SentenceTemp));
+			SDL_DestroyTexture(STexture);
+		}
+		else {
+			Shift += length;
+			Dst.w = Src.w;
+			Dst.h = Src.h;
+			if (Dst.y < Limit_y || Dst.y > Limit_y + Limit_h) {
+				SDL_DestroyTexture(NTexture);
+				SDL_DestroyTexture(STexture);
+				return 0;
+			}
+			SDL_RenderCopy(renderer, STexture, &Src, &Dst);
+//			SDL_RenderPresent(renderer);
+			SDL_DestroyTexture(STexture);
+			Dst.y += Dst.h;
+			length = 150;
+			if (Shift > wcslen(unicode))
+				break;
+			DeltaY += Dst.h;
+		}
+	}
+	SDL_DestroyTexture(NTexture);
+	SDL_DestroyTexture(STexture);
+	return DeltaY;
 }
 void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text * CountText,Text * TopicText,int NowTopic,int MaxTopic) {
 	sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
