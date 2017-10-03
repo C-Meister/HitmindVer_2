@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
 	//Display_X*0.346, Display_Y*0.38
-
+	
 	//	 테스트 코드
 	//int MaxTopic = 5; //총 토픽 개수
 	//int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
@@ -3079,6 +3079,8 @@ int main(int argc, char *argv[])
 		}
 		if (isstartgame == 1)
 		{
+			char Topics[20];
+			ClientParam.topic = Topics;
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			int MaxTopic = My_Room.question; //총 토픽 개수
@@ -3142,9 +3144,7 @@ int main(int argc, char *argv[])
 			Text * CountText = (Text *)malloc(sizeof(Text));
 			
 			int RenderUpdate = false; 
-			char Topics[20];
-			while (ClientParam.sockethappen != 17);
-			sscanf(ClientParam.message, "topic %s", Topics);
+			
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
 			CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
@@ -3156,7 +3156,6 @@ int main(int argc, char *argv[])
 			CreateText(TopicText, renderer, Topics, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, 255, 255, 255, Display_Y*0.035, 1);
 			CreateText(CountText, renderer, "", CountRect.x, CountRect.y, CountRect.w, CountRect.h, 255, 255, 255, Display_Y*0.035, 1);
 			sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
-
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 			SDL_RenderClear(renderer);
 			//1번구역
@@ -3210,6 +3209,7 @@ int main(int argc, char *argv[])
 			FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);
 			CenterArrange(CountText);
 			RenderText(CountText);
+		
 			//
 			// 타이머 생성
 			int DefaultTimer = TimerRect.w;

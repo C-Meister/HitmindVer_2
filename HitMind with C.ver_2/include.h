@@ -183,6 +183,7 @@ typedef struct Socket_Parameters {
 	char nextserverip[50];
 	int sockethappen;
 	int num;
+	char * topic;
 	Hit_User * myuser;
 	User * gameuser;
 	uintptr_t *s;

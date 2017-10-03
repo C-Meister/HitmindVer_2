@@ -246,7 +246,7 @@ void Clientrecv(SockParam *param) {
 
 			}
 			if (strncmp(param->message, "topic ", 6) == 0) {
-				param->sockethappen = 17;
+				sscanf(param->message, "topic %s", param->topic);
 			}
 			if (strncmp(param->message, "ready ", 5) == 0) {
 				sscanf(param->message, "ready %d", &num);
