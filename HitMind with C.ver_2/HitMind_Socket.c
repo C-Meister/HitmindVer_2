@@ -43,7 +43,6 @@ void OpenServer(SockParam *param) {
 		if (param->Sconnect_socket[idx] == -1) {
 			printf("error\n");
 			closesocket(param->Slisten_socket);
-			Sleep(2000);
 			exit(1);
 		}
 		else if (param->Sconnect_socket[idx] != 0) {
@@ -96,7 +95,6 @@ void connectServer(SockParam *param) {
 /*
 각각의 클라이언트를 제어하는 함수
 클라이언트에게 신호가 오면 send로 보내주는 역할을 함
-echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 보내주어야 함
 */
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
@@ -142,7 +140,6 @@ void HandleClient(SockParam *param) {
 }
 /*
 접속해있는 모든 클라이언트에게 패킷을 전송함
-param.message를 수정하면 됨
 */
 void sendall(SockParam *param) {
 	for (int i = 0; i < 8; i++) {
@@ -218,11 +215,9 @@ void hostChange(SockParam *param) {
 	if (param->Sconnect_socket[nexthost] != 0) {
 			send(param->Sconnect_socket[nexthost], "nexthost", 180, 0);
 	}
-	else { // 만약 다음 호스트가 없을경우(나갔을경우) 다시 뽑음 (의미없을듯)
+	else { 
 			hostChange(param);
 			return;
 	}
 		
-}	
-
-
+}
