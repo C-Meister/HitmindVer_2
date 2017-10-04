@@ -1841,6 +1841,7 @@ int main(int argc, char *argv[])
 					newdata[2] = 1;
 					happen = true;
 					newdataed = 0;
+					RefrashEvent = 1;
 				}
 				//printf("%d\n", dkdkdk++);
 				//		if (SDL_PollEvent(&event))
@@ -1923,15 +1924,13 @@ int main(int argc, char *argv[])
 								else if (wcsncmp(ID_put, L"/mysql ", 7) == 0)
 								{
 									if (Mysql_wstr_query(cons, ID_put + 7)) {
-										InsertChating_all(cons, "[MySQL]", L"Query Error", wcslen(L"Query Error"));
+										InsertChating_all(cons, myuser->name, L"[MySQL] Query Error", wcslen(L"[MySQL] Query Error"));
 										
 									}
 									else {
-										InsertChating_all(cons, "[MySQL]", L"Query Success", wcslen(L"Query Success"));
+										InsertChating_all(cons, myuser->name, L"[MySQL] Query Success", wcslen(L"[MySQL] Query Success"));
 									}
-									chatmovehappen = 1;
-									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
-										allchating_cnt = chatings[0].ownnum;
+									newdataed = 1;
 
 									memset(&ID_put, 0, sizeof(ID_put));
 								}
@@ -2119,16 +2118,14 @@ int main(int argc, char *argv[])
 					else if (wcsncmp(ID_put, L"/mysql ", 7) == 0)
 					{
 						if (Mysql_wstr_query(cons, ID_put + 7)) {
-							InsertChating_all(cons, "[MySQL]", L"Query Error", wcslen(L"Query Error"));
+							InsertChating_all(cons, myuser->name, L"[MySQL] Query Error", wcslen(L"[MySQL] Query Error"));
 							
 						}
 						else {
-							InsertChating_all(cons, "[MySQL]", L"Query Success", wcslen(L"Query Success"));
+							InsertChating_all(cons, myuser->name, L"[MySQL] Query Success", wcslen(L"[MySQL] Query Success"));
 						}
-						chatmovehappen = 1;
-						if ((maxchating = ReadChating_all(cons, chatings)) != 0)
-							allchating_cnt = chatings[0].ownnum;
-
+						newdataed = 1;
+					
 						memset(&ID_put, 0, sizeof(ID_put));
 					}
 					else if (wstrcmp(ID_put, "") == 0) {
