@@ -2262,15 +2262,15 @@ int main(int argc, char *argv[])
 						PutText(renderer, MemBerList[i], Display_X * 0.82, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						if (MemBerList[i][28] == 1)
 						{
-							PutText(renderer, "로비", Display_X * 0.93, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+							PutText(renderer, "로비", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						}
 						else if (MemBerList[i][28] == 2)
 						{
-							PutText(renderer, "게임 중", Display_X * 0.93, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 255, 0, 0, 1);
+							PutText(renderer, "게임 중", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 255, 0, 0, 1);
 						}
 						else if (MemBerList[i][28] == 3)
 						{
-							PutText(renderer, "대기방", Display_X * 0.93, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 255, 0, 1);
+							PutText(renderer, "대기방", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 255, 0, 1);
 						}
 						else if (MemBerList[i][28] == 4)
 						{
