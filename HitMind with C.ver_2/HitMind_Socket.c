@@ -263,6 +263,9 @@ void Clientrecv(SockParam *param) {
 				param->gameuser[param->num].status = 0;
 				param->sockethappen = 1;
 			}
+			if (strcmp(param->message, "bangsang exit") == 0) {
+				param->sockethappen = 22;
+			}
 			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
 				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
