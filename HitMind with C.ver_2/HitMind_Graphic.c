@@ -1281,3 +1281,22 @@ void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text *
 	CenterArrange(CountText);
 	RenderText(CountText);
 }
+int RoomX_Setting(roomX *roomx, int Display_x) {
+	roomx[0].button = Display_x * 0.02;
+	roomx[0].number = Display_x * 0.027;
+	roomx[0].name = Display_x * 0.09;
+	roomx[0].mode = Display_x * 0.085;
+	roomx[0].question = Display_x * 0.16;
+	roomx[0].time = Display_x * 0.23;
+	roomx[0].people = Display_x * 0.305;
+	roomx[0].rock = Display_x * 0.3;
+
+	roomx[1].button = Display_x * 0.365;
+	roomx[1].number = Display_x * 0.372;
+	roomx[1].name = Display_x * 0.435;
+	roomx[1].mode = Display_x * 0.43;
+	roomx[1].question = Display_x * 0.505;
+	roomx[1].time = Display_x * 0.575;
+	roomx[1].people = Display_x * 0.65;
+	roomx[1].rock = Display_x * 0.645;
+}

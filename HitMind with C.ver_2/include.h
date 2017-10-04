@@ -190,6 +190,16 @@ typedef struct Socket_Parameters {
 	uintptr_t *c;
 }SockParam;
 
+typedef struct RoomX {
+	int button;
+	int number;
+	int name;
+	int mode;
+	int question;
+	int time;
+	int people;
+	int rock;
+}roomX;
 
 /*
 변수에 대한 설명:
@@ -296,6 +306,7 @@ void CreateText(Text* Text, SDL_Renderer * Renderer, char *sentence, int x, int 
 void RenderText( Text * Text);
 void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
+int RoomX_Setting(roomX *roomx[],int Display_x);
 //---------------MySql 함수---------------
 int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
 //자동 로그인인지 체크하는 함수

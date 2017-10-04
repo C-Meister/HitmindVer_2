@@ -1820,6 +1820,9 @@ int main(int argc, char *argv[])
 			int chatmovehappen = 0;
 			int newdataed = 1;
 			int LobbyShift = 0;
+
+			roomX roomx[2];
+			RoomX_Setting(roomx, Display_X);
 			SDL_Delay(100);
 			while (loginsuccess && !quit && !isplaygame)	//로그인 성공 후 대기창
 			{
@@ -2180,60 +2183,246 @@ int main(int argc, char *argv[])
 
 				for (i = roomchange * 8 - 8, j = 0; i < roomcount && j < 8; i++, j++)
 				{
-					if (i % 2 == 0)
-					{
-						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.02, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
-							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
-							strcpy(ClientParam.serverip, My_Room.ip);
-							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+					if (newdataed == 1)
+						continue;
+					
 
-							isplaygame = true;
-						}
+					if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, roomx[i%2].button, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
+							
+						RenderTextureXYWH(renderer, Room_Back_noclick, roomx[i % 2].button, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen);
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
-						PutText(renderer, db_id, Display_X * 0.027, Display_Y * (0.107 + 0.15 * (j / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0, 1);	//번호 출력
+						PutText(renderer, db_id, roomx[i % 2].number, Display_Y * (0.107 + 0.15 * (j / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0, 1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.09, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
+						PutText(renderer, rooms[i].name, roomx[i % 2].name, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
 
-						Put_Text_Center(renderer, rooms[i].mode, Display_X * 0.085, Display_Y * (0.165 + 0.15 * (j / 2)),Display_X*0.058,Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920),  1);	//모드 출력
+						Put_Text_Center(renderer, rooms[i].mode, roomx[i % 2].mode, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.058, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);	//모드 출력
 
 						sprintf(db_id, "%d문제", rooms[i].question);
-						PutText(renderer, db_id, Display_X * 0.16, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
+						PutText(renderer, db_id, roomx[i % 2].question, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
 
 						sprintf(db_id, "%d초", rooms[i].time);
-						Put_Text_Center(renderer, db_id, Display_X * 0.23, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);	//문제 시간 출력
+						Put_Text_Center(renderer, db_id, roomx[i % 2].time, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);	//문제 시간 출력
 
 						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
-						PutText(renderer, db_id, Display_X * 0.305, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
+						PutText(renderer, db_id, roomx[i % 2].people, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
+
+						if (strlen(rooms[i].password) > 0)
+						{
+							RenderTextureXYWH(renderer, Room_Lock, roomx[i % 2].rock, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
+						}
 
 						if (strlen(rooms[i].password) > 0)
 						{
 							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
 						}
-					}
-					else {
-						if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, Display_X * 0.365, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
-							memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
-							strcpy(ClientParam.serverip, My_Room.ip);
-							client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 
-							isplaygame = true;
+						if (strlen(rooms[i].password) > 0){
+							SDL_Texture * InputPassword= LoadTexture(renderer, ".\\design\\inoutpassword.png");
+							SDL_Texture * Create_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+							SDL_Texture * Create_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
+
+							set_start_x = Display_X / 2 - (346 * ((float)Display_X / 1920));
+							set_start_y = Display_Y / 2 - (268 * ((float)Display_X / 1920));
+							int set_start_w = 696 * ((float)Display_X / 1920);
+							int set_start_h = 195 * ((float)Display_X / 1920);
+							int Nameput = 1;
+							wchar_t  passwordput[128] = L"";
+
+							bool closepassword = false;
+
+								
+							while (!closepassword) {
+									
+								SDL_WaitEvent(&event);
+								switch (event.type)
+								{
+
+								case SDL_TEXTINPUT: // 채팅 입력 이벤트
+									warning.ison = 0;
+									if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+									{
+										warning.ison = 1;
+										warning.r = 255;
+										warning.g = 0;
+										warning.b = 0;
+										warning.size = 15;
+										strcpy(warning.message, "한글입력은 되지 않습니다");
+										warning.x = set_start_x + set_start_w*0.28;
+										warning.y = set_start_y + set_start_h*0.39;
+									}
+									else if (hanyeong == false && !((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+										wcscpy(wchar, L"");
+										swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+										if (Nameput)
+										{
+											if (wcslen(passwordput) < 10)
+												wcscat(passwordput, wchar);
+
+										}
+										hangeul = false;
+										slice = 0;
+									}
+									textinput = true;
+
+									break;
+								case SDL_KEYDOWN:
+									if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+										if (hangeul == true && enter == false)
+											enter = true;
+										else{
+											if (!wstrcmp(&passwordput, &rooms[i].password)) {
+												memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+												strcpy(ClientParam.serverip, My_Room.ip);
+												client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
+												closepassword = true;
+												isplaygame = true;
+											}
+											else {
+												warning.ison = 1;
+												warning.r = 255;
+												warning.g = 0;
+												warning.b = 0;
+												warning.size = 15;
+												strcpy(warning.message, "비밀번호가 틀립니다");
+												warning.x = set_start_x + set_start_w*0.28;
+												warning.y = set_start_y + set_start_h*0.39;
+											}
+												
+										}
+									}
+
+									else if (event.key.keysym.sym == SDLK_RALT)
+										hanyeong = !(hanyeong);
+									else if (event.key.keysym.sym == SDLK_BACKSPACE && (Nameput ? wcslen(passwordput) > 0 :0))// 키보드 백스페이스고 배열의 길이가 1이상일때
+									{
+										warning.ison = 0;
+										if (slice == 0) {
+
+											if (Nameput)
+												passwordput[wcslen(passwordput) - 1] = '\0';
+												
+
+											textinput = true;
+										}
+										else {
+											slice--;
+										}
+									}
+									else {
+										hangeul = true;
+										slice++;
+									}
+
+									break;
+								case SDL_QUIT:
+									closepassword = true;
+									break;
+								case SDL_WINDOWEVENT:
+									switch (event.window.event) {
+									case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+										setting_main = false;
+										Sleep(100);
+										break;// 브레이크
+									case SDL_WINDOWEVENT_ENTER:// 윈도우
+										SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
+										break;
+									case SDL_WINDOWEVENT_LEAVE:
+										//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+										break;
+									case SDL_WINDOWEVENT_FOCUS_GAINED:
+										break;
+									}
+								}
+
+								RenderTextureXYWH(renderer, InputPassword, set_start_x, set_start_y, set_start_w, set_start_h); //배경
+
+								FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.5, set_start_w * 0.94, set_start_h * 0.42, 13);        //배경
+								DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.5 - 3, set_start_w * 0.94 + 6, set_start_h * 0.42 + 6, 13, 2);
+								SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.5, 6 * ((float)Display_X / 1920), set_start_h * 0.42, 91, 155, 213);
+								PutText(renderer, "비밀번호", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.58, 35 * ((float)Display_X / 1920), 0, 0, 0, 2);
+
+								//나가기
+								if (PutButtonImage(renderer, Create_Close_noclick, Create_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y - Display_Y*0.0009, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
+								{
+									MouseUP_Wait;
+									closepassword = true;
+								}
+									
+								//접속
+								if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, set_start_x + set_start_w * 0.8, set_start_y + set_start_h * 0.55, set_start_w * 0.15, set_start_h * 0.32, 13, 0, &event, &happen)) { //접속
+									if (!wstrcmp( &passwordput, &rooms[i].password)) {
+										memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+										strcpy(ClientParam.serverip, My_Room.ip);
+										client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
+										closepassword = true;
+										isplaygame = true;
+									}
+									else {
+										warning.ison = 1;
+										warning.r = 255;
+										warning.g = 0;
+										warning.b = 0;
+										warning.size = 15;
+										strcpy(warning.message, "비밀번호가 틀립니다");
+										warning.x = set_start_x + set_start_w*0.28;
+										warning.y = set_start_y + set_start_h*0.39;
+									}
+								}
+
+								PutText(renderer, "접속", set_start_x + set_start_w * 0.83, set_start_y + set_start_h * 0.57, 35 * ((float)Display_X / 1920), 255, 255, 255, 2);
+
+								for (j = 0; j < wcslen(passwordput); j++)
+									db_id[j] = '*';
+								db_id[j] = 0;
+								PutText(renderer, db_id, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.5, 50 * ((float)Display_X / 1920), 0, 0, 0, 1);
+
+								if (warning.ison == 1)
+								{
+									PutText(renderer, warning.message, warning.x, warning.y, warning.size, warning.r, warning.g, warning.b, 1);
+								}
+
+								SDL_RenderPresent(renderer);
+							}
+						warning.ison = 0;
+						SDL_DestroyTexture(InputPassword);
+						SDL_DestroyTexture(Create_Close_noclick);
+						SDL_DestroyTexture(Create_Close_click);
+							
+						newdataed = 1;
+						continue;
 						}
-						sprintf(db_id, "%.3d", rooms[i].ownnum);
-						PutText(renderer, db_id, Display_X * 0.372, Display_Y * (0.107 + 0.15 * (j / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0, 1);	//번호 출력
 
-						PutText(renderer, rooms[i].name, Display_X * 0.435, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
+						memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+						strcpy(ClientParam.serverip, My_Room.ip);
+						client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 
-						Put_Text_Center(renderer, rooms[i].mode, Display_X * 0.43, Display_Y * (0.165 + 0.15 * (j / 2)),Display_X*0.058, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);;	//모드 출력
-						sprintf(db_id, "%d문제", rooms[i].question);
-						PutText(renderer, db_id, Display_X * 0.505, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
-
-						sprintf(db_id, "%d초", rooms[i].time);
-						Put_Text_Center(renderer, db_id, Display_X * 0.575, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920),1);	//문제 시간 출력
-
-						sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
-						PutText(renderer, db_id, Display_X * 0.65, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
-
+						isplaygame = true;
+							
 					}
+					sprintf(db_id, "%.3d", rooms[i].ownnum);
+					PutText(renderer, db_id, roomx[i%2].number, Display_Y * (0.107 + 0.15 * (j / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0, 1);	//번호 출력
+
+					PutText(renderer, rooms[i].name, roomx[i % 2].name, Display_Y * (0.09 + 0.15 * (j / 2)), 40 * ((float)Display_X / 1920), 0, 0, 0, 2);	//제목 출력
+
+					Put_Text_Center(renderer, rooms[i].mode, roomx[i % 2].mode, Display_Y * (0.165 + 0.15 * (j / 2)),Display_X*0.058,Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920),  1);	//모드 출력
+
+					sprintf(db_id, "%d문제", rooms[i].question);
+					PutText(renderer, db_id, roomx[i % 2].question, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//문제 수 출력
+
+					sprintf(db_id, "%d초", rooms[i].time);
+					Put_Text_Center(renderer, db_id, roomx[i % 2].time, Display_Y * (0.165 + 0.15 * (j / 2)), Display_X*0.048, Display_Y*0.035, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);	//문제 시간 출력
+
+					sprintf(db_id, "%d/%d", rooms[i].people, rooms[i].max_people);
+					PutText(renderer, db_id, roomx[i % 2].people, Display_Y * (0.165 + 0.15 * (j / 2)), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//인원 수
+
+					if (strlen(rooms[i].password) > 0)
+					{
+						RenderTextureXYWH(renderer, Room_Lock, roomx[i % 2].rock, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
+					}
+					
+					
 				}
 
 				newdata[0] = 0;
@@ -2304,6 +2493,7 @@ int main(int argc, char *argv[])
 					CreateSlider(slide_question, Slider_Bar, Slider_slide, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.72, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &question_value, 5, 50, question_value, HORIZONTAL);
 					CreateSlider(slide_time, Slider_Bar, Slider_slide, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.89, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &question_time, 10, 180, question_time, HORIZONTAL);
 					int Passwordput = 0;
+					
 					while (createroom) {
 						SDL_WaitEvent(&event);
 						switch (event.type)
@@ -2318,20 +2508,27 @@ int main(int argc, char *argv[])
 								{
 									if (wcslen(Room_Name_put) < 10)
 										wcscat(Room_Name_put, wchar);
+									if (event.text.text[0] == -29)
+										slice = 1;
+									else
+										slice = 1 + !((wchar[0] - 0xac00) % 28);
 
 								}
 								else if (Passwordput)
 								{
-
-									if (wcslen(Room_Password_put) < 12)
-										wcscat(Room_Password_put, wchar);
+									warning.ison = 1;
+									warning.r = 255;
+									warning.g = 0;
+									warning.b = 0;
+									warning.size = 15;
+									strcpy(warning.message, "한글입력은 되지 않습니다");
+									warning.x = set_start_x + set_start_w*0.28;
+									warning.y = set_start_y + set_start_h*0.29;
+									
 								}
-								if (event.text.text[0] == -29)
-									slice = 1;
-								else
-									slice = 1 + !((wchar[0] - 0xac00) % 28);
+								
 							}
-							else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+							else if (hanyeong == false && !((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 								wcscpy(wchar, L"");
 								swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
 								if (Nameput)
@@ -2461,9 +2658,12 @@ int main(int argc, char *argv[])
 								break;
 							}
 						}
+
+						RenderTextureXYWH(renderer, Create_back, set_start_x, set_start_y, set_start_w, set_start_h);
 						UpdateSlider(slide_question, &event);
 						UpdateSlider(slide_time, &event);
-						RenderTextureXYWH(renderer, Create_back, set_start_x, set_start_y, set_start_w, set_start_h);
+
+						
 						if (PutButtonImage(renderer, Create_Close_noclick, Create_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y - Display_Y*0.0009, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
 						{
 							MouseUP_Wait;
@@ -2802,6 +3002,8 @@ int main(int argc, char *argv[])
 					free(slider_sound);
 					free(slider_bgsound);
 					free(slider_display);
+
+					RoomX_Setting(roomx, Display_X);
 					newdataed = 1;
 					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
 					continue;
