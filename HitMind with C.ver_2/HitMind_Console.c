@@ -7,9 +7,9 @@ char * GetDefaultMyIP()
 
 	char localhostname[MAX_PATH];
 	IN_ADDR addr = { 0, };
-
 	if (gethostname(localhostname, MAX_PATH) == SOCKET_ERROR)//호스트 이름 얻어오기
 	{
+
 		return inet_ntoa(addr);
 	}
 	HOSTENT *ptr = gethostbyname(localhostname);//호스트 엔트리 얻어오기
@@ -22,9 +22,25 @@ char * GetDefaultMyIP()
 		}
 		ptr++;
 	}
+	
 	return inet_ntoa(addr);
+	
 }
+char * GetExternalIP() {
+	HINTERNET hInternet, hFile;
+	DWORD rSize;
+	char buffer[32];
 
+	hInternet = InternetOpen(NULL, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	hFile = InternetOpenUrl(hInternet, "http://automation.whatismyip.com/n09230945.asp", NULL, 0, INTERNET_FLAG_RELOAD, 0);
+	InternetReadFile(hFile, &buffer, sizeof(buffer), &rSize);
+	buffer[rSize] = '\0';
+
+	InternetCloseHandle(hFile);
+	InternetCloseHandle(hInternet);
+	printf("%s", buffer);
+	return buffer;
+}
 void settings(int *x, int *y, int *music, int *sound, int *full) {
 	FILE *set = fopen("setting.txt", "rt");
 	fscanf(set, "<HitMid_Setting>\n");
@@ -34,24 +50,18 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "Display_Y : %d\n", y);
 	fscanf(set, "fullscreen : %d\n", full);
 }
-uintptr_t CreateTimer(unsigned int time, int * event) {
-	Hit_Timer arg;
-	arg.event = event;
-	arg.time = time;
-	
-	return _beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &arg, 0, NULL);
-}
+
 void HitMind_Timer(Hit_Timer *arg)
 {
-	UINT32 now_time = clock();
+
+	unsigned int now = clock();
 	while (*(arg->event) != -1)
 	{
-		if (clock() - now_time > arg->time)
-		{
+		if (clock() - now > arg->time){
 			*(arg->event) = 1;
-			printf("%d\n", *(arg->event));
-			now_time = clock();
+			now = clock();
 		}
+		Sleep(10);
 	}
 }
 void changesetting(int bgmusic, int sound, int x, int y, int full) {
@@ -71,10 +81,10 @@ void changesetting(int bgmusic, int sound, int x, int y, int full) {
 	fclose(set);
 }
 int wstrcmp(wchar_t *First, char *second) {
-	char query[384];
-	char euc_kr[128];
-	strcpy(query, UNICODE2UTF8(First, 128));
-	UTF82EUCKR(euc_kr, 128, query, 384);
+	char query[768];
+	char euc_kr[512];
+	strcpy(query, UNICODE2UTF8(First, wcslen(First)));
+	UTF82EUCKR(euc_kr, 512, query,768 );
 	euc_kr[strlen(euc_kr)] = 0;
 	return strcmp(euc_kr, second);
 }

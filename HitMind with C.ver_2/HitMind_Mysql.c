@@ -5,7 +5,7 @@
 
 void Thread_MySQL(Connect_status *type)
 {
-	(MYSQL *)type->arg = Mysql_Connect("10.80.162.92");
+	(MYSQL *)type->arg = Mysql_Connect("220.81.115.2");
 	type->ishappen = true;
 }
 MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL구조체
@@ -51,6 +51,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
 	sprintf(query, "select * from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
+	printf("%s\n", GetDefaultMyIP());
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -79,7 +80,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 		My_User->level = atoi(rows[4]);
 		My_User->money = atoi(rows[5]);
 		My_User->pass_length = atoi(rows[8]);
-
+		strcpy(My_User->profile, rows[10]);
 		strcpy(My_User->ownip, rows[6]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
@@ -179,6 +180,15 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 		return  -2;
 	return 1;
 }
+int Mysql_wstr_query(MYSQL *cons, wchar_t * query) {
+	char char_query[128];
+	char buff[384];
+	strcpy(buff, UNICODE2UTF8(query, wcslen(query)));
+	UTF82EUCKR(char_query, 128, buff, 384);
+	char_query[strlen(char_query)] = 0;
+	printf("%s", char_query);
+	return mysql_query(cons, char_query);
+}
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
 {
 
@@ -226,6 +236,7 @@ Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀
 		My_User->money = atoi(rows[5]);
 		My_User->pass_length = atoi(rows[8]);
 		strcpy(My_User->ownip, rows[6]);
+		strcpy(My_User->profile, rows[10]);
 		//할당한 공간에 유저 정보를 복사함
 		return My_User;		//리턴
 	}
@@ -236,7 +247,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	MYSQL_RES * sql_result;
 	MYSQL_ROW rows;
 	memset(chatings, 0, sizeof(chatings));
-	int i = 0;
+	int i = 0; 
 	mysql_query(cons, "select * from all_chating order by ownnum desc limit 12");
 	sql_result = mysql_store_result(cons);
 	while ((rows = mysql_fetch_row(sql_result)) != 0)
@@ -250,13 +261,39 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	mysql_free_result(sql_result);
 	return i;
 }
+int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer) {
+	int i;
+	char query[64];
+	MYSQL_ROW rows;
+	for (i = 0; i < 4; i++)
+	{
+		if (friends[i].status)
+		{
+			sprintf(query, "select * from user where ownnum = %d", friends[i].ownnum);
+			mysql_query(cons, query);
+			rows = mysql_fetch_row(mysql_store_result(cons));
+			if (rows != 0)
+			{
+				strcpy(friends[i].Nickname, rows[1]);
+				friends[i].Level = atoi(rows[4]);
+				friends[i].Profile = LoadTextureEx(renderer, rows[10], 255, 255, 255);
+			}
+		}
+	}
+	return 1;
+}
 
-int InsertChating_all(MYSQL *cons, char * username, wchar_t* message) {
-	char char_message[128];
-	char query[128];
-	strcpy(query, UNICODE2UTF8(message, wcslen(message)));
-	UTF82EUCKR(char_message, 128, query, 384);
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int messagelength) {
+	char char_message[512]="";
+	char query[850];
+	strcpy(query, UNICODE2UTF8(message, messagelength));
+	UTF82EUCKR(char_message, 512, query, 850);
 	char_message[strlen(char_message)] = '\0';
+	wchar_t UnicodeOfMessage[256] = L"";
+	han2unicode(char_message, UnicodeOfMessage);
+	if (hannum(message,messagelength)!=hannum(UnicodeOfMessage,wcslen(UnicodeOfMessage))) {
+		strcpy(char_message, "Warning 0x6974 : [InValid Conversion]");
+	}
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)
 		return 0;

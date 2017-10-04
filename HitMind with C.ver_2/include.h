@@ -26,6 +26,7 @@
 #include <stdbool.h>			//Bool »ç¿ë ÇÔ¼ö
 #include <stdint.h>				//¿©·¯ typedef °ü·Ã Å¸ÀÔ ÇÔ¼ö
 #include <direct.h>				//Æú´õ °ü·Ã ÇÔ¼ö
+#include <WinInet.h>
 #include "mysql/mysql.h"//MySQL ÇÔ¼öµé
 #include <tchar.h>
 #include "lib//iconv.h"
@@ -49,6 +50,7 @@
 #pragma comment (lib, "lib/SDL2_mixer.lib")	//±×·¡ÇÈ »ç¿îµå ¶óÀÌºê·¯¸® 5
 #pragma comment (lib, "ws2_32.lib")			//¼ÒÄÏ ¶óÀÌºê·¯¸®
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL ¶óÀÌºê·¯¸®
+#pragma comment (lib, "wininet")
 
 #define nullptr 0 //c++¿¡¸¸ ÀÖ´Â nullptr  0À¸·Î ÁöÁ¤
 #define CHOP(x) x[strlen(x) - 1] = ' '	//fgets¸¦ ¾²¸é ¿£ÅÍµµ ¹è¿­¿¡³²À½. ¿£ÅÍ¸¦ ¹è¿­¿¡¼­ »èÁ¦ÇØÁÖ´Â°Í
@@ -57,7 +59,7 @@
 #define RESET(X) ZeroMemory(X, sizeof(X))	//ÃÊ±âÈ­ memset()ÀÌ¶û °°À½
 #define MouseUP_Wait SDL_PollEvent(&event); while (event.type == SDL_MOUSEBUTTONDOWN)SDL_PollEvent(&event)
 #define PORT 5555
-#define MAXPEOPLE 8
+#define MAXPEOPLE 4
 //MouseUp_Wait = PutMenuë¥??¬ìš©? ë•Œ ë§ˆìš°??ë²„íŠ¼???´ë¦­?˜ìë§ì ?˜ì–´ê°€ê¸??Œë¬¸??ë°©ì?ë¥??´ì¤Œ.
 //MouseUp_Wait = PutMenu¸¦ »ç¿ëÇÒ¶§ ¸¶¿ì½º ¹öÆ°À» Å¬¸¯ÇÏÀÚ¸»ÀÚ ³Ñ¾î°¡±â ¶§¹®¿¡ ¹æÁö¸¦ ÇØÁÜ.
 
@@ -74,6 +76,7 @@ typedef struct Hitmind_User {	//HitMind_User ±¸Á¶Ã¼ÀÌ´Ù. Á¢¼ÓÀÚÀÇ Á¤º¸¸¦ ÀúÀåÇÔ
 	int money;		//money : Á¢¼ÓÀÚÀÇ µ·
 	char ownip[42];
 	int pass_length;
+	char profile[60];
 }Hit_User;
 typedef struct Connect_Status {
 	void * arg;
@@ -122,32 +125,10 @@ typedef struct SDL_Slider {
 	int Flag;
 }Slider;
 
-typedef struct Socket_Parameters {
-	WSADATA wsadata;
-	SOCKET Slisten_socket;
-	SOCKET Sconnect_socket[MAXPEOPLE];
-	SOCKET Clisten_socket;
-	SOCKET Cconnect_socket;
-	SOCKADDR_IN listen_addr;
-	SOCKADDR_IN connect_addr;
-	uintptr_t Serverthread[MAXPEOPLE];
-	uintptr_t Clientthread;
-	char playerinfo[MAXPEOPLE][30];
-	int playerstatus[MAXPEOPLE];
-	char message[200];
-	char serverip[50];
-	char nextserverip[50];
-	int sockethappen;
-	int num;
-	uintptr_t *s;
-	uintptr_t *c;
-}SockParam;
-
-
 typedef struct MYSQL_CHATING {
 	int ownnum;
 	char name[30];
-	char message[128];
+	char message[512];
 	char time[30];
 }Chating;
 typedef struct Button {
@@ -159,16 +140,57 @@ typedef struct Button {
 	int Flag;
 }Button;
 typedef struct User {
+	SDL_Texture* Profile;
+	SDL_Texture* Status;
 	char Nickname[20];
 	int Master;
 	int Level;
 	int Turn;
 	int Count;
+	int Th;
+	int status;
+	int ownnum;
 }User;
+typedef struct Text {
+	SDL_Renderer *Renderer;
+	SDL_Rect Limit;
+	SDL_Rect Rect;
+	SDL_Color Color;
+	char sentence[128];
+	int size; 
+	int size_fixed;
+	int m;
+}Text;
 typedef struct HitMind_Time {
 	unsigned int time;
 	int * event;
+	unsigned int now;
 }Hit_Timer;
+
+typedef struct Socket_Parameters {
+	WSADATA wsadata;
+	SOCKET Slisten_socket;
+	SOCKET Sconnect_socket[MAXPEOPLE];
+	SOCKET Clisten_socket;
+	SOCKET Cconnect_socket;
+	SOCKADDR_IN listen_addr;
+	SOCKADDR_IN connect_addr;
+	uintptr_t Serverthread[MAXPEOPLE];
+	uintptr_t Clientthread;
+	char playerinfo[MAXPEOPLE][30];
+	char message[200];
+	char serverip[50];
+	char nextserverip[50];
+	int sockethappen;
+	int num;
+	char * topic;
+	Hit_User * myuser;
+	User * gameuser;
+	uintptr_t *s;
+	uintptr_t *c;
+}SockParam;
+
+
 /*
 º¯¼ö¿¡ ´ëÇÑ ¼³¸í:
 ÀÌ include.hÇì´õÆÄÀÏÀº ¿©·¯ ±ºµ¥¿¡¼­ »ç¿ëÀ»ÇÔ.
@@ -203,15 +225,18 @@ void settings(int *x, int *y, int *music, int *sound, int *full);
 void changesetting(int bgmusic, int sound, int x, int y, int full);
 
 int wstrcmp(wchar_t *First, char *second);
-uintptr_t CreateTimer(unsigned int time, int * event);
 void HitMind_Timer(Hit_Timer *arg);
 void soundplay();
+//¿ÜºÎ ip¸¦ ¹Ş¾Æ¿È
+char * GetExternalIP();
 //---------------±×·¡ÇÈ ÇÔ¼ö--------------
+int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
-
 void HitMind_TTF2_Init();
 void HitMind_TTF2_Close();
+void Timer(unsigned int time);
+void UpdateUserInfo(User* Player, User * Me, char *Topics, SDL_Rect UserRect, Text * CountText, Text * TopicText, int NowTopic, int MaxTopic);
 //SDL - ÅØ½ºÆ®¸¦ Ãâ·ÂÇÏ´ÂÇÔ¼ö
 int PutText_Unicode_Limit(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, int Limit, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color color);
@@ -265,8 +290,14 @@ void Line(SDL_Renderer* Renderer, float x1, float y1, float x2, float y2);
 void LineThick(SDL_Renderer* Renderer, int Thick,float x1, float y1, float x2, float y2);
 void LineCircle(SDL_Renderer*Renderer, int Thick, float x1, float y1, float x2, float y2);
 void swap(float *a, float * b);
+void PrintUserInfo(SDL_Renderer* Renderer, User *User, SDL_Rect UserRect);
+void CenterArrange(Text * Text);
+void CreateText(Text* Text, SDL_Renderer * Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
+void RenderText( Text * Text);
+void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
 //---------------MySql ÇÔ¼ö---------------
+int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
 //ÀÚµ¿ ·Î±×ÀÎÀÎÁö Ã¼Å©ÇÏ´Â ÇÔ¼ö
 Hit_User *IsAutoLogin(MYSQL *cons);
 int getUesrStatus(MYSQL *cons, char arr[30][30]);
@@ -277,7 +308,8 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 void Thread_MySQL(Connect_status *type);
 //Ã³À½ MySQL¿¡ ¿¬°áÇÔ
 MYSQL * Mysql_Connect(char *ip);
-
+//wstr·Î Äõ¸®¹®À» ½ÇÇàÇÔ
+int Mysql_wstr_query(MYSQL *cons, wchar_t * query);
 //ì£¼ì œì¤‘ì— ?œë¤?¼ë¡œ ?˜ë‚˜ë¥?ë¶ˆëŸ¬?€ ë¬¸ì?´ë¡œ ë°˜í™˜
 char * Get_Random_Topic(MYSQL *cons);	
 //?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
@@ -302,7 +334,7 @@ int Get_Room_List(MYSQL *cons, Hit_Room * rooms);
 //¾ÆÀÌµğ¿Í ÆĞ½º¿öµå·Î ·Î±×ÀÎÇÔ
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);
 //ÀüÃ¼ Ã¤ÆÃÀ» Ãß°¡ÇÔ
-int InsertChating_all(MYSQL *cons, char * username, wchar_t* message);
+int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int messagelength);
 //ÀüÃ¼ Ã¤ÆÃÀ» ºÒ·¯¿È
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //¹æÀ» ¸¸µë, ¹æÀÌ¸§, ºñ¹Ğ¹øÈ£, ¸ğµå, ¹®Á¦ °³¼ö, ¹®Á¦ ½Ã°£ ÀÌ ÇÊ¿äÇÔ
