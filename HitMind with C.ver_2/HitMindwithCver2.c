@@ -3049,6 +3049,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == -1)
 				{
+
 					loginsuccess = 1;
 					roop = 1;
 					qquit = true;
@@ -3179,7 +3180,7 @@ int main(int argc, char *argv[])
 			gameuser[1].Th = 2;
 			gameuser[2].Th = 3;
 			gameuser[3].Th = 4;
-			User * Me;
+			User * Me = 0;
 			for (int i = 0; i < 4; i++)
 				if (gameuser[i].ownnum == myuser->ownnum) {
 					Me = &gameuser[i];
