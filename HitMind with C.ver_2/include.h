@@ -14,6 +14,13 @@
 #define DEACTIVATED 0
 #define HIGHLIGHT 1
 #define ACTIVATED 2
+#define PENCILCLICK 1
+#define PENCILDRAG 2
+#define ERASERCLICK 3
+#define ERASERDRAG 4
+#define TIMER 0
+#define STRONG 5
+#define COLOR 6
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output
@@ -112,7 +119,7 @@ typedef struct Canvas {
 	int Flag;
 	int Click;
 	SDL_Point Last;
-}Canvas;
+}Canvas,View;
 typedef struct SDL_Slider {
 	SDL_Texture * BoxTexture;
 	SDL_Texture * BarTexture;
@@ -200,6 +207,7 @@ typedef struct RoomX {
 	int people;
 	int rock;
 }roomX;
+SDL_Event ViewEvent;
 
 /*
 변수에 대한 설명:
@@ -240,6 +248,9 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
+void Viewing(View * View, int code, long long data1, long long data2);
+void Streaming(int code, int x, int y, int Strong);
+void PushUserEvent(char receive[]);
 int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
