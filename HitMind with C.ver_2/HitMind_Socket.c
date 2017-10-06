@@ -174,7 +174,8 @@ void HandleClient(SockParam *param) {
 
 				sendall(param);
 			}
-			else
+
+			else 
 				sendall(param);
 		}
 	}
@@ -203,7 +204,9 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-			 
+			if (strcmp(param->message, "game start") == 0) {
+				param->sockethappen = 20;
+			}
 
 			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
@@ -253,7 +256,7 @@ void Clientrecv(SockParam *param) {
 				param->sockethappen = true;
 			}
 			if (strncmp(param->message, "noready ", 7) == 0) {
-				sscanf(param->message, "noready %d", &num);
+ 				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
 				param->sockethappen = true;
 			}
@@ -287,9 +290,7 @@ void Clientrecv(SockParam *param) {
 				connectServer(param);
 				break;
 			}
-			if (strcmp(param->message, "game start") == 0) {
-				param->sockethappen = 20;
-			}
+			
 		}
 	}
 
