@@ -2947,7 +2947,7 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
 						{
 
-							if (Display_Xt != Display_X)
+							if (Display_Xt != display_value * 192)
 								Re_Load(Window, renderer, display_value * 192, display_value * 108, Sound, BGmusic, Full);
 
 							changesetting(BGmusic, Sound, display_value * 192, display_value * 108, Full);
