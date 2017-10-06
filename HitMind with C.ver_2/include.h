@@ -14,6 +14,16 @@
 #define DEACTIVATED 0
 #define HIGHLIGHT 1
 #define ACTIVATED 2
+
+//SocketHappen
+#define WaitRoomStartEvent 20
+#define InGameStartEvent 77
+#define MasterExitEvent 22
+#define UserHappenEvent 1
+#define NewTopicEvent 17
+#define ChangeHostEvent 12
+#define ConnectErrorEvent -1
+
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output

@@ -848,7 +848,7 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 	if (isfull)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else {
-		printf("%d %d\n", dis_x, dis_y);
+		//printf("%d %d\n", dis_x, dis_y);
 		SDL_SetWindowFullscreen(window, 0);
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}

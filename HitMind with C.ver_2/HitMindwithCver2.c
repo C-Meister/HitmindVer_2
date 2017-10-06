@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	ServerParam.c = &client;
 	if (font == 0)
 	{
-		printf("error");
+		//printf("error");
 		getchar();
 	}
 	Mix_Music *lobbymusic = Mix_LoadMUS("sound/lobby.mp3");
@@ -78,13 +78,13 @@ int main(int argc, char *argv[])
 	mousesurface = IMG_Load(".\\design\\pencil.png");
 	if (!mousesurface)
 	{
-		printf("loadbmp");
+		//printf("loadbmp");
 	}
 
 	SDL_Cursor*cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 	if (!cursor)
 	{
-		printf("cursor");
+		//printf("cursor");
 		getchar();
 	}
 	SDL_SetCursor(cursor);
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
 	//	SDL_WaitEvent(&event);
 	//	if (Me->Turn == 1 && UpdateCanvas(canvas, &event) == 1 && Chat != ACTIVATED) {
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
@@ -322,7 +322,7 @@ int main(int argc, char *argv[])
 	//			wcscpy(InGameChat, L"");
 	//		}
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	switch (event.type)
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
 	//			Shift++;
 	//		}
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
+	//		//printf("render	");
 	//		textinput = false;
 	//		continue;
 	//	}
@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
 	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 	//			SDL_RenderDrawRect(renderer, &rect2);
 	//			SDL_RenderPresent(renderer);
-	//			printf("render	");
+	//			//printf("render	");
 	//		}
 	//		else if (canvas->Flag == PENCIL) {
 	//			canvas->Strong *= PencilStrong / 70.0;
@@ -494,7 +494,7 @@ int main(int argc, char *argv[])
 	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//			SDL_RenderPresent(renderer);
-	//			printf("render	");
+	//			//printf("render	");
 	//		}
 	//		continue;
 	//	}
@@ -504,14 +504,14 @@ int main(int argc, char *argv[])
 	//			SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 	//			SDL_RenderDrawRect(renderer, &rect2);
 	//			SDL_RenderPresent(renderer);
-	//			printf("render	");
+	//			//printf("render	");
 	//		}
 	//		else if (canvas->Flag == PENCIL) {
 	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 	//			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//			SDL_RenderPresent(renderer);
-	//			printf("render	");
+	//			//printf("render	");
 	//		}
 	//		continue;
 	//	}
@@ -531,7 +531,7 @@ int main(int argc, char *argv[])
 	//			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 	//		}
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if (UpdateButton(EraserButton, &event) == 1) {
@@ -549,7 +549,7 @@ int main(int argc, char *argv[])
 	//			SDL_RenderDrawRect(renderer, &rect2);
 	//		}
 	//		SDL_RenderPresent(renderer);
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if ( UpdateButton(NewButton, &event) == 1) {
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
 	//		SDL_RenderPresent(renderer);
 	//		if (NewButton->Flag == ACTIVATED)
 	//			NewButton->Flag = HIGHLIGHT;
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if (UpdateButton(MagButton, &event) == 1) {
@@ -596,7 +596,7 @@ int main(int argc, char *argv[])
 	//		}
 	//		if (MagButton->Flag == ACTIVATED)
 	//			MagButton->Flag = HIGHLIGHT;
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if ( UpdateButton(RecycleButton, &event) == 1) {
@@ -614,7 +614,7 @@ int main(int argc, char *argv[])
 	//		}
 	//		if (RecycleButton->Flag == ACTIVATED)
 	//			RecycleButton->Flag = HIGHLIGHT;
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if (UpdateButton(PassButton, &event) == 1) {
@@ -636,7 +636,7 @@ int main(int argc, char *argv[])
 	//		}
 	//		if (PassButton->Flag == ACTIVATED)
 	//			PassButton->Flag = HIGHLIGHT;
-	//		printf("render	");
+	//		//printf("render	");
 	//		continue;
 	//	}
 	//	if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
@@ -645,7 +645,7 @@ int main(int argc, char *argv[])
 	//			Enter = HIGHLIGHT;
 	//		}
 	//		SDL_RenderPresent(renderer);
-	//		printf("render   ");
+	//		//printf("render   ");
 	//		continue;
 	//	}
 	//}
@@ -757,13 +757,13 @@ int main(int argc, char *argv[])
 							pass_length = myuser->pass_length;
 							autologin_checking = 1;
 							myuser->password[strlen(myuser->password)] = 0;
-							//printf("%s", myuser->password);
+							////printf("%s", myuser->password);
 
 							han2unicode(myuser->password, Password_put);
 						}
 						while (loginpopup && !loginsuccess)
 						{
-							////printf("%d\n", dkdk++);
+							//////printf("%d\n", dkdk++);
 							SDL_WaitEvent(&event);
 							switch (event.type)
 							{
@@ -816,7 +816,7 @@ int main(int argc, char *argv[])
 											myuser = User_Login_sql(cons, db_id, db_password);
 											if (myuser == -1)
 											{
-												//	//printf("\n아이디 오류");
+												//	////printf("\n아이디 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "아이디가 틀립니다");
 												warning.size = 20;
@@ -829,7 +829,7 @@ int main(int argc, char *argv[])
 											}
 											else if (myuser == 0)
 											{
-												//	//printf("\n비밀번호 오류");
+												//	////printf("\n비밀번호 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "비밀번호가 틀립니다");
 												warning.size = 20;
@@ -873,7 +873,7 @@ int main(int argc, char *argv[])
 								else if (event.key.keysym.sym == SDLK_BACKSPACE && (ID_INPUT ? wcslen(ID_put) > 0 : (PASSWORD_INPUT ? wcslen(Password_put) > 0 : 0)))// 키보드 백스페이스고 배열의 길이가 1이상일때
 								{
 									if (slice == 0) {
-										//		printf("\nslice아니 상태");
+										//		//printf("\nslice아니 상태");
 										if (ID_INPUT == 1)
 											ID_put[wcslen(ID_put) - 1] = '\0';
 										else if (PASSWORD_INPUT == 1)
@@ -881,7 +881,7 @@ int main(int argc, char *argv[])
 										textinput = true;
 									}
 									else {
-										//		printf("\nslice상태");
+										//		//printf("\nslice상태");
 										slice--;
 									}
 								}
@@ -1006,7 +1006,7 @@ int main(int argc, char *argv[])
 								myuser = User_Login_sql(cons, db_id, db_password);
 								if (myuser == -1)
 								{
-									//printf("\n아이디 오류");
+									////printf("\n아이디 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "아이디가 틀립니다");
 									warning.size = 20;
@@ -1020,7 +1020,7 @@ int main(int argc, char *argv[])
 								}
 								else if (myuser == 0)
 								{
-									//printf("\n비밀번호 오류");
+									////printf("\n비밀번호 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "비밀번호가 틀립니다");
 									warning.size = 20;
@@ -1039,7 +1039,7 @@ int main(int argc, char *argv[])
 										}
 										else
 										{
-											//printf("\n자동 로그인 오류");
+											////printf("\n자동 로그인 오류");
 											warning.ison = 1;
 											strcpy(warning.message, "자동 로그인 등록 실패");
 											warning.size = 15;
@@ -1766,12 +1766,12 @@ int main(int argc, char *argv[])
 						PressButton = 0;
 						sum = 1;
 					}
-					
+
 				}
 
 
 				textinput = false;
-				
+
 
 			}
 		}
@@ -1868,7 +1868,7 @@ int main(int argc, char *argv[])
 					newdataed = 0;
 					RefrashEvent = 1;
 				}
-				//printf("%d\n", dkdkdk++);
+				////printf("%d\n", dkdkdk++);
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
@@ -1988,7 +1988,7 @@ int main(int argc, char *argv[])
 								textinput = true;
 							}
 							else {
-								//		//printf("\nslice상태");
+								//		////printf("\nslice상태");
 								slice--;
 							}
 						}
@@ -2106,7 +2106,7 @@ int main(int argc, char *argv[])
 
 				if (newdata[1] || chatmovehappen) {
 					int DeltaY = 0;
-					printf("happen\n");
+					//printf("happen\n");
 					for (i = maxchating - 1; i >= 0; i--)
 					{
 						//	sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
@@ -2119,7 +2119,7 @@ int main(int argc, char *argv[])
 					happen = true;
 				}
 				//3번구역
-				
+
 				//2번구역
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
@@ -2237,8 +2237,8 @@ int main(int argc, char *argv[])
 							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
 						}
 
-						if (strlen(rooms[i].password) > 0){
-							SDL_Texture * InputPassword= LoadTexture(renderer, ".\\design\\inoutpassword.png");
+						if (strlen(rooms[i].password) > 0) {
+							SDL_Texture * InputPassword = LoadTexture(renderer, ".\\design\\inoutpassword.png");
 							SDL_Texture * Create_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 							SDL_Texture * Create_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
 
@@ -2461,7 +2461,7 @@ int main(int argc, char *argv[])
 
 
 
-				
+
 
 				if (newdata[2]) {
 					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
@@ -2472,7 +2472,7 @@ int main(int argc, char *argv[])
 					sprintf(roomtmp, "%d", userchange);
 					Put_Text_Center(renderer, roomtmp, Display_X * 0.7 + 22, Display_Y * 0.655, Display_X * 0.275, Display_Y * 0.05, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);
 
-					for (i = userchange * 8 - 8,j = 0; i < usercount && j<9; i++,j++)
+					for (i = userchange * 8 - 8, j = 0; i < usercount && j < 9; i++, j++)
 					{
 						sprintf(db_id, "LV:%d", MemBerList[i][27]);
 						RenderTextureXYWH(renderer, User_Pencil, Display_X * 0.73, Display_Y * (0.18 + j * 0.05), 33 * ((float)Display_X / 1920), 33 * ((float)Display_X / 1920));
@@ -2495,8 +2495,8 @@ int main(int argc, char *argv[])
 							PutText(renderer, "개발 중", Display_X * 0.91, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 155, 16, 175, 1);
 						}
 					}
-					
-					
+
+
 					newdata[2] = 0;
 				}
 				if (PutButtonImage(renderer, left1, left2, Display_X * 0.75, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && userchange != 1) {
@@ -2888,7 +2888,7 @@ int main(int argc, char *argv[])
 
 						}
 					}
-					
+
 				}
 				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255, 2);
 				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255, 2);
@@ -3190,16 +3190,22 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-				if (ClientParam.sockethappen == 12)
+				if (ClientParam.sockethappen == ChangeHostEvent)
 				{
 					sprintf(query, "update room set ip = '%s' where num = %d", GetDefaultMyIP(), My_Room.ownnum);
 					mysql_query(cons, query);
 					bangsang = 1;
 					ClientParam.sockethappen = 0;
 				}
-				if (ClientParam.sockethappen == 1)
-				{
+				if (ClientParam.sockethappen == WaitRoomStartEvent) {
 
+					isstartgame = 1;
+					qquit = 1;
+					isplaygame = 0;
+				}
+				if (ClientParam.sockethappen == UserHappenEvent)
+				{
+					ClientParam.sockethappen = 0;
 					GetRoomUser(cons, gameuser, renderer);
 					if (statusprint == 11)
 					{
@@ -3285,7 +3291,7 @@ int main(int argc, char *argv[])
 					}
 
 				}
-				if (ClientParam.sockethappen == -1)
+				if (ClientParam.sockethappen == ConnectErrorEvent)
 				{
 
 					loginsuccess = 1;
@@ -3295,7 +3301,7 @@ int main(int argc, char *argv[])
 					mysql_query(cons, query);
 
 				}
-				if (ClientParam.sockethappen == 22) {
+				if (ClientParam.sockethappen == MasterExitEvent) {
 					byee = 1;
 				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen) || byee) //나가기 버튼 
@@ -3417,10 +3423,10 @@ int main(int argc, char *argv[])
 				gameuser[i].Th = i + 1;
 				gameuser[i].Status = StatusTexture;
 			}
-			
+
 			gameuser[0].Turn = 1;
 			User * Me = &gameuser[my_game_number];
-			
+
 			int NowPlayer = 1;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
@@ -3432,7 +3438,7 @@ int main(int argc, char *argv[])
 			Button * RecycleButton = (Button *)malloc(sizeof(Button));
 			Text * TopicText = (Text *)malloc(sizeof(Text));
 			Text * CountText = (Text *)malloc(sizeof(Text));
-			int RenderUpdate = false; 
+			int RenderUpdate = false;
 
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
@@ -3470,7 +3476,7 @@ int main(int argc, char *argv[])
 			RenderTexture(renderer, RgbCode, &RgbRect);
 			// 슬라이더와 버튼들
 			DrawSlider(renderer, StrongSlider);
-			PencilButton->Flag=ACTIVATED;
+			PencilButton->Flag = ACTIVATED;
 			DrawButton(PencilButton);
 			DrawButton(EraserButton);
 			DrawButton(NewButton);
@@ -3496,7 +3502,7 @@ int main(int argc, char *argv[])
 			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
 			double TimerTemp = (double)TimerRect.w;
-			double TimerRate = (TimerRect.w/(double)LimitTime)*(Time/(double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
+			double TimerRate = (TimerRect.w / (double)LimitTime)*(Time / (double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
 			// 
 			SDL_RenderPresent(renderer);
 			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
@@ -3507,14 +3513,24 @@ int main(int argc, char *argv[])
 				sendall(&ServerParam);
 
 			}
-			while (ClientParam.sockethappen != 77);
+			while (ClientParam.sockethappen != InGameStartEvent);
+			ClientParam.sockethappen = 0;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
+				if (ClientParam.sockethappen == NewTopicEvent)
+				{
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+					ClientParam.sockethappen = 0;
+				}
+
+
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
@@ -3522,7 +3538,7 @@ int main(int argc, char *argv[])
 						wcscpy(InGameChat, L"");
 					}
 					SDL_RenderPresent(renderer);
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				switch (event.type)
@@ -3535,18 +3551,25 @@ int main(int argc, char *argv[])
 					//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
 					if (TimerRect.w < 0) { // DB연동해야함
 						gameuser[NowPlayer - 1].Turn = 0;
-						NowPlayer %= 4;
-						NowPlayer++;
+						if (bangsang == 1)
+						{
+							sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+							sendall(&ServerParam);
+						}
+						while (1)
+						{
+							NowPlayer %= 4;
+							NowPlayer++;
+							if (gameuser[NowPlayer - 1].status != 0) {
+								gameuser[NowPlayer - 1].Turn = 1;
+								break;
+							}
+						}
 						NowTopic++;
 						if (NowTopic > MaxTopic) {
 							return 0;
 						}
-						gameuser[NowPlayer - 1].Turn = 1;
-						SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-						
-						// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+
 					}
 					else {
 						SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
@@ -3562,7 +3585,7 @@ int main(int argc, char *argv[])
 						wcscpy(wchar, L"");
 						sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
 						wchar[0] = sum;
-						if(wcslen(InGameChat)<255)
+						if (wcslen(InGameChat) < 255)
 
 							wcscat(InGameChat, wchar);
 						if (event.text.text[0] == -29)
@@ -3574,7 +3597,7 @@ int main(int argc, char *argv[])
 					else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 						wcscpy(wchar, L"");
 						swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-						if (wcslen(InGameChat)<255)
+						if (wcslen(InGameChat) < 255)
 							wcscat(InGameChat, wchar);
 						hangeul = false;
 						slice = 0;
@@ -3591,8 +3614,8 @@ int main(int argc, char *argv[])
 						else {
 							Shift = 0;
 							han2unicode(Topics, InGameTopic);
-							if (Me->Turn == 0&& wcscmp(InGameTopic,InGameChat)==0) {// DB연동
-								gameuser[NowPlayer-1].Turn = 0;
+							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
+								gameuser[NowPlayer - 1].Turn = 0;
 								Me->Turn = 1;
 								NowPlayer = Me->Th;
 								NowTopic++;
@@ -3629,9 +3652,9 @@ int main(int argc, char *argv[])
 					}
 					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
 						slice = 0;
-						if(strlen(SDL_GetClipboardText())>=256)
+						if (strlen(SDL_GetClipboardText()) >= 256)
 							break;
-						Unicode UnicodeOfClipboard[256]=L"";
+						Unicode UnicodeOfClipboard[256] = L"";
 						wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
 						if (wcslen(UnicodeOfClipboard) + wcslen(InGameChat) >= 256)
 							break;
@@ -3669,10 +3692,11 @@ int main(int argc, char *argv[])
 						Shift++;
 					}
 					SDL_RenderPresent(renderer);
-					printf("render	");
+					//printf("render	");
 					textinput = false;
 					continue;
 				}
+				
 				if (UpdateSlider(StrongSlider, &event) == true) {
 					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 					SDL_Rect rect = { StrongSlider->Bar.x - StrongSlider->Box.w / 2.0, StrongSlider->Box.y, StrongSlider->Bar.w + StrongSlider->Box.w, StrongSlider->Box.h };
@@ -3686,7 +3710,7 @@ int main(int argc, char *argv[])
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_RenderDrawRect(renderer, &rect2);
 						SDL_RenderPresent(renderer);
-						printf("render	");
+						//printf("render	");
 					}
 					else if (canvas->Flag == PENCIL) {
 						canvas->Strong *= PencilStrong / 70.0;
@@ -3694,28 +3718,28 @@ int main(int argc, char *argv[])
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 						SDL_RenderPresent(renderer);
-						printf("render	");
+						//printf("render	");
 					}
 					continue;
 				}
-				if ( ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_RenderDrawRect(renderer, &rect2);
 						SDL_RenderPresent(renderer);
-						printf("render	");
+						//printf("render	");
 					}
 					else if (canvas->Flag == PENCIL) {
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 						SDL_RenderPresent(renderer);
-						printf("render	");
+						//printf("render	");
 					}
 					continue;
 				}
-				if ( UpdateButton(PencilButton, &event) == 1) {
+				if (UpdateButton(PencilButton, &event) == 1) {
 					DrawButton(PencilButton);
 					if (PencilButton->Flag == ACTIVATED) {
 						EraserButton->Flag = DEACTIVATED;
@@ -3731,12 +3755,12 @@ int main(int argc, char *argv[])
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 					}
 					SDL_RenderPresent(renderer);
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				if (UpdateButton(EraserButton, &event) == 1) {
 					DrawButton(EraserButton);
-					if ( EraserButton->Flag == ACTIVATED) {
+					if (EraserButton->Flag == ACTIVATED) {
 						PencilButton->Flag = DEACTIVATED;
 						DrawButton(PencilButton);
 						canvas->Flag = ERASER;
@@ -3749,19 +3773,19 @@ int main(int argc, char *argv[])
 						SDL_RenderDrawRect(renderer, &rect2);
 					}
 					SDL_RenderPresent(renderer);
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
-				if ( UpdateButton(NewButton, &event) == 1) {
+				if (UpdateButton(NewButton, &event) == 1) {
 					DrawButton(NewButton);
 					SDL_RenderPresent(renderer);
-					if ( NewButton->Flag == ACTIVATED) {
-			//			SDL_Delay(100);
+					if (NewButton->Flag == ACTIVATED) {
+						//			SDL_Delay(100);
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;
 						SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
-						if(Me->Turn == 1)
+						if (Me->Turn == 1)
 							SDL_RenderFillRect(canvas->Renderer, &canvas->Rect);
 						canvas->Strong = SDL_floor((float)canvas->Strong*PencilStrong / EraserStrong);
 						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -3777,7 +3801,7 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED)
 						NewButton->Flag = HIGHLIGHT;
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				if (UpdateButton(MagButton, &event) == 1) {
@@ -3786,35 +3810,32 @@ int main(int argc, char *argv[])
 					if (MagButton->Flag == ACTIVATED) {
 						if (Me->Turn == 0) {// DB연동
 							// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
-							han2unicode(Topics,InGameTopic);
-							wchar_t TheNumber[3]=L"";
-							swprintf(TheNumber, 3, L"%d",wcslen(InGameTopic));
-							wcscpy(InGameChat, TheNumber); 
+							han2unicode(Topics, InGameTopic);
+							wchar_t TheNumber[3] = L"";
+							swprintf(TheNumber, 3, L"%d", wcslen(InGameTopic));
+							wcscpy(InGameChat, TheNumber);
 							textinput = true;
 						}
-			//			SDL_Delay(100);
+						//			SDL_Delay(100);
 					}
 					if (MagButton->Flag == ACTIVATED)
 						MagButton->Flag = HIGHLIGHT;
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
-				if ( UpdateButton(RecycleButton, &event) == 1) {
+				if (UpdateButton(RecycleButton, &event) == 1) {
 					DrawButton(RecycleButton);
 					SDL_RenderPresent(renderer);
 					if (RecycleButton->Flag == ACTIVATED) {
 						if (Me->Turn == 1) { // DB연동
-							strcpy(Topics, "체인지!");// Topics의 문자열을 DB에서 바꿔주는 코드가 필요하며 또 바뀐 문자열을 다른 플레이어들에게 모두 전송해야함
-							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+							sprintf(query, "topic %s", Get_Random_Topic(cons));
+							send(ClientParam.Cconnect_socket, query, 30, 0);
 						}
-				//		SDL_Delay(100);
+						//		SDL_Delay(100);
 					}
 					if (RecycleButton->Flag == ACTIVATED)
 						RecycleButton->Flag = HIGHLIGHT;
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				if (UpdateButton(PassButton, &event) == 1) {
@@ -3827,16 +3848,16 @@ int main(int argc, char *argv[])
 							NowPlayer++;
 							Me->Turn = 0;
 							gameuser[NowPlayer - 1].Turn = 1;
-							SDL_FillRectXYWH(renderer,canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
 							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 						}
-			//			SDL_Delay(100);
+						//			SDL_Delay(100);
 					}
 					if (PassButton->Flag == ACTIVATED)
 						PassButton->Flag = HIGHLIGHT;
-					printf("render	");
+					//printf("render	");
 					continue;
 				}
 				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
@@ -3845,7 +3866,7 @@ int main(int argc, char *argv[])
 						Enter = HIGHLIGHT;
 					}
 					SDL_RenderPresent(renderer);
-					printf("render   ");
+					//printf("render   ");
 					continue;
 				}
 			}
@@ -3880,13 +3901,15 @@ int main(int argc, char *argv[])
 	HitMind_TTF_Close();
 	HitMind_TTF2_Close();
 	if (status.ishappen == 1) {
-		sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
-		mysql_query(cons, query);
+		if (loginsuccess == 1) {
+			sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
+			mysql_query(cons, query);
+		}
 		mysql_close(status.arg);
 	}
 	if (myuser != 0)
 		free(myuser);
-	
+
 	if (cursor)
 	{
 		SDL_FreeCursor(cursor);
