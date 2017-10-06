@@ -2225,11 +2225,6 @@ int main(int argc, char *argv[])
 							RenderTextureXYWH(renderer, Room_Lock, roomx[i % 2].rock, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
 						}
 
-						if (strlen(rooms[i].password) > 0)
-						{
-							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
-						}
-
 						if (strlen(rooms[i].password) > 0){
 							SDL_Texture * InputPassword= LoadTexture(renderer, ".\\design\\inoutpassword.png");
 							SDL_Texture * Create_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
@@ -2848,7 +2843,19 @@ int main(int argc, char *argv[])
 				}
 				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.037 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
-					qquit = false;
+					for (j = 3; j >= 1; j--) {
+						for (i = 0; i < roomcount; i++) {
+							if (rooms[i].people == j && strlen(rooms[i].password) == 0) {
+								memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
+								strcpy(ClientParam.serverip, My_Room.ip);
+								client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
+
+								isplaygame = true;
+							}
+
+						}
+					}
+					
 				}
 				PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255, 2);
 				PutText(renderer, "빠른시작", Display_X * 0.82 + 22, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255, 2);
