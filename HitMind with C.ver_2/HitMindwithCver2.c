@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	uintptr_t client;
 	ZeroMemory(&ServerParam, sizeof(SockParam));
 	ZeroMemory(&ClientParam, sizeof(SockParam));
-	int bangsang;
+	int bangsang = 0;
 
 	ServerParam.s = &server;
 	ServerParam.c = &client;
@@ -3367,7 +3367,7 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							//		send(ClientParam.Cconnect_socket, "noready", 40, 0);
+							send(ClientParam.Cconnect_socket, "noready", 40, 0);
 							isready = 0;
 						}
 						MouseUP_Wait;
@@ -3391,6 +3391,7 @@ int main(int argc, char *argv[])
 			int NowTopic = 1; // 현재 토픽이 몇번째 토픽인지 보여줌
 			if (bangsang == 1)
 			{
+				send(ClientParam.Cconnect_socket, "i'm bang", 30, 0);
 				sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
 				sendall(&ServerParam);
 			}
@@ -3429,18 +3430,14 @@ int main(int argc, char *argv[])
 			SDL_Texture * StatusTexture = LoadTexture(renderer, ".//design//Status.png");
 
 
-
+			
 			gameuser[0].Th = 1;
 			gameuser[0].Turn = 1;
 			gameuser[1].Th = 2;
 			gameuser[2].Th = 3;
 			gameuser[3].Th = 4;
-			User * Me = 0;
-			for (int i = 0; i < 4; i++)
-				if (gameuser[i].ownnum == myuser->ownnum) {
-					Me = &gameuser[i];
-					break;
-				}
+			User * Me = &gameuser[my_game_number];
+			
 			int NowPlayer = Me->Th;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
@@ -3466,6 +3463,9 @@ int main(int argc, char *argv[])
 			CreateText(CountText, renderer, "", CountRect.x, CountRect.y, CountRect.w, CountRect.h, 255, 255, 255, Display_Y*0.035, 1);
 			sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
 
+
+
+			//-----------------게임 출력-------------------------
 			SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 			SDL_RenderClear(renderer);
 			//1번구역
@@ -3526,6 +3526,15 @@ int main(int argc, char *argv[])
 			double TimerRate = (TimerRect.w/(double)LimitTime)*(Time/(double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
 			// 
 			SDL_RenderPresent(renderer);
+			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
+			if (bangsang == 1)
+			{
+				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2);
+				sprintf(ServerParam.message, "ingame start");
+				sendall(&ServerParam);
+
+			}
+			while (ClientParam.sockethappen != 77);
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
