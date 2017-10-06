@@ -100,7 +100,6 @@ void connectServer(SockParam *param) {
 /*
 각각의 클라이언트를 제어하는 함수
 클라이언트에게 신호가 오면 send로 보내주는 역할을 함
-echo서버를 할때에는 sendall함수를 불러 모든 클라이언트에게 보내주어야 함
 */
 void HandleClient(SockParam *param) {
 	int ClientNumber = param->num;
@@ -152,7 +151,14 @@ void HandleClient(SockParam *param) {
 				sendall(param);
 
 			}
-
+			else if (strcmp(param->message, "game ready") == 0)
+			{
+				param->gameuser[ClientNumber].status = 3;
+			}
+			else if (strcmp(param->message, "i'm bang") == 0) {
+				sprintf(param->message, "i'm bang %d", ClientNumber);
+				sendall(param);
+			}
 			else if (strcmp(param->message, "ready") == 0)
 			{
 				sprintf(param->message, "ready %d", ClientNumber);
@@ -175,14 +181,14 @@ void HandleClient(SockParam *param) {
 
 				sendall(param);
 			}
-			else
+
+			else 
 				sendall(param);
 		}
 	}
 }
 /*
 접속해있는 모든 클라이언트에게 패킷을 전송함
-param.message를 수정하면 됨
 */
 void sendall(SockParam *param) {
 	for (int i = 0; i < 4; i++) {
@@ -205,9 +211,11 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-			 
+			if (strcmp(param->message, "game start") == 0) {
+				param->sockethappen = 20;
+			}
 
-			if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
+			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
 				i = 0;
 				while (1) {
@@ -231,13 +239,13 @@ void Clientrecv(SockParam *param) {
 						}
 						else
 							param->gameuser[i].status = 0;
-					 }
+					}
 					i++;
 				}
 
 				param->sockethappen = true;
 			}
-			if (strncmp(param->message, "connect ", 7) == 0) {
+			else if (strncmp(param->message, "connect ", 7) == 0) {
 
 				sscanf(param->message, "connect %d %d", &param->num, &num2);
 				param->gameuser[param->num].status = 1;
@@ -245,27 +253,35 @@ void Clientrecv(SockParam *param) {
 				param->sockethappen = 1;
 
 			}
-			if (strncmp(param->message, "topic ", 6) == 0) {
+			else if (strncmp(param->message, "topic ", 6) == 0) {
 				sscanf(param->message, "topic %s", param->topic);
 				param->sockethappen = 17;
 			}
-			if (strncmp(param->message, "ready ", 5) == 0) {
+			else if (strncmp(param->message, "i'm bang ", 8) == 0)
+			{
+				sscanf(param->message, "i'm bang %d", &num);
+				param->gameuser[num].Master = 1;
+			}
+			else if (strncmp(param->message, "ready ", 5) == 0) {
 				sscanf(param->message, "ready %d", &num);
 				param->gameuser[num].status = 2;
 				param->sockethappen = true;
 			}
-			if (strncmp(param->message, "noready ", 7) == 0) {
-				sscanf(param->message, "noready %d", &num);
+			else if (strncmp(param->message, "noready ", 7) == 0) {
+ 				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
 				param->sockethappen = true;
 			}
-			if (strncmp(param->message, "exit ", 5) == 0)
+			else if (strncmp(param->message, "exit ", 5) == 0)
 			{
 				sscanf(param->message, "exit %d", &param->num);
 				param->gameuser[param->num].status = 0;
 				param->sockethappen = 1;
 			}
-			if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
+			else if (strcmp(param->message, "bangsang exit") == 0) {
+				param->sockethappen = 22;
+			}
+			else if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
 				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
 				send(param->Cconnect_socket, param->message, 180, 0);
@@ -276,7 +292,7 @@ void Clientrecv(SockParam *param) {
 				OpenServer(param);
 				break;
 			}
-			if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
+			else if (strcmp(param->message, "nexthostis") == 0) { // nexthostis를 받았을 경우
 				recv(param->Cconnect_socket, param->message, 180, 0); // 호스트의 ip를 받음
 				strcpy(param->serverip, param->message);
 				// 소켓 닫음
@@ -286,8 +302,8 @@ void Clientrecv(SockParam *param) {
 				connectServer(param);
 				break;
 			}
-			if (strcmp(param->message, "game start") == 0) {
-				param->sockethappen = 20;
+			else if (strcmp(param->message, "ingame start") == 0) {
+				param->sockethappen = 77;
 			}
 		}
 	}

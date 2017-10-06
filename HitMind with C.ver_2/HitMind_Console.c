@@ -26,21 +26,7 @@ char * GetDefaultMyIP()
 	return inet_ntoa(addr);
 	
 }
-char * GetExternalIP() {
-	HINTERNET hInternet, hFile;
-	DWORD rSize;
-	char buffer[32];
 
-	hInternet = InternetOpen(NULL, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-	hFile = InternetOpenUrl(hInternet, "http://automation.whatismyip.com/n09230945.asp", NULL, 0, INTERNET_FLAG_RELOAD, 0);
-	InternetReadFile(hFile, &buffer, sizeof(buffer), &rSize);
-	buffer[rSize] = '\0';
-
-	InternetCloseHandle(hFile);
-	InternetCloseHandle(hInternet);
-	printf("%s", buffer);
-	return buffer;
-}
 void settings(int *x, int *y, int *music, int *sound, int *full) {
 	FILE *set = fopen("setting.txt", "rt");
 	fscanf(set, "<HitMid_Setting>\n");

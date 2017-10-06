@@ -282,19 +282,15 @@ void RenderTexture(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rec
 	return;
 }
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh) {//텍스쳐를 출력하는 함수 선언
-	int x = round(xx);
-	int y = round(yy);
-	int w = round(ww);
-	int h = round(hh);
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
 	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
 	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 	SDL_Rect Dst;
-	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
-	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
-	Dst.w = w;//매개변수w를 직사각형의 너비에 대입
-	Dst.h = h;//매개변수h를 직사각형의 높이에 대입
+	Dst.x = round(xx);//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = round(yy);//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = round(ww);//매개변수w를 직사각형의 너비에 대입
+	Dst.h = round(hh);//매개변수h를 직사각형의 높이에 대입
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
@@ -670,7 +666,7 @@ int hancheck(int unicode) {
 	return cnt;
 }
 int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
-	int r, g, b;
+	int r = 0, g = 0, b = 0;
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.button == 1) {
 			if ((event->button.x >= rect.x&&event->button.x <= rect.x + rect.w) && (event->button.y >= rect.y&&event->button.y <= rect.y + rect.h)) {// RgbCode 이미지 안이면 if문 실행
@@ -852,6 +848,7 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 	if (isfull)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else {
+		printf("%d %d\n", dis_x, dis_y);
 		SDL_SetWindowFullscreen(window, 0);
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
@@ -1114,7 +1111,7 @@ void CreateText(Text* Text, SDL_Renderer * Renderer,char *sentence, int x,int y,
 void CenterArrange(Text * Text) {
 	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(Text->sentence, unicode);	//옮긴다
-	SDL_Surface * Surface;
+	SDL_Surface * Surface = 0;
 	SDL_Texture* Texture;
 	SDL_Rect Src;
 	Src.x = 0;
@@ -1156,8 +1153,8 @@ void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w
 	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
 	han2unicode(sentence, unicode);	//옮긴다
 	SDL_Color Color = { r,g,b,0 };
-	SDL_Surface * Surface;
-	SDL_Texture* Texture;
+	SDL_Surface * Surface = 0;
+	SDL_Texture* Texture = 0;
 	SDL_Rect Src;
 	SDL_Rect Dst;
 	Src.x = 0;
@@ -1200,7 +1197,7 @@ int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * re
 	sprintf(NameTemp, "%s : ",name);
 	han2unicode(NameTemp, unicode);	//옮긴다
 	SDL_Color Color = { r,g,b,0 };
-	SDL_Surface * Surface;
+	SDL_Surface * Surface = 0;
 	SDL_Texture* NTexture;
 	SDL_Texture* STexture;
 	SDL_Rect Src;
@@ -1283,4 +1280,23 @@ void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text *
 	FillRoundRect(CountText->Renderer, 0, 176, 240, CountText->Limit.x, CountText->Limit.y, CountText->Limit.w, CountText->Limit.h, Display_X*0.004);
 	CenterArrange(CountText);
 	RenderText(CountText);
+}
+int RoomX_Setting(roomX *roomx, int Display_x) {
+	roomx[0].button = Display_x * 0.02;
+	roomx[0].number = Display_x * 0.027;
+	roomx[0].name = Display_x * 0.09;
+	roomx[0].mode = Display_x * 0.085;
+	roomx[0].question = Display_x * 0.16;
+	roomx[0].time = Display_x * 0.23;
+	roomx[0].people = Display_x * 0.305;
+	roomx[0].rock = Display_x * 0.3;
+
+	roomx[1].button = Display_x * 0.365;
+	roomx[1].number = Display_x * 0.372;
+	roomx[1].name = Display_x * 0.435;
+	roomx[1].mode = Display_x * 0.43;
+	roomx[1].question = Display_x * 0.505;
+	roomx[1].time = Display_x * 0.575;
+	roomx[1].people = Display_x * 0.65;
+	roomx[1].rock = Display_x * 0.645;
 }
