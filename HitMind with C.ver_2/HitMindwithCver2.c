@@ -130,6 +130,7 @@ int main(int argc, char *argv[])
 	int PressButton = 0;
 	int autologin_checking;
 	int roomchange = 1; //방선택
+	int userchange = 1;
 	char roomtmp[10] = { 0, }; //방선택 tmp
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
@@ -2110,13 +2111,7 @@ int main(int argc, char *argv[])
 					happen = true;
 				}
 				//3번구역
-				if (newdata[2]) {
-					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
-					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.11 - 1, Display_X * 0.275 + 2, Display_Y * 0.59 + 2, 14, 1);
-					FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.035, 14);
-					PutText(renderer, "접속자 명단", (Display_X * 0.815), Display_Y * 0.113, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-					happen = true;
-				}
+				
 				//2번구역
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.915, Display_X * 0.05, Display_Y * 0.05, 8, 0, &event, &happen))
@@ -2234,6 +2229,11 @@ int main(int argc, char *argv[])
 						if (strlen(rooms[i].password) > 0)
 						{
 							RenderTextureXYWH(renderer, Room_Lock, roomx[i % 2].rock, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
+						}
+
+						if (strlen(rooms[i].password) > 0)
+						{
+							RenderTextureXYWH(renderer, Room_Lock, Display_X * 0.3, Display_Y * (0.08 + 0.15 * (j / 2)), Display_X / 30, Display_X / 30);
 						}
 
 						if (strlen(rooms[i].password) > 0){
@@ -2460,34 +2460,55 @@ int main(int argc, char *argv[])
 
 
 
-				//	}
+				
 
 				if (newdata[2]) {
-					for (i = 0; i < usercount; i++)
+					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.59, 14);
+					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, Display_Y * 0.11 - 1, Display_X * 0.275 + 2, Display_Y * 0.59 + 2, 14, 1);
+					FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.7 + 22, Display_Y * 0.11, Display_X * 0.275, Display_Y * 0.035, 14);
+					PutText(renderer, "접속자 명단", (Display_X * 0.815), Display_Y * 0.113, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+					happen = true;
+					sprintf(roomtmp, "%d", userchange);
+					Put_Text_Center(renderer, roomtmp, Display_X * 0.7 + 22, Display_Y * 0.655, Display_X * 0.275, Display_Y * 0.05, 0, 0, 0, 30 * ((float)Display_X / 1920), 1);
+
+					for (i = userchange * 8 - 8,j = 0; i < usercount && j<9; i++,j++)
 					{
 						sprintf(db_id, "LV:%d", MemBerList[i][27]);
-						RenderTextureXYWH(renderer, User_Pencil, Display_X * 0.73, Display_Y * (0.20 + i * 0.05), 33 * ((float)Display_X / 1920), 33 * ((float)Display_X / 1920));
-						PutText(renderer, db_id, Display_X * 0.76, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-						PutText(renderer, MemBerList[i], Display_X * 0.82, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						RenderTextureXYWH(renderer, User_Pencil, Display_X * 0.73, Display_Y * (0.18 + j * 0.05), 33 * ((float)Display_X / 1920), 33 * ((float)Display_X / 1920));
+						PutText(renderer, db_id, Display_X * 0.76, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						PutText(renderer, MemBerList[i], Display_X * 0.82, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						if (MemBerList[i][28] == 1)
 						{
-							PutText(renderer, "로비", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+							PutText(renderer, "로비", Display_X * 0.91, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						}
 						else if (MemBerList[i][28] == 2)
 						{
-							PutText(renderer, "게임 중", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 255, 0, 0, 1);
+							PutText(renderer, "게임 중", Display_X * 0.91, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 255, 0, 0, 1);
 						}
 						else if (MemBerList[i][28] == 3)
 						{
-							PutText(renderer, "대기방", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 0, 255, 0, 1);
+							PutText(renderer, "대기방", Display_X * 0.91, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 0, 255, 0, 1);
 						}
 						else if (MemBerList[i][28] == 4)
 						{
-							PutText(renderer, "개발 중", Display_X * 0.91, Display_Y * (0.20 + i * 0.05), 30 * ((float)Display_X / 1920), 155, 16, 175, 1);
+							PutText(renderer, "개발 중", Display_X * 0.91, Display_Y * (0.18 + j * 0.05), 30 * ((float)Display_X / 1920), 155, 16, 175, 1);
 						}
 					}
+					
+					
 					newdata[2] = 0;
 				}
+				if (PutButtonImage(renderer, left1, left2, Display_X * 0.75, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && userchange != 1) {
+					userchange--;
+					newdata[2] = 1;
+
+				}
+				else if (PutButtonImage(renderer, right1, right2, Display_X * 0.90, Display_Y * 0.655, Display_X * 0.06, Display_Y * 0.05, &event, &happen) && userchange * 8 < usercount) {
+					userchange++;
+					newdata[2] = 1;
+
+				}
+
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.71 + 22, Display_Y * 0.037 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //방만들기 버튼
 				{
 					SDL_Texture * Create_back = LoadTexture(renderer, ".\\design\\bangcreate.png");
@@ -2926,7 +2947,7 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
 						{
 
-							if (Display_Xt != Display_Y)
+							if (Display_Xt != Display_X)
 								Re_Load(Window, renderer, display_value * 192, display_value * 108, Sound, BGmusic, Full);
 
 							changesetting(BGmusic, Sound, display_value * 192, display_value * 108, Full);
