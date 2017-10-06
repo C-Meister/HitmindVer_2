@@ -14,6 +14,16 @@
 #define DEACTIVATED 0
 #define HIGHLIGHT 1
 #define ACTIVATED 2
+
+//SocketHappen
+#define WaitRoomStartEvent 20
+#define InGameStartEvent 77
+#define MasterExitEvent 22
+#define UserHappenEvent 1
+#define NewTopicEvent 17
+#define ChangeHostEvent 12
+#define ConnectErrorEvent -1
+
 #define PENCILCLICK 1
 #define PENCILDRAG 2
 #define ERASERCLICK 3

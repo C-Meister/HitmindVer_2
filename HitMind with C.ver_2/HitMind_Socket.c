@@ -8,10 +8,10 @@
 */
 void OpenServer(SockParam *param) {
 	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
-	printf("WSAStartup() %d\n", param->Slisten_socket);
+	//printf("WSAStartup() %d\n", param->Slisten_socket);
 	SOCKET temp_socket;
 	param->Slisten_socket = socket(PF_INET, SOCK_STREAM, 0);
-	printf("socket() errcode : %d\n", param->Slisten_socket);
+	//printf("socket() errcode : %d\n", param->Slisten_socket);
 
 	memset(&(param->listen_addr), 0, sizeof(param->listen_addr));
 
@@ -20,10 +20,10 @@ void OpenServer(SockParam *param) {
 	param->listen_addr.sin_port = htons(PORT);
 
 	int err = bind(param->Slisten_socket, (SOCKADDR*)&(param->listen_addr), sizeof(param->listen_addr));
-	printf("bind() errcode : %d\n", err);
+	//printf("bind() errcode : %d\n", err);
 
 	listen(param->Slisten_socket, 5);
-	printf("listen()\n");
+	//printf("listen()\n");
 
 	int sockaddr_in_size = sizeof(param->connect_addr);
 	int idx = 0;
@@ -38,7 +38,7 @@ void OpenServer(SockParam *param) {
 		temp_socket = accept(param->Slisten_socket, (SOCKADDR*)&(param->connect_addr), &sockaddr_in_size);
 		for (idx = 0; param->Sconnect_socket[idx] != 0; idx++);
 		param->Sconnect_socket[idx] = temp_socket;
-		printf("accept()\n");
+		//printf("accept()\n");
 		if (param->sockethappen == 5)
 		{
 			bye = 1;
@@ -48,7 +48,7 @@ void OpenServer(SockParam *param) {
 		}
 		else if (param->Sconnect_socket[idx] == -1) {
 
-			printf("error\n");
+			//printf("error\n");
 			closesocket(param->Slisten_socket);
 
 			Sleep(2000);
@@ -74,26 +74,26 @@ param.serverip에 들어있는 ip로 접속함
 */
 void connectServer(SockParam *param) {
 	WSAStartup(MAKEWORD(2, 2), &(param->wsadata));
-	printf("WSAStartup()\n");
+	//printf("WSAStartup()\n");
 	param->Cconnect_socket = socket(PF_INET, SOCK_STREAM, 0);	//connect_sock변수에 소켓 할당
-	printf("socket()\n");
+	//printf("socket()\n");
 	param->connect_addr.sin_family = AF_INET;				//연결할 서버의 주소 설정
 	param->connect_addr.sin_addr.S_un.S_addr = inet_addr(param->serverip); //서버 IP
 	param->connect_addr.sin_port = htons(PORT);					 //서버 포트
 
 	if (connect(param->Cconnect_socket, (SOCKADDR *)&(param->connect_addr), sizeof(param->connect_addr)))
 	{
-		printf("connecterror\n");
-		param->sockethappen = -1;
+		//printf("connecterror\n");
+		param->sockethappen = ConnectErrorEvent;
 		return;
 	}
-	printf("connect()\n");
+	//printf("connect()\n");
 	Sleep(10);
 	char query[64];
 
 	sprintf(query, "player connect %d", param->myuser->ownnum);
 	send(param->Cconnect_socket, query, 40, 0);
-	printf("send\n");
+	//printf("send\n");
 	param->Clientthread = _beginthreadex(0, 0, (_beginthreadex_proc_type)Clientrecv, param, 0, 0);
 
 }
@@ -111,9 +111,9 @@ void HandleClient(SockParam *param) {
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
 
-			printf("Recv()");
+			//printf("Recv()");
 			if (strncmp(param->message, "player connect", 13) == 0) { //받은 패킷이 player connect라면
-				printf("%d 접속\n", ClientNumber);
+				//printf("%d 접속\n", ClientNumber);
 				sscanf(param->message, "player connect %d", &(param->gameuser[ClientNumber].ownnum));
 				/*
 				여기서 서버에 접속해있는 플레이어는 online 접속하지 않은 곳은 offline을 보내어
@@ -123,25 +123,25 @@ void HandleClient(SockParam *param) {
 				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0) { // 클라이언트가 접속해있을때
 						if (param->gameuser[i].status == 1) {
-							printf("%d online\n", i);
+							//printf("%d online\n", i);
 							sprintf(param->message, "%d online %d", i, param->gameuser[i].ownnum);
 							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 						}
 						else if (param->gameuser[i].status == 2)
 						{
 
-							printf("%d ready\n", i);
+							//printf("%d ready\n", i);
 							sprintf(param->message, "%d ready %d", i, param->gameuser[i].ownnum);
 							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 						}
 						else {	// 아닐때
-							printf("%d offline\n", i);
+							//printf("%d offline\n", i);
 							sprintf(param->message, "%d offline", i);
 							send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 						}
 					}
 					else {	// 아닐때
-						printf("%d offline\n", i);
+						//printf("%d offline\n", i);
 						sprintf(param->message, "%d offline", i);
 						send(param->Sconnect_socket[ClientNumber], param->message, 180, 0);
 					}
@@ -212,7 +212,7 @@ void Clientrecv(SockParam *param) {
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 			if (strcmp(param->message, "game start") == 0) {
-				param->sockethappen = 20;
+				param->sockethappen = WaitRoomStartEvent;
 			}
 
 			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
@@ -221,7 +221,7 @@ void Clientrecv(SockParam *param) {
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
 
-					printf("%s\n", param->message);
+					//printf("%s\n", param->message);
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
@@ -250,12 +250,12 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "connect %d %d", &param->num, &num2);
 				param->gameuser[param->num].status = 1;
 				param->gameuser[param->num].ownnum = num2;
-				param->sockethappen = 1;
+				param->sockethappen = UserHappenEvent;
 
 			}
 			else if (strncmp(param->message, "topic ", 6) == 0) {
 				sscanf(param->message, "topic %s", param->topic);
-				param->sockethappen = 17;
+				param->sockethappen = NewTopicEvent;
 			}
 			else if (strncmp(param->message, "i'm bang ", 8) == 0)
 			{
@@ -265,27 +265,27 @@ void Clientrecv(SockParam *param) {
 			else if (strncmp(param->message, "ready ", 5) == 0) {
 				sscanf(param->message, "ready %d", &num);
 				param->gameuser[num].status = 2;
-				param->sockethappen = true;
+				param->sockethappen = UserHappenEvent;
 			}
 			else if (strncmp(param->message, "noready ", 7) == 0) {
  				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
-				param->sockethappen = true;
+				param->sockethappen = UserHappenEvent;
 			}
 			else if (strncmp(param->message, "exit ", 5) == 0)
 			{
 				sscanf(param->message, "exit %d", &param->num);
 				param->gameuser[param->num].status = 0;
-				param->sockethappen = 1;
+				param->sockethappen = UserHappenEvent;
 			}
 			else if (strcmp(param->message, "bangsang exit") == 0) {
-				param->sockethappen = 22;
+				param->sockethappen = MasterExitEvent;
 			}
 			else if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
 				strcpy(param->message, GetDefaultMyIP()); // 자신의 ip를 보냄
 				send(param->Cconnect_socket, param->message, 180, 0);
-				param->sockethappen = 12;
+				param->sockethappen = ChangeHostEvent;
 				// 소켓 닫음
 				// 오픈 서버
 				WSACleanup(param->wsadata);
@@ -303,7 +303,7 @@ void Clientrecv(SockParam *param) {
 				break;
 			}
 			else if (strcmp(param->message, "ingame start") == 0) {
-				param->sockethappen = 77;
+				param->sockethappen = InGameStartEvent;
 			}
 		}
 	}
