@@ -3351,6 +3351,8 @@ int main(int argc, char *argv[])
 						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 						{
 							send(ClientParam.Cconnect_socket, "game start", 40, 0);
+							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+							mysql_query(cons, query);
 							//		MouseUP_Wait;
 						}
 						PutText(renderer, "시작하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
@@ -3430,15 +3432,16 @@ int main(int argc, char *argv[])
 			SDL_Texture * StatusTexture = LoadTexture(renderer, ".//design//Status.png");
 
 
+			for (int i = 0; i < 4; i++)
+			{
+				gameuser[i].Th = i + 1;
+				gameuser[i].Status = StatusTexture;
+			}
 			
-			gameuser[0].Th = 1;
 			gameuser[0].Turn = 1;
-			gameuser[1].Th = 2;
-			gameuser[2].Th = 3;
-			gameuser[3].Th = 4;
 			User * Me = &gameuser[my_game_number];
 			
-			int NowPlayer = Me->Th;
+			int NowPlayer = 1;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 			Button * PencilButton = (Button *)malloc(sizeof(Button));
@@ -3506,17 +3509,7 @@ int main(int argc, char *argv[])
 			RenderTexture(renderer, DChatTexture, &ChatRect);
 			RenderTexture(renderer, EnterTexture, &EnterRect);
 			//
-			for (int i = 0; i < 4; i++)
-				PrintUserInfo(renderer, gameuser + i, UserRect);
-			// 유저정보
-			// 토픽과 문제수
-			FillRoundRect(renderer, 146, 208, 80, TopicRect.x, TopicRect.y, TopicRect.w, TopicRect.h, Display_X*0.004);
-			CenterArrange(TopicText);
-			RenderText(TopicText);
-			SDL_RenderFillRect(renderer, &LineRect);
-			FillRoundRect(renderer, 0, 176, 240, CountRect.x, CountRect.y, CountRect.w, CountRect.h, Display_X*0.004);
-			CenterArrange(CountText);
-			RenderText(CountText);
+			UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 			//
 			// 타이머 생성
 			int DefaultTimer = TimerRect.w;
@@ -3906,10 +3899,14 @@ int main(int argc, char *argv[])
 
 	HitMind_TTF_Close();
 	HitMind_TTF2_Close();
+	if (status.ishappen == 1) {
+		sprintf(query, "update user set status = 0 where ownnum = %d", myuser->ownnum);
+		mysql_query(cons, query);
+		mysql_close(status.arg);
+	}
 	if (myuser != 0)
 		free(myuser);
-	if (status.ishappen == 1)
-		mysql_close(status.arg);
+	
 	if (cursor)
 	{
 		SDL_FreeCursor(cursor);
