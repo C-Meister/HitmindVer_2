@@ -1970,12 +1970,6 @@ int main(int argc, char *argv[])
 									textinput = true;
 									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
 										allchating_cnt = chatings[0].ownnum;
-									if (allchating_cnt != pastchating_cnt) {
-										newdata[1] = 1;
-										pastchating_cnt = allchating_cnt;
-										chatmovehappen = 1;
-
-									}
 									MoveSlider_value(chatslide, chatslide->End);
 									chatmovehappen = 1;
 								}
@@ -2161,14 +2155,7 @@ int main(int argc, char *argv[])
 						memset(&ID_put, 0, sizeof(ID_put));
 						enter = false;
 						textinput = true;
-						if ((maxchating = ReadChating_all(cons, chatings)) != 0)
-							allchating_cnt = chatings[0].ownnum;
-						if (allchating_cnt != pastchating_cnt) {
-							newdata[1] = 1;
-							pastchating_cnt = allchating_cnt;
-							chatmovehappen = 1;
-
-						}
+						allchating_cnt = ReadChating_all(cons, chatings);
 						MoveSlider_value(chatslide, chatslide->End);
 						newdata[1] = 1;
 						chatmovehappen = 1;
@@ -3203,13 +3190,6 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-
-				if (ClientParam.sockethappen == 20) {
-
-					isstartgame = 1;
-					qquit = 1;
-					isplaygame = 0;
-				}
 				if (ClientParam.sockethappen == 12)
 				{
 					sprintf(query, "update room set ip = '%s' where num = %d", GetDefaultMyIP(), My_Room.ownnum);
@@ -3219,7 +3199,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == 1)
 				{
-					ClientParam.sockethappen = 0;
+
 					GetRoomUser(cons, gameuser, renderer);
 					if (statusprint == 11)
 					{
@@ -3313,7 +3293,7 @@ int main(int argc, char *argv[])
 					qquit = true;
 					sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 					mysql_query(cons, query);
-					ClientParam.sockethappen = 0;
+
 				}
 				if (ClientParam.sockethappen == 22) {
 					byee = 1;

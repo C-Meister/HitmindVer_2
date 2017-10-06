@@ -1078,6 +1078,9 @@ void swap(float  *a, float *b) {
 	return;
 }
 void PrintUserInfo(SDL_Renderer* Renderer,User *User,SDL_Rect UserRect) {
+	if (User->status == 0) {
+		return;
+	}
 	SDL_Color color;
 	if (User->Turn == 1) {
 		color.r = 0; color.g = 112; color.b = 192;
