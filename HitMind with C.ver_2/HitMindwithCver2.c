@@ -3505,7 +3505,7 @@ int main(int argc, char *argv[])
 			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 			//
-			// 채팅창
+			// 채팅창 
 			RenderTexture(renderer, DChatTexture, &ChatRect);
 			RenderTexture(renderer, EnterTexture, &EnterRect);
 			//
