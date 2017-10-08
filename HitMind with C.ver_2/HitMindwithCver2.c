@@ -2034,7 +2034,6 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_QUIT:
-
 					quit = true;
 					break;
 				case SDL_WINDOWEVENT:
@@ -3129,7 +3128,7 @@ int main(int argc, char *argv[])
 			mysql_query(cons, query);
 		}
 		system("cls");
-		if (isplaygame == 1)
+		if (isplaygame)
 		{
 			qquit = 0;
 			int statusprint = 0;
@@ -3212,7 +3211,6 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == WaitRoomStartEvent) {
 
-					ClientParam.sockethappen = 0;
 					isstartgame = 1;
 					qquit = 1;
 					isplaygame = 0;
@@ -3443,7 +3441,6 @@ int main(int argc, char *argv[])
 
 			int NowPlayer = 1;
 			Canvas * canvas = (Canvas*)malloc(sizeof(Canvas));
-			View * view = (View*)malloc(sizeof(View));
 			Slider * StrongSlider = (Slider *)malloc(sizeof(Slider));
 			Button * PencilButton = (Button *)malloc(sizeof(Button));
 			Button * NewButton = (Button *)malloc(sizeof(Button));
@@ -3455,7 +3452,6 @@ int main(int argc, char *argv[])
 			Text * CountText = (Text *)malloc(sizeof(Text));
 			int RenderUpdate = false;
 
-			CreateCanvas(view, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
 			CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
@@ -3524,17 +3520,12 @@ int main(int argc, char *argv[])
 			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
 			if (bangsang == 1)
 			{
-				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2)
-				{
-					Sleep(1);
-				}
+				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2);
 				sprintf(ServerParam.message, "ingame start");
 				sendall(&ServerParam);
 
 			}
-			while (ClientParam.sockethappen != InGameStartEvent) {
-				Sleep(1);
-			}
+			while (ClientParam.sockethappen != InGameStartEvent);
 			ClientParam.sockethappen = 0;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
@@ -3547,15 +3538,9 @@ int main(int argc, char *argv[])
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					ClientParam.sockethappen = 0;
 				}
-				if (ClientParam.sockethappen == UserHappenEvent)
-				{
-					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
-					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					ClientParam.sockethappen = 0;
-				}
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
 					continue;
@@ -3571,44 +3556,38 @@ int main(int argc, char *argv[])
 				switch (event.type)
 				{
 				case SDL_USEREVENT:// DB연동
-					if (event.user.code == TIMER) {
-						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-						SDL_RenderFillRect(renderer, &TimerRect);
-						TimerTemp -= TimerRate;
-						TimerRect.w = TimerTemp;
-						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
-						if (TimerRect.w < 0) { // DB연동해야함
-							gameuser[NowPlayer - 1].Turn = 0;
-							if (bangsang == 1)
-							{
-								sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
-								sendall(&ServerParam);
+					
+					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+					SDL_RenderFillRect(renderer, &TimerRect);
+					TimerTemp -= TimerRate;
+					TimerRect.w = TimerTemp;
+					//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
+					if (TimerRect.w < 0) { // DB연동해야함
+						gameuser[NowPlayer - 1].Turn = 0;
+						if (bangsang == 1)
+						{
+							sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+							sendall(&ServerParam);
+						}
+						while (1)
+						{
+							NowPlayer %= 4;
+							NowPlayer++;
+							if (gameuser[NowPlayer - 1].status != 0) {
+								gameuser[NowPlayer - 1].Turn = 1;
+								break;
 							}
-							while (1)
-							{
-								NowPlayer %= 4;
-								NowPlayer++;
-								if (gameuser[NowPlayer - 1].status != 0) {
-									gameuser[NowPlayer - 1].Turn = 1;
-									break;
-								}
-							}
-							NowTopic++;
-							if (NowTopic > MaxTopic) {
-								return 0;
-							}
+						}
+						NowTopic++;
+						if (NowTopic > MaxTopic) {
+							return 0;
+						}
 
-						}
-						else {
-							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
-							SDL_RenderFillRect(renderer, &TimerRect);
-							SDL_RenderPresent(renderer);
-						}
 					}
 					else {
-						Viewing(view, event.user.code, event.user.data1, event.user.data2);
-						SDL_RenderPresent(view->Renderer);
-						break;
+						SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+						SDL_RenderFillRect(renderer, &TimerRect);
+						SDL_RenderPresent(renderer);
 					}
 					break;
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -3702,57 +3681,14 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_QUIT:
-
-
-					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					mysql_query(cons, query);
-					isstartgame = 0;
-					isplaygame = 0;
-					loginsuccess = 1;
-					roop = 1;
-					send(ClientParam.Cconnect_socket, "exit", 30, 0);
-					Sleep(100);
-					ClientParam.sockethappen = 5;
-					ClientParam.Cconnect_socket = 0;
-					if (bangsang == 1) {
-						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
-						strcpy(ServerParam.message, "bangsang exit");
-						sendall(&ServerParam);
-						Sleep(100);
-						ServerParam.sockethappen = 5;
-						closesocket(ServerParam.Slisten_socket);
-						bangsang = 0;
-					}
-					WSACleanup();
 					quit = true;
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-						sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
-						isstartgame = 0;
-						isplaygame = 0;
-						loginsuccess = 1;
-						roop = 1;
-						send(ClientParam.Cconnect_socket, "exit", 30, 0);
-						Sleep(100);
-						ClientParam.sockethappen = 5;
-						ClientParam.Cconnect_socket = 0;
-						if (bangsang == 1) {
-							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
-							strcpy(ServerParam.message, "bangsang exit");
-							sendall(&ServerParam);
-							Sleep(100);
-							ServerParam.sockethappen = 5;
-							closesocket(ServerParam.Slisten_socket);
-							bangsang = 0;
-						}
-						WSACleanup();
 						quit = true;
-						break;
+						Sleep(100);
+						break;// 브레이크
 					case SDL_WINDOWEVENT_ENTER:// 윈도우
 						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 						break;
@@ -3773,7 +3709,7 @@ int main(int argc, char *argv[])
 					textinput = false;
 					continue;
 				}
-
+				
 				if (UpdateSlider(StrongSlider, &event) == true) {
 					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 					SDL_Rect rect = { StrongSlider->Bar.x - StrongSlider->Box.w / 2.0, StrongSlider->Box.y, StrongSlider->Bar.w + StrongSlider->Box.w, StrongSlider->Box.h };
@@ -3797,10 +3733,9 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 						//printf("render	");
 					}
-					Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 					continue;
 				}
-				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
@@ -3948,7 +3883,6 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
-			quit = 0;
 			free(canvas);
 			free(StrongSlider);
 			free(NewButton);
@@ -3956,7 +3890,6 @@ int main(int argc, char *argv[])
 			free(PassButton);
 			free(MagButton);
 			free(RecycleButton);
-			free(view);
 			free(TopicText);
 			free(CountText);
 			SDL_DestroyTexture(PencilTexture);
