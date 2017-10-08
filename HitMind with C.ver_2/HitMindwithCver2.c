@@ -3566,7 +3566,7 @@ int main(int argc, char *argv[])
 					}
 					SDL_RenderPresent(renderer);
 					//printf("render	");
-					continue;
+					continue; 
 				}
 				switch (event.type)
 				{
