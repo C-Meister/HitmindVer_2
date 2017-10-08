@@ -1390,7 +1390,7 @@ void Viewing(View * View, int code,long long data1, long long data2) {
 	int Strong = View->Strong;//굵기
 	int radius = Strong*0.5;// 굵기의 1/2 또는 반지름
 	SDL_Rect rect;
-	rect.x = Last_x - radius; rect.y = Last_y - radius; 
+	rect.x = Last_x - radius; rect.y = Last_y - radius;
 	rect.w = rect.h = Strong;
 	if (code == PENCILDRAG) {
 		SDL_SetRenderDrawColor(View->Renderer, View->Color.r, View->Color.g, View->Color.b, 0);
