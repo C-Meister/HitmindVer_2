@@ -3540,6 +3540,7 @@ int main(int argc, char *argv[])
 				SDL_WaitEvent(&event);
 				if (ClientParam.sockethappen == NewTopicEvent)
 				{
+					ClientParam.sockethappen = 0;
 					if (Me->Turn == 1) {
 					 // 내 턴
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
@@ -3548,25 +3549,43 @@ int main(int argc, char *argv[])
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-					ClientParam.sockethappen = 0;
+					
 				}
 				if (ClientParam.sockethappen == UserHappenEvent)
 				{
+					ClientParam.sockethappen = 0;
 					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
 					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					ClientParam.sockethappen = 0;
+					
 				}
 				if (ClientParam.sockethappen == InGamePassButton)
 				{
+					ClientParam.sockethappen = 0;
 					gameuser[NowPlayer - 1].Turn = 0;
 					gameuser[ClientParam.num - 1].Turn = 1;
+					NowPlayer = ClientParam.num;
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					
 				}
-
+				if (ClientParam.sockethappen == CurrectAnswerEvent)
+				{
+					ClientParam.sockethappen = 0;
+					NowTopic++;
+					gameuser[NowPlayer - 1].Turn = 0;
+					gameuser[ClientParam.num - 1].Turn = 1;
+					gameuser[ClientParam.num - 1].Count++;
+					NowPlayer = ClientParam.num;
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+					
+				}
+				if (NowTopic > MaxTopic) {
+					quit = 1;
+				}
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
@@ -3606,10 +3625,6 @@ int main(int argc, char *argv[])
 								}
 							}
 							NowTopic++;
-							if (NowTopic > MaxTopic) {
-								quit = 1;
-							}
-
 						}
 						else {
 							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
@@ -3661,16 +3676,8 @@ int main(int argc, char *argv[])
 							Shift = 0;
 							han2unicode(Topics, InGameTopic);
 							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
-								gameuser[NowPlayer - 1].Turn = 0;
-								Me->Turn = 1;
-								NowPlayer = Me->Th;
-								NowTopic++;
-								if (NowTopic > MaxTopic) {
-									return 0;
-								}
-								Me->Count++;
-								UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-								TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
+								send(ClientParam.Cconnect_socket, query, 30, 0);
 							}
 							wcscpy(InGameChat, L"");
 							wcscpy(InGameTopic, L"");
@@ -3936,17 +3943,16 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (PassButton->Flag == ACTIVATED) {
 						if (Me->Turn == 1) {// DB연동
-							gameuser[NowPlayer - 1].Turn = 0;
+							int i = NowPlayer;
 							while (1)
 							{
-								NowPlayer %= 4;
-								NowPlayer++;
-								if (gameuser[NowPlayer - 1].status != 0) {
-									gameuser[NowPlayer - 1].Turn = 1;
+								i %= 4;
+								i++;
+								if (gameuser[i - 1].status != 0) {
 									break;
 								}
 							}
-							sprintf(query, "pass %s %d", Get_Random_Topic(cons), NowPlayer);
+							sprintf(query, "pass %s %d", Get_Random_Topic(cons), i);
 							send(ClientParam.Cconnect_socket, query, 30, 0);
 									}
 						//			SDL_Delay(100);

@@ -24,6 +24,8 @@
 #define ChangeHostEvent 12
 #define ConnectErrorEvent -1
 #define InGamePassButton 15
+#define CurrectAnswerEvent 8
+#define SocketChattingEvent 33
 
 #define PENCILCLICK 1
 #define PENCILDRAG 2
