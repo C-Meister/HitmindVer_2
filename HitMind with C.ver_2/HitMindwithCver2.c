@@ -3540,6 +3540,11 @@ int main(int argc, char *argv[])
 				SDL_WaitEvent(&event);
 				if (ClientParam.sockethappen == NewTopicEvent)
 				{
+					if (Me->Turn == 1) {
+					 // 내 턴
+						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+					}
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
@@ -3796,10 +3801,11 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 						//printf("render	");
 					}
-					Streaming( Display_X,  Display_Y, STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+					if(Me->Turn == 1)
+					Streaming(  STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 					continue;
 				}
-				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket,Me->Turn) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
@@ -3858,7 +3864,8 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED) {
 						//			SDL_Delay(100);
-						Streaming(Display_X, Display_Y, NEW, 0, 0, 0, ClientParam.Cconnect_socket);
+						if (Me->Turn == 1)
+						Streaming( NEW, 0, 0, 0, ClientParam.Cconnect_socket);
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;

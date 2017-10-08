@@ -666,7 +666,7 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
-int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending) {
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending,int MeTurn) {
 	int r = 0, g = 0, b = 0;
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.button == 1) {
@@ -721,6 +721,7 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET send
 					color->r = r + r / 5 * (alpha - 4);
 					color->g = g + g / 5 * (alpha - 4);
 					color->b = b + b / 5 * (alpha - 4);
+					if (MeTurn == 1)
 					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
@@ -731,6 +732,7 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET send
 					color->r = r + (255 - r) / 5 * (alpha - 4);
 					color->g = g + (255 - g) / 5 * (alpha - 4);
 					color->b = b + (255 - b) / 5 * (alpha - 4);
+					if (MeTurn == 1)
 					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
@@ -1339,7 +1341,7 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	return;
 }
 void PushUserEvent(char receive[]) {
-	int data1; int data2; int code; int temp;
+	int data1; int data2; int code; 
 	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
 //	printf("data1 : %d , data2 : %d\n", data1, data2);
 	ViewEvent.user.data1 = data1;
@@ -1348,7 +1350,9 @@ void PushUserEvent(char receive[]) {
 	SDL_PushEvent(&ViewEvent);
 	return;
 }
-void Viewing(View * View, int code,long long data1, long long data2) {
+void Viewing(View * View, int code,void *pdata1, void* pdata2) {
+	int data1 = (int)pdata1;
+	int data2 = (int)pdata2;
 	if (code == COLOR) {
 		View->Color.r = data1 / 1000;
 		View->Color.g = data1 % 1000;
