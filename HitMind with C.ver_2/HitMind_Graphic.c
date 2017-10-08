@@ -665,7 +665,7 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
-int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending) {
 	int r = 0, g = 0, b = 0;
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.button == 1) {
@@ -720,7 +720,7 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 					color->r = r + r / 5 * (alpha - 4);
 					color->g = g + g / 5 * (alpha - 4);
 					color->b = b + b / 5 * (alpha - 4);
-					Streaming(COLOR, color->r, color->g, color->b);
+					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
 				else {
@@ -730,7 +730,7 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 					color->r = r + (255 - r) / 5 * (alpha - 4);
 					color->g = g + (255 - g) / 5 * (alpha - 4);
 					color->b = b + (255 - b) / 5 * (alpha - 4);
-					Streaming(COLOR, color->r, color->g, color->b);
+					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
 			}
@@ -757,12 +757,12 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 	Canvas->Renderer = Renderer;
 	return;
 }
-int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
+int UpdateCanvas(Canvas * Canvas, SDL_Event * event, SOCKET sending) {
 	if (event->type == SDL_MOUSEBUTTONDOWN&&event->button.button ==1||(event->type==SDL_MOUSEMOTION&&Canvas->Click==false&&event->motion.state==1)) {
 		int x = event->button.x; int y = event->button.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
-				Streaming(PENCILCLICK, x, y, 0);
+				Streaming(PENCILCLICK, x, y, 0, sending);
 				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
 				FillCircle(Canvas->Renderer, x, y, Canvas->Strong / 2.0);
 				Canvas->Last.x = x;
@@ -771,7 +771,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				return 1;
 			}
 			else if (Canvas->Flag == ERASER) {
-				Streaming(ERASERCLICK, x, y, 0);
+				Streaming(ERASERCLICK, x, y, 0, sending);
 				SDL_SetRenderDrawColor(Canvas->Renderer, 255,255,255, 0);
 				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
 				SDL_RenderFillRect(Canvas->Renderer, &rect);
@@ -803,7 +803,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				rect.x = Last_x-radius; rect.y = Last_y-radius;
 				rect.w = rect.h = Strong;
 				if (Canvas->Flag == PENCIL) {
-					Streaming(PENCILDRAG, x, y, 0);
+					Streaming(PENCILDRAG, x, y, 0, sending);
 					
 					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
 					if (Strong >= 4) {
@@ -816,7 +816,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
-					Streaming(ERASERDRAG, x, y, 0);
+					Streaming(ERASERDRAG, x, y, 0, sending);
 					SDL_SetRenderDrawColor(Canvas->Renderer, 255, 255, 255, 0);
 					LineThick(Renderer,Strong,Last_x,Last_y,x,y);
 					Canvas->Last.x = x; Canvas->Last.y = y;
@@ -1307,10 +1307,10 @@ int RoomX_Setting(roomX *roomx, int Display_x) {
 	roomx[1].people = Display_x * 0.65;
 	roomx[1].rock = Display_x * 0.645;
 }
-void Streaming(int code, int x_r, int y_g, int Strong_b) {
+void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	char data1[7]="0";
 	char data2[6]="0";
-	char send[20]="";
+	char sendstring[20]="";
 	int temp;
 	if (code == COLOR) {
 		sprintf(data1, "%05d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
@@ -1332,15 +1332,16 @@ void Streaming(int code, int x_r, int y_g, int Strong_b) {
 			temp--;
 		sprintf(data2, "%05d", temp);
 	}
-	sprintf(send, "%d %d %s %s", 23,code,data1, data2) ;// 23대신 디파인된 상수 넣으셈
-	PushUserEvent(send);
+	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 23대신 디파인된 상수 넣으셈
+	
+	send(sending, sendstring, 30, 0);
 	// send문
 	return;
 }
 void PushUserEvent(char receive[]) {
 	int data1; int data2; int code; int temp;
 
-	sscanf(receive,"%d %d %d %d",&temp,&code,&data1,&data2);
+	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
 	ViewEvent.user.data1 = data1;
 	ViewEvent.user.data2 = data2;
 	ViewEvent.user.code = code;
@@ -1380,7 +1381,7 @@ void Viewing(View * View, int code,long long data1, long long data2) {
 	int deltax = x - View->Last.x; int deltay = y - View->Last.y;
 	double length = sqrt(deltax*deltax + deltay*deltay);
 	if (length == 0) {
-		return 0;
+		return;
 	}
 	double dx = deltax / length; double dy = deltay / length;
 

@@ -110,9 +110,12 @@ void HandleClient(SockParam *param) {
 			break;
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
-
+			if (!(strncmp(param->message, "Ddata", 5))) {
+				sendall(param);
+				continue;
+			}
 			//printf("Recv()");
-			if (strncmp(param->message, "player connect", 13) == 0) { //받은 패킷이 player connect라면
+			else if (strncmp(param->message, "player connect", 13) == 0) { //받은 패킷이 player connect라면
 				//printf("%d 접속\n", ClientNumber);
 				sscanf(param->message, "player connect %d", &(param->gameuser[ClientNumber].ownnum));
 				/*
@@ -182,7 +185,7 @@ void HandleClient(SockParam *param) {
 				sendall(param);
 			}
 
-			else 
+			else
 				sendall(param);
 		}
 	}
@@ -211,7 +214,11 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-			if (strcmp(param->message, "game start") == 0) {
+			if (!(strncmp(param->message, "Ddata", 5))) {
+				PushUserEvent(param->message);
+				continue;
+			}
+			else if (strcmp(param->message, "game start") == 0) {
 				param->sockethappen = WaitRoomStartEvent;
 				while (param->sockethappen != 0) {
 					Sleep(1);
@@ -271,7 +278,7 @@ void Clientrecv(SockParam *param) {
 				param->sockethappen = UserHappenEvent;
 			}
 			else if (strncmp(param->message, "noready ", 7) == 0) {
- 				sscanf(param->message, "noready %d", &num);
+				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
 				param->sockethappen = UserHappenEvent;
 			}
@@ -311,7 +318,7 @@ void Clientrecv(SockParam *param) {
 					Sleep(1);
 				}
 			}
-			
+
 		}
 	}
 
