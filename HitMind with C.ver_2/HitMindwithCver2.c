@@ -25,8 +25,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 #include "include.h"
 
-extern int Display_X;
-extern int Display_Y;
 int main(int argc, char *argv[])
 {
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
