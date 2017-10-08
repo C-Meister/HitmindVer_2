@@ -27,10 +27,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	int _dq;
-	char idfw[13] = "00332";
-	sscanf(idfw, "%d", &_dq);
-	printf("%d", _dq);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -3800,7 +3796,7 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 						//printf("render	");
 					}
-					Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+					Streaming( Display_X,  Display_Y, STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 					continue;
 				}
 				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket) == 1) {
@@ -3862,7 +3858,7 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED) {
 						//			SDL_Delay(100);
-						Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
+						Streaming(Display_X, Display_Y, NEW, 0, 0, 0, ClientParam.Cconnect_socket);
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;

@@ -239,9 +239,8 @@ SDL_Event ViewEvent;
 //static uintptr_t Clientthread;
 //static char playerinfo[8][30];
 
-
-static int Display_X = 1920;
-static int Display_Y = 1080;
+ int Display_X;
+ int Display_Y;
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;

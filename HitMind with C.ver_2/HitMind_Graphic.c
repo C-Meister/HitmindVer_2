@@ -2,6 +2,7 @@
 //그래픽 관련 함수들
 TTF_Font * Font_Size[100];
 TTF_Font * Font_Size2[100];
+
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color ) {
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
@@ -1313,33 +1314,32 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	char sendstring[21]="";
 	int temp;
 	if (code == COLOR) {
-		sprintf(data1, "%05d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
-		sprintf(data2, "%05d", Strong_b);
+		sprintf(data1, "%d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
+		sprintf(data2, "%d", Strong_b);
 	}
 	else if (code == STRONG) {
 		temp = (int)(((float)Strong_b / Display_X) * 100000);
 		if (temp == 100000)
 			temp--;
-		sprintf(data1, "%05d",temp);
+		sprintf(data1, "%d",temp);
 	}
 	else if( code!= NEW){
 		temp = (int)(((float)x_r / Display_X) * 100000);
 		if (temp == 100000)
 			temp--;
-		sprintf(data1, "%05d",temp);
+		sprintf(data1, "%d",temp);
 		temp = (int)(((float)y_g / Display_Y) * 100000);
 		if (temp == 100000)
 			temp--;
-		sprintf(data2, "%05d", temp);
+		sprintf(data2, "%d", temp);
 	}
-	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 5 + 1 + 1 + 1 + 6 + 1 + 5
+	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 6 + 2 + 7 + 5 +1
 	send(sending, sendstring, 21, 0);
 	// send문
 	return;
 }
 void PushUserEvent(char receive[]) {
 	int data1; int data2; int code; int temp;
-
 	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
 //	printf("data1 : %d , data2 : %d\n", data1, data2);
 	ViewEvent.user.data1 = data1;

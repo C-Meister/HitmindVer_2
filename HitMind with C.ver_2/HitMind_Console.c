@@ -1,5 +1,7 @@
 ﻿#include "include.h"
 
+extern int Display_X;
+extern int Display_Y;
 //Console관련 함수들 (콘솔을 쓸일이 있을까)
 
 char * GetDefaultMyIP()
