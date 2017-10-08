@@ -31,6 +31,7 @@
 #define TIMER 0
 #define STRONG 5
 #define COLOR 6
+#define NEW 7 
 //헤더파일
 #include <math.h>
 #include <stdio.h>				//Standard Input/Output

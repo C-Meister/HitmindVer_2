@@ -1310,7 +1310,7 @@ int RoomX_Setting(roomX *roomx, int Display_x) {
 void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	char data1[7]="0";
 	char data2[6]="0";
-	char sendstring[20]="";
+	char sendstring[21]="";
 	int temp;
 	if (code == COLOR) {
 		sprintf(data1, "%05d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
@@ -1322,7 +1322,7 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 			temp--;
 		sprintf(data1, "%05d",temp);
 	}
-	else {
+	else if( code!= NEW){
 		temp = (int)(((float)x_r / Display_X) * 100000);
 		if (temp == 100000)
 			temp--;
@@ -1332,9 +1332,8 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 			temp--;
 		sprintf(data2, "%05d", temp);
 	}
-	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 23대신 디파인된 상수 넣으셈
-	
-	send(sending, sendstring, 30, 0);
+	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 5 + 1 + 1 + 1 + 6 + 1 + 5
+	send(sending, sendstring, 21, 0);
 	// send문
 	return;
 }
@@ -1342,6 +1341,7 @@ void PushUserEvent(char receive[]) {
 	int data1; int data2; int code; int temp;
 
 	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
+//	printf("data1 : %d , data2 : %d\n", data1, data2);
 	ViewEvent.user.data1 = data1;
 	ViewEvent.user.data2 = data2;
 	ViewEvent.user.code = code;
@@ -1357,6 +1357,10 @@ void Viewing(View * View, int code,long long data1, long long data2) {
 	}
 	else if (code == STRONG) {
 		View->Strong = data1 / 100000.0 * Display_X;
+		return;
+	}
+	else if (code == NEW) {
+		SDL_FillRectXYWH(View->Renderer, View->Rect.x, View->Rect.y, View->Rect.w, View->Rect.h, 255, 255, 255);
 		return;
 	}
 	int x = data1 / 100000.0*Display_X;
