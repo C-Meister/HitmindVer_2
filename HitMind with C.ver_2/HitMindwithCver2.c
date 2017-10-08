@@ -3540,7 +3540,7 @@ int main(int argc, char *argv[])
 				}
 
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event) == 1 && Chat != ACTIVATED) {
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
 					continue;
@@ -3735,7 +3735,7 @@ int main(int argc, char *argv[])
 					}
 					continue;
 				}
-				if (ChangeColor(&event, &canvas->Color, RgbRect) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
