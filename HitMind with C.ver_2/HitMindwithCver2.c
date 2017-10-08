@@ -3540,7 +3540,7 @@ int main(int argc, char *argv[])
 				}
 
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event,ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
 					continue;
@@ -3550,7 +3550,7 @@ int main(int argc, char *argv[])
 						wcscpy(InGameChat, L"");
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	"); 
+					//printf("render	");
 					continue; 
 				}
 				switch (event.type)
