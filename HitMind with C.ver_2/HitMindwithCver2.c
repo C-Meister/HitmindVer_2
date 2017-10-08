@@ -3128,7 +3128,7 @@ int main(int argc, char *argv[])
 			mysql_query(cons, query);
 		}
 		system("cls");
-		if (isplaygame)
+		if (isplaygame == 0)
 		{
 			qquit = 0;
 			int statusprint = 0;
@@ -3210,7 +3210,7 @@ int main(int argc, char *argv[])
 					ClientParam.sockethappen = 0;
 				}
 				if (ClientParam.sockethappen == WaitRoomStartEvent) {
-
+					ClientParam.sockethappen = 0;
 					isstartgame = 1;
 					qquit = 1;
 					isplaygame = 0;
@@ -3520,12 +3520,17 @@ int main(int argc, char *argv[])
 			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
 			if (bangsang == 1)
 			{
-				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2);
+				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2)
+				{
+					Sleep(10);
+				}
 				sprintf(ServerParam.message, "ingame start");
 				sendall(&ServerParam);
 
 			}
-			while (ClientParam.sockethappen != InGameStartEvent);
+			while (ClientParam.sockethappen != InGameStartEvent) {
+				Sleep(10);
+			}
 			ClientParam.sockethappen = 0;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
