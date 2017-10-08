@@ -3128,7 +3128,7 @@ int main(int argc, char *argv[])
 			mysql_query(cons, query);
 		}
 		system("cls");
-		if (isplaygame == 0)
+		if (isplaygame == 1)
 		{
 			qquit = 0;
 			int statusprint = 0;
@@ -3561,38 +3561,44 @@ int main(int argc, char *argv[])
 				switch (event.type)
 				{
 				case SDL_USEREVENT:// DB연동
-					
-					SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-					SDL_RenderFillRect(renderer, &TimerRect);
-					TimerTemp -= TimerRate;
-					TimerRect.w = TimerTemp;
-					//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
-					if (TimerRect.w < 0) { // DB연동해야함
-						gameuser[NowPlayer - 1].Turn = 0;
-						if (bangsang == 1)
-						{
-							sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
-							sendall(&ServerParam);
-						}
-						while (1)
-						{
-							NowPlayer %= 4;
-							NowPlayer++;
-							if (gameuser[NowPlayer - 1].status != 0) {
-								gameuser[NowPlayer - 1].Turn = 1;
-								break;
+					if (event.user.code == TIMER) {
+						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+						SDL_RenderFillRect(renderer, &TimerRect);
+						TimerTemp -= TimerRate;
+						TimerRect.w = TimerTemp;
+						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
+						if (TimerRect.w < 0) { // DB연동해야함
+							gameuser[NowPlayer - 1].Turn = 0;
+							if (bangsang == 1)
+							{
+								sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+								sendall(&ServerParam);
 							}
-						}
-						NowTopic++;
-						if (NowTopic > MaxTopic) {
-							return 0;
-						}
+							while (1)
+							{
+								NowPlayer %= 4;
+								NowPlayer++;
+								if (gameuser[NowPlayer - 1].status != 0) {
+									gameuser[NowPlayer - 1].Turn = 1;
+									break;
+								}
+							}
+							NowTopic++;
+							if (NowTopic > MaxTopic) {
+								return 0;
+							}
 
+						}
+						else {
+							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+							SDL_RenderFillRect(renderer, &TimerRect);
+							SDL_RenderPresent(renderer);
+						}
 					}
 					else {
-						SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
-						SDL_RenderFillRect(renderer, &TimerRect);
-						SDL_RenderPresent(renderer);
+						Viewing(view, event.user.code, event.user.data1, event.user.data2);
+						SDL_RenderPresent(view->Renderer);
+						break;
 					}
 					break;
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
