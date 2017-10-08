@@ -3557,7 +3557,8 @@ int main(int argc, char *argv[])
 					ClientParam.sockethappen = 0;
 				}
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event,ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
 					continue;
@@ -3597,7 +3598,7 @@ int main(int argc, char *argv[])
 							}
 							NowTopic++;
 							if (NowTopic > MaxTopic) {
-								return 0;
+								quit = 1;
 							}
 
 						}
