@@ -111,7 +111,10 @@ void HandleClient(SockParam *param) {
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
 			if (!(strncmp(param->message, "Ddata", 5))) {
-				sendall(param);
+				for (int i = 0; i < 4; i++) {
+					if (param->Sconnect_socket[i] != 0 && i != ClientNumber)
+						send(param->Sconnect_socket[i], param->message, 180, 0);
+				}
 				continue;
 			}
 			//printf("Recv()");
@@ -214,6 +217,7 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
+			printf("%s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				PushUserEvent(param->message);
 				continue;

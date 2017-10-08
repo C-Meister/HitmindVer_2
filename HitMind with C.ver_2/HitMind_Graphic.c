@@ -1310,7 +1310,7 @@ int RoomX_Setting(roomX *roomx, int Display_x) {
 void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	char data1[7]="0";
 	char data2[6]="0";
-	char sendstring[20]="";
+	char sendstring[23]="";
 	int temp;
 	if (code == COLOR) {
 		sprintf(data1, "%05d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
@@ -1334,7 +1334,7 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	}
 	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 23대신 디파인된 상수 넣으셈
 	
-	send(sending, sendstring, 30, 0);
+	send(sending, sendstring, 23, 0);
 	// send문
 	return;
 }
