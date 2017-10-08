@@ -1,5 +1,7 @@
 ﻿#include "include.h"
 
+extern int Display_X;
+extern int Display_Y;
 //Socket통신 관련 함수들
 /*
 서버를 여는 함수

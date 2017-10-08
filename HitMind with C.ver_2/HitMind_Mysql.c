@@ -1,6 +1,8 @@
 #include "include.h"
 
 //mysql관련 함수들
+extern int Display_X;
+extern int Display_Y;
 
 
 void Thread_MySQL(Connect_status *type)
