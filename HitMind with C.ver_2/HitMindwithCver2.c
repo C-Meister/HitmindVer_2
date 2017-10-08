@@ -3565,7 +3565,7 @@ int main(int argc, char *argv[])
 						wcscpy(InGameChat, L"");
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					//printf("render	"); 
 					continue; 
 				}
 				switch (event.type)
