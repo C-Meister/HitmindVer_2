@@ -213,6 +213,9 @@ void Clientrecv(SockParam *param) {
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 			if (strcmp(param->message, "game start") == 0) {
 				param->sockethappen = WaitRoomStartEvent;
+				while (param->sockethappen != 0) {
+					Sleep(1);
+				}
 			}
 
 			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
@@ -304,7 +307,11 @@ void Clientrecv(SockParam *param) {
 			}
 			else if (strcmp(param->message, "ingame start") == 0) {
 				param->sockethappen = InGameStartEvent;
+				while (param->sockethappen != 0) {
+					Sleep(1);
+				}
 			}
+			
 		}
 	}
 

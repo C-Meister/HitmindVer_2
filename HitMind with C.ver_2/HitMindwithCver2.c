@@ -2022,6 +2022,7 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_QUIT:
+
 					quit = true;
 					break;
 				case SDL_WINDOWEVENT:
@@ -3116,7 +3117,7 @@ int main(int argc, char *argv[])
 			mysql_query(cons, query);
 		}
 		system("cls");
-		if (isplaygame)
+		if (isplaygame == 1)
 		{
 			qquit = 0;
 			int statusprint = 0;
@@ -3199,6 +3200,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == WaitRoomStartEvent) {
 
+					ClientParam.sockethappen = 0;
 					isstartgame = 1;
 					qquit = 1;
 					isplaygame = 0;
@@ -3508,12 +3510,17 @@ int main(int argc, char *argv[])
 			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
 			if (bangsang == 1)
 			{
-				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2);
+				while (gameuser[0].status == 2 || gameuser[1].status == 2 || gameuser[2].status == 2 || gameuser[3].status == 2)
+				{
+					Sleep(1);
+				}
 				sprintf(ServerParam.message, "ingame start");
 				sendall(&ServerParam);
 
 			}
-			while (ClientParam.sockethappen != InGameStartEvent);
+			while (ClientParam.sockethappen != InGameStartEvent) {
+				Sleep(1);
+			}
 			ClientParam.sockethappen = 0;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
@@ -3526,7 +3533,11 @@ int main(int argc, char *argv[])
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					ClientParam.sockethappen = 0;
 				}
-
+				if (ClientParam.sockethappen == UserHappenEvent)
+				{
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					ClientParam.sockethappen = 0;
+				}
 
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
@@ -3668,14 +3679,58 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_QUIT:
+
+					
+					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					mysql_query(cons, query);
+					isstartgame = 0;
+					isplaygame = 0;
+					loginsuccess = 1;
+					roop = 1;
+					send(ClientParam.Cconnect_socket, "exit", 30, 0);
+					Sleep(100);
+					ClientParam.sockethappen = 5;
+					ClientParam.Cconnect_socket = 0;
+					if (bangsang == 1) {
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						strcpy(ServerParam.message, "bangsang exit");
+						sendall(&ServerParam);
+						Sleep(100);
+						ServerParam.sockethappen = 5;
+						closesocket(ServerParam.Slisten_socket);
+						bangsang = 0;
+					}
+					WSACleanup();
 					quit = true;
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-						quit = true;
+						event.type = 0;
+						sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						isstartgame = 0;
+						isplaygame = 0;
+						loginsuccess = 1;
+						roop = 1;
+						send(ClientParam.Cconnect_socket, "exit", 30, 0);
 						Sleep(100);
-						break;// 브레이크
+						ClientParam.sockethappen = 5;
+						ClientParam.Cconnect_socket = 0;
+						if (bangsang == 1) {
+							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+							mysql_query(cons, query);
+							strcpy(ServerParam.message, "bangsang exit");
+							sendall(&ServerParam);
+							Sleep(100);
+							ServerParam.sockethappen = 5;
+							closesocket(ServerParam.Slisten_socket);
+							bangsang = 0;
+						}
+						WSACleanup();
+						quit = true;
+						break;
 					case SDL_WINDOWEVENT_ENTER:// 윈도우
 						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 						break;
@@ -3870,6 +3925,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
+			quit = 0;
 			free(canvas);
 			free(StrongSlider);
 			free(NewButton);
