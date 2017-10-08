@@ -246,7 +246,7 @@ static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;
 //---------------콘솔 함수----------------
-//나의 IP를 받아옴
+//나의 IP를 받아옴a
 char * GetDefaultMyIP();
 //초기 설정값에 맞게 프로그램을 실행 함
 void settings(int *x, int *y, int *music, int *sound, int *full);
@@ -259,7 +259,7 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
-void Viewing(View * View, int code, long long data1, long long data2);
+void Viewing(View * View, int code, void* data1, void* data2);
 void Streaming(int code, int x, int y, int Strong, SOCKET sending);
 void PushUserEvent(char receive[]);
 int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
@@ -305,7 +305,7 @@ void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color colo
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void SDL_DrawUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
 void DrawUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
-int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending);
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending, int MeTurn);
 void CreateCanvas(Canvas * Canvas, SDL_Renderer * Renderer, int x, int y, int w, int h, int strong);
 int UpdateCanvas(Canvas * Canvas, SDL_Event * event, SOCKET sending);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
