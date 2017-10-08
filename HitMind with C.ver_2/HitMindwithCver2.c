@@ -3552,7 +3552,15 @@ int main(int argc, char *argv[])
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					ClientParam.sockethappen = 0;
 				}
-
+				if (ClientParam.sockethappen == InGamePassButton)
+				{
+					gameuser[NowPlayer - 1].Turn = 0;
+					gameuser[ClientParam.num - 1].Turn = 1;
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+					
+				}
 
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
@@ -3921,16 +3929,19 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (PassButton->Flag == ACTIVATED) {
 						if (Me->Turn == 1) {// DB연동
-							NowPlayer %= 4;
-							// Topis[NowTopic-1]의 문자열을 DB에서 바꿔주는 코드가 필요
-							NowPlayer++;
-							Me->Turn = 0;
-							gameuser[NowPlayer - 1].Turn = 1;
-							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-						}
+							gameuser[NowPlayer - 1].Turn = 0;
+							while (1)
+							{
+								NowPlayer %= 4;
+								NowPlayer++;
+								if (gameuser[NowPlayer - 1].status != 0) {
+									gameuser[NowPlayer - 1].Turn = 1;
+									break;
+								}
+							}
+							sprintf(query, "pass %s %d", Get_Random_Topic(cons), NowPlayer);
+							send(ClientParam.Cconnect_socket, query, 30, 0);
+									}
 						//			SDL_Delay(100);
 					}
 					if (PassButton->Flag == ACTIVATED)

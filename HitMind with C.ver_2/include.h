@@ -23,6 +23,7 @@
 #define NewTopicEvent 17
 #define ChangeHostEvent 12
 #define ConnectErrorEvent -1
+#define InGamePassButton 15
 
 #define PENCILCLICK 1
 #define PENCILDRAG 2

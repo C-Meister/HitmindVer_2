@@ -228,7 +228,10 @@ void Clientrecv(SockParam *param) {
 					Sleep(1);
 				}
 			}
-
+			else if (strncmp(param->message, "pass ", 5) == 0) {
+				sscanf(param->message, "pass %s %d", param->topic, &param->num);
+				param->sockethappen = InGamePassButton;
+			}
 			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
 				i = 0;
