@@ -3598,6 +3598,27 @@ int main(int argc, char *argv[])
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 
 				}
+				if (ClientParam.sockethappen == TimeOutEvent) {
+					ClientParam.sockethappen = 0;
+					gameuser[NowPlayer - 1].Turn = 0;
+					while (1)
+					{
+						NowPlayer %= 4;
+						NowPlayer++;
+						if (gameuser[NowPlayer - 1].status != 0) {
+							gameuser[NowPlayer - 1].Turn = 1;
+							break;
+						}
+					}
+					if (Me->Turn == 1) {
+						// 내 턴
+						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+					}
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+				}
 				if (NowTopic > MaxTopic) {
 					quit = 1;
 				}
@@ -3624,22 +3645,13 @@ int main(int argc, char *argv[])
 						TimerRect.w = TimerTemp;
 						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
 						if (TimerRect.w < 0) { // DB연동해야함
-							gameuser[NowPlayer - 1].Turn = 0;
 							if (bangsang == 1)
 							{
-								sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+								sprintf(ServerParam.message, "timeout %s", Get_Random_Topic(cons));
 								sendall(&ServerParam);
+								TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 							}
-							while (1)
-							{
-								NowPlayer %= 4;
-								NowPlayer++;
-								if (gameuser[NowPlayer - 1].status != 0) {
-									gameuser[NowPlayer - 1].Turn = 1;
-									break;
-								}
-							}
-							NowTopic++;
+							
 						}
 						else {
 							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
