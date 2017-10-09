@@ -121,7 +121,7 @@ typedef struct Warning_Message {
 	char message[128];
 	int x;
 	int y;
-	int size;
+	double size;
 	int r;
 	int g;
 	int b;
@@ -334,11 +334,11 @@ int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Textur
 int RoomX_Setting(roomX *roomx[],int Display_x);
 //---------------MySql 함수---------------
 int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
-//자동 로그인인지 체크하는 함수
+//인지 체크하는 함수
 Hit_User *IsAutoLogin(MYSQL *cons);
 int getUesrStatus(MYSQL *cons, char arr[30][30]);
 int User_Signin_sql(MYSQL *cons, wchar_t *id, wchar_t *password, wchar_t * nickname, wchar_t *answer);
-//Password_Change 비밀번호를 변경하는데 필요한 함수. 아이디 잘못되면 -1, 답변 잘못되면 0 업데이트실패 -2 성공 1
+//Password_Change 비밀번호를 변경하는데 필요한 함수. 잘못되면 -1, 답변 잘못되면 0 업데이트실패 -2 성공 1
 int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t *answer);
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
 void Thread_MySQL(Connect_status *type);
