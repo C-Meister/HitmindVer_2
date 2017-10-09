@@ -134,6 +134,8 @@ int main(int argc, char *argv[])
 	char roomtmp[10] = { 0, }; //방선택 tmp
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
+	int set_start_w = Display_X*0.346;
+	int set_start_h = Display_Y*0.38;
 	char Topics[20] = "";
 	//hello
 	ClientParam.topic = Topics;
@@ -666,6 +668,10 @@ int main(int argc, char *argv[])
 			RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 			SDL_RenderPresent(renderer);
 			sum = 1;
+			set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
+			set_start_y = Display_Y / 2.8;
+			set_start_w = Display_X*0.346;
+			set_start_h = Display_Y*0.38;
 			while (!quit && !loginsuccess)
 			{
 
@@ -819,7 +825,7 @@ int main(int argc, char *argv[])
 												//	//printf("\n아이디 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "아이디가 틀립니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.067;
 												warning.y = set_start_y + Display_Y*0.074;
 												warning.r = 255;
@@ -832,7 +838,7 @@ int main(int argc, char *argv[])
 												//	//printf("\n비밀번호 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "비밀번호가 틀립니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.067;
 												warning.y = set_start_y + Display_Y*0.166;
 												warning.r = 255;
@@ -850,7 +856,7 @@ int main(int argc, char *argv[])
 													{
 														warning.ison = 1;
 														strcpy(warning.message, "자동 로그인 등록 실패");
-														warning.size = 15;
+														warning.size = 15.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.114;
 														warning.y = set_start_y + Display_Y*0.268;
 														warning.r = 255;
@@ -950,8 +956,10 @@ int main(int argc, char *argv[])
 							}
 
 							//이미지 출력 시작
-
-							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.38);
+							
+							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, set_start_w, set_start_h);
+							PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X/960), 0, 0, 0, 1);
+							PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.44, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
 							if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X* 0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen)) {
 								MouseUP_Wait;
 								loginpopup = false;
@@ -1009,7 +1017,7 @@ int main(int argc, char *argv[])
 									//printf("\n아이디 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "아이디가 틀립니다");
-									warning.size = 20;
+									warning.size = 20.0 * ((float)Display_X / 1920);
 									warning.x = set_start_x + Display_X*0.067;
 									warning.y = set_start_y + Display_Y*0.074;
 									warning.r = 255;
@@ -1023,7 +1031,7 @@ int main(int argc, char *argv[])
 									//printf("\n비밀번호 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "비밀번호가 틀립니다");
-									warning.size = 20;
+									warning.size = 20.0 * ((float)Display_X / 1920);
 									warning.x = set_start_x + Display_X*0.067;
 									warning.y = set_start_y + Display_Y*0.166;
 									warning.r = 255;
@@ -1042,7 +1050,7 @@ int main(int argc, char *argv[])
 											//printf("\n자동 로그인 오류");
 											warning.ison = 1;
 											strcpy(warning.message, "자동 로그인 등록 실패");
-											warning.size = 15;
+											warning.size = 15.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.114;
 											warning.y = set_start_y + Display_Y*0.268;
 											warning.r = 255;
@@ -1135,7 +1143,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호가 틀립니다");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 
@@ -1147,7 +1155,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 													}
@@ -1162,7 +1170,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 ID가 존재합니다");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.078;
 															warning.y = set_start_y + Display_Y*0.074;
 														}
@@ -1173,7 +1181,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "등록 실패");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.25;
 															warning.y = set_start_y + Display_Y*0.416;
 														}
@@ -1184,7 +1192,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 닉네임이 존재합니다.");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.156;
 															warning.y = set_start_y + Display_Y*0.338;
 														}
@@ -1197,7 +1205,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "성공");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.244;
 															warning.y = set_start_y + Display_Y*0.064;
 														}
@@ -1248,6 +1256,11 @@ int main(int argc, char *argv[])
 									}
 
 									RenderTextureXYWH(renderer, create_back, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.527);
+									PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.43, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호 확인", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.66, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "닉네임", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.89, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "본인확인 질문 설정 : 아버지 성함은?", set_start_x + set_start_w*0.06, set_start_y + set_start_h*1.13, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
 									if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X*0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen))
 										create_password_status = false;
 									if (PutButtonImage(renderer, create_button_noclick, create_button_click, set_start_x + Display_X*0.25, set_start_y + Display_Y*0.458, Display_X*0.086, Display_Y*0.065, &event, &happen)) {
@@ -1259,7 +1272,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호가 틀립니다");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 
@@ -1271,7 +1284,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 										}
@@ -1286,7 +1299,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 ID가 존재합니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.078;
 												warning.y = set_start_y + Display_Y*0.074;
 											}
@@ -1297,7 +1310,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "등록 실패");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.25;
 												warning.y = set_start_y + Display_Y*0.416;
 											}
@@ -1308,7 +1321,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 닉네임이 존재합니다.");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.156;
 												warning.y = set_start_y + Display_Y*0.338;
 											}
@@ -1321,7 +1334,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "성공");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.244;
 												warning.y = set_start_y + Display_Y*0.064;
 											}
@@ -1462,7 +1475,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호가 틀립니다");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 
@@ -1474,7 +1487,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 													}
@@ -1489,7 +1502,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 ID가 없습니다");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.078;
 															warning.y = set_start_y + Display_Y*0.074;
 														}
@@ -1500,7 +1513,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "질문의 답이 틀렸습니다");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.25;
 															warning.y = set_start_y + Display_Y*0.416;
 														}
@@ -1511,7 +1524,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "알수 없는 오류");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.156;
 															warning.y = set_start_y + Display_Y*0.338;
 														}
@@ -1524,7 +1537,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "성공");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.244;
 															warning.y = set_start_y + Display_Y*0.064;
 														}
@@ -1576,6 +1589,11 @@ int main(int argc, char *argv[])
 									}
 
 									RenderTextureXYWH(renderer, find_back, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.448);
+									PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.43, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호 확인", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.66, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "본인확인 질문 : 당신의 아버지 성함은?", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.89, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									
 									if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X*0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen))
 										find_password_status = false;
 									if (PutButtonImage(renderer, find_button_noclick, find_button_click, set_start_x + Display_X*0.25, set_start_y + Display_Y*0.37, Display_X*0.083, Display_Y*0.065, &event, &happen))
@@ -1587,7 +1605,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호가 틀립니다");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 
@@ -1599,7 +1617,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 										}
@@ -1614,7 +1632,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 ID가 없습니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.078;
 												warning.y = set_start_y + Display_Y*0.074;
 											}
@@ -1625,7 +1643,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "질문의 답이 틀렸습니다");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.25;
 												warning.y = set_start_y + Display_Y*0.416;
 											}
@@ -1636,7 +1654,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "알수 없는 오류");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.156;
 												warning.y = set_start_y + Display_Y*0.338;
 											}
@@ -1649,7 +1667,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "성공");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.244;
 												warning.y = set_start_y + Display_Y*0.064;
 											}
@@ -2257,8 +2275,8 @@ int main(int argc, char *argv[])
 
 							set_start_x = Display_X / 2 - (346 * ((float)Display_X / 1920));
 							set_start_y = Display_Y / 2 - (268 * ((float)Display_X / 1920));
-							int set_start_w = 696 * ((float)Display_X / 1920);
-							int set_start_h = 195 * ((float)Display_X / 1920);
+							set_start_w = 696 * ((float)Display_X / 1920);
+							set_start_h = 195 * ((float)Display_X / 1920);
 							int Nameput = 1;
 							wchar_t  passwordput[128] = L"";
 
@@ -2912,6 +2930,7 @@ int main(int argc, char *argv[])
 					setting_main = 1;
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
+					int fullt = Full;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2961,7 +2980,7 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
 						{
 
-							if (Display_Xt != display_value * 192)
+							if (Display_Xt != display_value * 192 || fullt != Full)
 								Re_Load(Window, renderer, display_value * 192, display_value * 108, Sound, BGmusic, Full);
 
 							changesetting(BGmusic, Sound, display_value * 192, display_value * 108, Full);
