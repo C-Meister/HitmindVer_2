@@ -2,6 +2,7 @@
 //그래픽 관련 함수들
 TTF_Font * Font_Size[100];
 TTF_Font * Font_Size2[100];
+
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color ) {
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
@@ -665,7 +666,7 @@ int hancheck(int unicode) {
 		cnt++;
 	return cnt;
 }
-int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
+int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect, SOCKET sending,int MeTurn) {
 	int r = 0, g = 0, b = 0;
 	if (event->type == SDL_MOUSEBUTTONDOWN) {
 		if (event->button.button == 1) {
@@ -720,6 +721,8 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 					color->r = r + r / 5 * (alpha - 4);
 					color->g = g + g / 5 * (alpha - 4);
 					color->b = b + b / 5 * (alpha - 4);
+					if (MeTurn == 1)
+					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
 				else {
@@ -729,6 +732,8 @@ int ChangeColor(SDL_Event * event, SDL_Color * color, SDL_Rect rect) {
 					color->r = r + (255 - r) / 5 * (alpha - 4);
 					color->g = g + (255 - g) / 5 * (alpha - 4);
 					color->b = b + (255 - b) / 5 * (alpha - 4);
+					if (MeTurn == 1)
+					Streaming(COLOR, color->r, color->g, color->b, sending);
 					return 1;
 				}
 			}
@@ -755,11 +760,12 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, 
 	Canvas->Renderer = Renderer;
 	return;
 }
-int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
+int UpdateCanvas(Canvas * Canvas, SDL_Event * event, SOCKET sending) {
 	if (event->type == SDL_MOUSEBUTTONDOWN&&event->button.button ==1||(event->type==SDL_MOUSEMOTION&&Canvas->Click==false&&event->motion.state==1)) {
 		int x = event->button.x; int y = event->button.y;
 		if (x >= Canvas->Rect.x + Canvas->Strong / 2.0&&x <= Canvas->Rect.x + Canvas->Rect.w - Canvas->Strong / 2.0&&y >= Canvas->Rect.y + Canvas->Strong / 2.0&&y <= Canvas->Rect.y + Canvas->Rect.h - Canvas->Strong / 2.0) {
 			if (Canvas->Flag == PENCIL) {
+				Streaming(PENCILCLICK, x, y, 0, sending);
 				SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
 				FillCircle(Canvas->Renderer, x, y, Canvas->Strong / 2.0);
 				Canvas->Last.x = x;
@@ -768,6 +774,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				return 1;
 			}
 			else if (Canvas->Flag == ERASER) {
+				Streaming(ERASERCLICK, x, y, 0, sending);
 				SDL_SetRenderDrawColor(Canvas->Renderer, 255,255,255, 0);
 				SDL_Rect rect = { x - Canvas->Strong / 2, y - Canvas->Strong / 2,Canvas->Strong,Canvas->Strong };
 				SDL_RenderFillRect(Canvas->Renderer, &rect);
@@ -799,6 +806,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 				rect.x = Last_x-radius; rect.y = Last_y-radius;
 				rect.w = rect.h = Strong;
 				if (Canvas->Flag == PENCIL) {
+					Streaming(PENCILDRAG, x, y, 0, sending);
 					
 					SDL_SetRenderDrawColor(Canvas->Renderer, Canvas->Color.r, Canvas->Color.g, Canvas->Color.b, 0);
 					if (Strong >= 4) {
@@ -811,6 +819,7 @@ int UpdateCanvas(Canvas * Canvas, SDL_Event * event) {
 					return 1;
 				}
 				else if (Canvas->Flag == ERASER) {
+					Streaming(ERASERDRAG, x, y, 0, sending);
 					SDL_SetRenderDrawColor(Canvas->Renderer, 255, 255, 255, 0);
 					LineThick(Renderer,Strong,Last_x,Last_y,x,y);
 					Canvas->Last.x = x; Canvas->Last.y = y;
@@ -848,6 +857,7 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 	if (isfull)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else {
+		//printf("%d %d\n", dis_x, dis_y);
 		SDL_SetWindowFullscreen(window, 0);
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
@@ -1077,6 +1087,9 @@ void swap(float  *a, float *b) {
 	return;
 }
 void PrintUserInfo(SDL_Renderer* Renderer,User *User,SDL_Rect UserRect) {
+	if (User->status == 0) {
+		return;
+	}
 	SDL_Color color;
 	if (User->Turn == 1) {
 		color.r = 0; color.g = 112; color.b = 192;
@@ -1179,8 +1192,9 @@ void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w
 	return;	//평소에도 0을 리턴
 }
 void Timer(unsigned int time) {
-	SDL_Event event;
+	SDL_Event event = { 0 };
 	event.type = SDL_USEREVENT;
+	event.user.code = TIMER;
 	while (1) {
 		Sleep(time);
 		SDL_PushEvent(&event);
@@ -1295,4 +1309,116 @@ int RoomX_Setting(roomX *roomx, int Display_x) {
 	roomx[1].time = Display_x * 0.575;
 	roomx[1].people = Display_x * 0.65;
 	roomx[1].rock = Display_x * 0.645;
+}
+void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
+	char data1[7]="0";
+	char data2[6]="0";
+	char sendstring[21]="";
+	int temp;
+	if (code == COLOR) {
+		sprintf(data1, "%d", x_r*1000+y_g); // 255,172,255 의경우 data1 : 255172, data2:255가 됨
+		sprintf(data2, "%d", Strong_b);
+	}
+	else if (code == STRONG) {
+		temp = (int)(((float)Strong_b / Display_X) * 100000);
+		if (temp == 100000)
+			temp--;
+		sprintf(data1, "%d",temp);
+	}
+	else if( code!= NEW){
+		temp = (int)(((float)x_r / Display_X) * 100000);
+		if (temp == 100000)
+			temp--;
+		sprintf(data1, "%d",temp);
+		temp = (int)(((float)y_g / Display_Y) * 100000);
+		if (temp == 100000)
+			temp--;
+		sprintf(data2, "%d", temp);
+	}
+	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 6 + 2 + 7 + 5 +1
+	send(sending, sendstring, 21, 0);
+	// send문
+	return;
+}
+void PushUserEvent(char receive[]) {
+	int data1; int data2; int code; 
+	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
+//	printf("data1 : %d , data2 : %d\n", data1, data2);
+	ViewEvent.user.data1 = data1;
+	ViewEvent.user.data2 = data2;
+	ViewEvent.user.code = code;
+	SDL_PushEvent(&ViewEvent);
+	return;
+}
+void Viewing(View * View, int code,void *pdata1, void* pdata2) {
+	int data1 = (int)pdata1;
+	int data2 = (int)pdata2;
+	if (code == COLOR) {
+		View->Color.r = data1 / 1000;
+		View->Color.g = data1 % 1000;
+		View->Color.b = data2 ;
+		return;
+	}
+	else if (code == STRONG) {
+		View->Strong = data1 / 100000.0 * Display_X;
+		return;
+	}
+	else if (code == NEW) {
+		SDL_FillRectXYWH(View->Renderer, View->Rect.x, View->Rect.y, View->Rect.w, View->Rect.h, 255, 255, 255);
+		return;
+	}
+	int x = data1 / 100000.0*Display_X;
+	int y = data2 / 100000.0*Display_Y;
+
+	if (code == PENCILCLICK) {
+		SDL_SetRenderDrawColor(View->Renderer, View->Color.r, View->Color.g, View->Color.b, 0);
+		FillCircle(View->Renderer, x, y, View->Strong / 2.0);
+		View->Last.x = x;
+		View->Last.y = y;
+		return;
+	}
+	else if (View->Flag == ERASERCLICK) {
+		SDL_SetRenderDrawColor(View->Renderer, 255, 255, 255, 0);
+		SDL_Rect rect = { x - View->Strong / 2, y - View->Strong / 2,View->Strong,View->Strong };
+		SDL_RenderFillRect(View->Renderer, &rect);
+		View->Last.x = x;
+		View->Last.y = y;
+		View->Click = true;
+		return;
+	}
+	int deltax = x - View->Last.x; int deltay = y - View->Last.y;
+	double length = sqrt(deltax*deltax + deltay*deltay);
+	if (length == 0) {
+		return;
+	}
+	double dx = deltax / length; double dy = deltay / length;
+
+	SDL_Renderer * Renderer = View->Renderer; // 연산을 줄이기 위해 구조체의 참조 변수들을 지역변수로 선언
+	int Last_x = View->Last.x; int Last_y = View->Last.y; //마지막으로 찍었던 점의 x,y좌표
+	int Strong = View->Strong;//굵기
+	int radius = Strong*0.5;// 굵기의 1/2 또는 반지름
+	SDL_Rect rect;
+	rect.x = Last_x - radius; rect.y = Last_y - radius;
+	rect.w = rect.h = Strong;
+	if (code == PENCILDRAG) {
+		SDL_SetRenderDrawColor(View->Renderer, View->Color.r, View->Color.g, View->Color.b, 0);
+		if (Strong >= 4) {
+			LineCircle(Renderer, Strong, Last_x, Last_y, x, y);
+		}
+		else {
+			LineThick(Renderer, Strong, Last_x, Last_y, x, y);
+		}
+		View->Last.x = x; View->Last.y = y;
+		return;
+	}
+	else if (code == ERASERDRAG) {
+		SDL_SetRenderDrawColor(View->Renderer, 255, 255, 255, 0);
+		LineThick(Renderer, Strong, Last_x, Last_y, x, y);
+		View->Last.x = x; View->Last.y = y;
+		return;
+
+	}
+}
+void PrintInChatting(SDL_Renderer * renderer, Chating * chattings) {
+	
 }
