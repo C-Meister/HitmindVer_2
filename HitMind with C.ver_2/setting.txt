@@ -1,5 +1,5 @@
 <HitMid_Setting>
-배경음악 : 0
+배경음악 : 100
 효과음 : 100
 Display_X : 1152
 Display_Y : 648
