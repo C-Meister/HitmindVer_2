@@ -26,6 +26,7 @@
 #define InGamePassButton 15
 #define CurrectAnswerEvent 8
 #define SocketChattingEvent 33
+#define TimeOutEvent 35
 
 #define PENCILCLICK 1
 #define PENCILDRAG 2

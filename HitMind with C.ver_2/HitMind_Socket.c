@@ -280,6 +280,10 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "topic %s", param->topic);
 				param->sockethappen = NewTopicEvent;
 			}
+			else if (strncmp(param->message, "timeout ", 8) == 0) {
+				sscanf(param->message, "timeout %s", param->topic);
+				param->sockethappen = TimeOutEvent;
+			}
 			else if (strncmp(param->message, "i'm bang ", 8) == 0)
 			{
 				sscanf(param->message, "i'm bang %d", &num);
