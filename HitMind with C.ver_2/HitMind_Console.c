@@ -77,10 +77,7 @@ int wstrcmp(wchar_t *First, char *second) {
 
 void soundplay() {
 	
-	
-
 	srand((unsigned)time(NULL));
-
 	int bgmrand = 0;
 	int i;
 	char tmpbgm[20] = { 0, };
@@ -92,13 +89,15 @@ void soundplay() {
 		bgm[i] = Mix_LoadMUS(tmpbgm);
 		colbgm[i] *= 1000;
 	}
-
+	
+	
 	while (1) {
 		bgmrand = rand() % 12;
 		Mix_PlayMusic(bgm[bgmrand], 1);
 		Sleep(colbgm[bgmrand]);
+		
 	}
-
+	
 
 
 	for (i = 0; i < 12; i++) {
