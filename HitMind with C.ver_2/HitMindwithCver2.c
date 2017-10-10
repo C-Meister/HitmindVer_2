@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 	{
 		//printf("loadbmp");
 	}
-
+	
 	SDL_Cursor*cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 	if (!cursor)
 	{
@@ -134,6 +134,8 @@ int main(int argc, char *argv[])
 	char roomtmp[10] = { 0, }; //방선택 tmp
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
+	int set_start_w = Display_X*0.346;
+	int set_start_h = Display_Y*0.38;
 	char Topics[20] = "";
 	ViewEvent.type = SDL_USEREVENT;
 	//hello
@@ -155,6 +157,10 @@ int main(int argc, char *argv[])
 			RenderTextureXYWH(renderer, LoadingBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 			SDL_RenderPresent(renderer);
 			sum = 1;
+			set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
+			set_start_y = Display_Y / 2.8;
+			set_start_w = Display_X*0.346;
+			set_start_h = Display_Y*0.38;
 			while (!quit && !loginsuccess)
 			{
 
@@ -308,7 +314,7 @@ int main(int argc, char *argv[])
 												//	////printf("\n아이디 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "아이디가 틀립니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.067;
 												warning.y = set_start_y + Display_Y*0.074;
 												warning.r = 255;
@@ -321,7 +327,7 @@ int main(int argc, char *argv[])
 												//	////printf("\n비밀번호 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "비밀번호가 틀립니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.067;
 												warning.y = set_start_y + Display_Y*0.166;
 												warning.r = 255;
@@ -339,7 +345,7 @@ int main(int argc, char *argv[])
 													{
 														warning.ison = 1;
 														strcpy(warning.message, "자동 로그인 등록 실패");
-														warning.size = 15;
+														warning.size = 15.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.114;
 														warning.y = set_start_y + Display_Y*0.268;
 														warning.r = 255;
@@ -439,8 +445,10 @@ int main(int argc, char *argv[])
 							}
 
 							//이미지 출력 시작
-
-							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.38);
+							
+							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, set_start_w, set_start_h);
+							PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X/960), 0, 0, 0, 1);
+							PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.44, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
 							if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X* 0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen)) {
 								MouseUP_Wait;
 								loginpopup = false;
@@ -498,7 +506,7 @@ int main(int argc, char *argv[])
 									////printf("\n아이디 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "아이디가 틀립니다");
-									warning.size = 20;
+									warning.size = 20.0 * ((float)Display_X / 1920);
 									warning.x = set_start_x + Display_X*0.067;
 									warning.y = set_start_y + Display_Y*0.074;
 									warning.r = 255;
@@ -512,7 +520,7 @@ int main(int argc, char *argv[])
 									////printf("\n비밀번호 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "비밀번호가 틀립니다");
-									warning.size = 20;
+									warning.size = 20.0 * ((float)Display_X / 1920);
 									warning.x = set_start_x + Display_X*0.067;
 									warning.y = set_start_y + Display_Y*0.166;
 									warning.r = 255;
@@ -531,7 +539,7 @@ int main(int argc, char *argv[])
 											////printf("\n자동 로그인 오류");
 											warning.ison = 1;
 											strcpy(warning.message, "자동 로그인 등록 실패");
-											warning.size = 15;
+											warning.size = 15.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.114;
 											warning.y = set_start_y + Display_Y*0.268;
 											warning.r = 255;
@@ -624,7 +632,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호가 틀립니다");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 
@@ -636,7 +644,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 													}
@@ -651,7 +659,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 ID가 존재합니다");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.078;
 															warning.y = set_start_y + Display_Y*0.074;
 														}
@@ -662,7 +670,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "등록 실패");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.25;
 															warning.y = set_start_y + Display_Y*0.416;
 														}
@@ -673,7 +681,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 닉네임이 존재합니다.");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.156;
 															warning.y = set_start_y + Display_Y*0.338;
 														}
@@ -686,7 +694,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "성공");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.244;
 															warning.y = set_start_y + Display_Y*0.064;
 														}
@@ -737,6 +745,11 @@ int main(int argc, char *argv[])
 									}
 
 									RenderTextureXYWH(renderer, create_back, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.527);
+									PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.43, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호 확인", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.66, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "닉네임", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.89, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "본인확인 질문 설정 : 아버지 성함은?", set_start_x + set_start_w*0.06, set_start_y + set_start_h*1.13, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
 									if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X*0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen))
 										create_password_status = false;
 									if (PutButtonImage(renderer, create_button_noclick, create_button_click, set_start_x + Display_X*0.25, set_start_y + Display_Y*0.458, Display_X*0.086, Display_Y*0.065, &event, &happen)) {
@@ -748,7 +761,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호가 틀립니다");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 
@@ -760,7 +773,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 										}
@@ -775,7 +788,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 ID가 존재합니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.078;
 												warning.y = set_start_y + Display_Y*0.074;
 											}
@@ -786,7 +799,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "등록 실패");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.25;
 												warning.y = set_start_y + Display_Y*0.416;
 											}
@@ -797,7 +810,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 닉네임이 존재합니다.");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.156;
 												warning.y = set_start_y + Display_Y*0.338;
 											}
@@ -810,7 +823,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "성공");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.244;
 												warning.y = set_start_y + Display_Y*0.064;
 											}
@@ -951,7 +964,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호가 틀립니다");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 
@@ -963,7 +976,7 @@ int main(int argc, char *argv[])
 														warning.g = 0;
 														warning.b = 0;
 														strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-														warning.size = 20;
+														warning.size = 20.0 * ((float)Display_X / 1920);
 														warning.x = set_start_x + Display_X*0.13;
 														warning.y = set_start_y + Display_Y*0.25;
 													}
@@ -978,7 +991,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "해당 ID가 없습니다");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.078;
 															warning.y = set_start_y + Display_Y*0.074;
 														}
@@ -989,7 +1002,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "질문의 답이 틀렸습니다");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.25;
 															warning.y = set_start_y + Display_Y*0.416;
 														}
@@ -1000,7 +1013,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "알수 없는 오류");
-															warning.size = 17;
+															warning.size = 17.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.156;
 															warning.y = set_start_y + Display_Y*0.338;
 														}
@@ -1013,7 +1026,7 @@ int main(int argc, char *argv[])
 															warning.g = 0;
 															warning.b = 0;
 															strcpy(warning.message, "성공");
-															warning.size = 20;
+															warning.size = 20.0 * ((float)Display_X / 1920);
 															warning.x = set_start_x + Display_X*0.244;
 															warning.y = set_start_y + Display_Y*0.064;
 														}
@@ -1065,6 +1078,11 @@ int main(int argc, char *argv[])
 									}
 
 									RenderTextureXYWH(renderer, find_back, set_start_x, set_start_y, Display_X*0.346, Display_Y*0.448);
+									PutText(renderer, "아이디", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.2, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.43, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "비밀번호 확인", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.66, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									PutText(renderer, "본인확인 질문 : 당신의 아버지 성함은?", set_start_x + set_start_w*0.06, set_start_y + set_start_h*0.89, 10 * ((float)Display_X / 960), 0, 0, 0, 1);
+									
 									if (PutButtonImage(renderer, login_close_noclick, login_close_click, set_start_x + Display_X*0.294, set_start_y, Display_X*0.052, Display_Y*0.076, &event, &happen))
 										find_password_status = false;
 									if (PutButtonImage(renderer, find_button_noclick, find_button_click, set_start_x + Display_X*0.25, set_start_y + Display_Y*0.37, Display_X*0.083, Display_Y*0.065, &event, &happen))
@@ -1076,7 +1094,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호가 틀립니다");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 
@@ -1088,7 +1106,7 @@ int main(int argc, char *argv[])
 											warning.g = 0;
 											warning.b = 0;
 											strcpy(warning.message, "비밀번호는 최소 4글자 이상으로 해주세요");
-											warning.size = 20;
+											warning.size = 20.0 * ((float)Display_X / 1920);
 											warning.x = set_start_x + Display_X*0.13;
 											warning.y = set_start_y + Display_Y*0.25;
 										}
@@ -1103,7 +1121,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "해당 ID가 없습니다");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.078;
 												warning.y = set_start_y + Display_Y*0.074;
 											}
@@ -1114,7 +1132,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "질문의 답이 틀렸습니다");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.25;
 												warning.y = set_start_y + Display_Y*0.416;
 											}
@@ -1125,7 +1143,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "알수 없는 오류");
-												warning.size = 17;
+												warning.size = 17.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.156;
 												warning.y = set_start_y + Display_Y*0.338;
 											}
@@ -1138,7 +1156,7 @@ int main(int argc, char *argv[])
 												warning.g = 0;
 												warning.b = 0;
 												strcpy(warning.message, "성공");
-												warning.size = 20;
+												warning.size = 20.0 * ((float)Display_X / 1920);
 												warning.x = set_start_x + Display_X*0.244;
 												warning.y = set_start_y + Display_Y*0.064;
 											}
@@ -1734,8 +1752,8 @@ int main(int argc, char *argv[])
 
 							set_start_x = Display_X / 2 - (346 * ((float)Display_X / 1920));
 							set_start_y = Display_Y / 2 - (268 * ((float)Display_X / 1920));
-							int set_start_w = 696 * ((float)Display_X / 1920);
-							int set_start_h = 195 * ((float)Display_X / 1920);
+							set_start_w = 696 * ((float)Display_X / 1920);
+							set_start_h = 195 * ((float)Display_X / 1920);
 							int Nameput = 1;
 							wchar_t  passwordput[128] = L"";
 
@@ -2389,6 +2407,7 @@ int main(int argc, char *argv[])
 					setting_main = 1;
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
+					int fullt = Full;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2438,8 +2457,8 @@ int main(int argc, char *argv[])
 						if (PutButtonImage(renderer, Setting_Close_noclick, Setting_Close_click, set_start_x + set_start_w - 110 * ((float)Display_X / 1920), set_start_y, 110 * ((float)Display_X / 1920), 84 * ((float)Display_X / 1920), &event, &happen))
 						{
 
-							
-							Re_Load(Window, renderer, display_value * 192, display_value * 108, Sound, BGmusic, Full);
+							if (Display_Xt != display_value * 192 || fullt != Full)
+								Re_Load(Window, renderer, display_value * 192, display_value * 108, Sound, BGmusic, Full);
 
 							changesetting(BGmusic, Sound, display_value * 192, display_value * 108, Full);
 							Display_X = display_value * 192;
@@ -3012,31 +3031,99 @@ int main(int argc, char *argv[])
 				Sleep(1);
 			}
 			ClientParam.sockethappen = 0;
+			if (Me->Turn == 1) {
+				// 내 턴
+				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+				Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+			}
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
 				if (ClientParam.sockethappen == NewTopicEvent)
 				{
+					ClientParam.sockethappen = 0;
 					if (Me->Turn == 1) {
-					 // 내 턴
+						// 내 턴
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
 					}
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+
+				}
+				if (ClientParam.sockethappen == MasterExitEvent)
+				{
 					ClientParam.sockethappen = 0;
+					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					mysql_query(cons, query);
+					isstartgame = 0;
+					isplaygame = 0;
+					loginsuccess = 1;
+					roop = 1;
+					send(ClientParam.Cconnect_socket, "exit", 30, 0);
+					Sleep(10);
+					ClientParam.sockethappen = 5;
+					ClientParam.Cconnect_socket = 0;
+					quit = 1;
 				}
 				if (ClientParam.sockethappen == UserHappenEvent)
 				{
+					ClientParam.sockethappen = 0;
 					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
 					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					ClientParam.sockethappen = 0;
+
 				}
+				if (ClientParam.sockethappen == InGamePassButton)
+				{
+					ClientParam.sockethappen = 0;
+					gameuser[NowPlayer - 1].Turn = 0;
+					gameuser[ClientParam.num - 1].Turn = 1;
+					NowPlayer = ClientParam.num;
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 
+				}
+				if (ClientParam.sockethappen == CurrectAnswerEvent)
+				{
+					ClientParam.sockethappen = 0;
+					NowTopic++;
+					gameuser[NowPlayer - 1].Turn = 0;
+					gameuser[ClientParam.num - 1].Turn = 1;
+					gameuser[ClientParam.num - 1].Count++;
+					NowPlayer = ClientParam.num;
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 
+				}
+				if (ClientParam.sockethappen == TimeOutEvent) {
+					ClientParam.sockethappen = 0;
+					gameuser[NowPlayer - 1].Turn = 0;
+					while (1)
+					{
+						NowPlayer %= 4;
+						NowPlayer++;
+						if (gameuser[NowPlayer - 1].status != 0) {
+							gameuser[NowPlayer - 1].Turn = 1;
+							break;
+						}
+					}
+					if (Me->Turn == 1) {
+						// 내 턴
+						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+					}
+					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+				}
+				if (NowTopic > MaxTopic) {
+					quit = 1;
+				}
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
@@ -3048,7 +3135,7 @@ int main(int argc, char *argv[])
 					}
 					SDL_RenderPresent(renderer);
 					//printf("render	");
-					continue; 
+					continue;
 				}
 				switch (event.type)
 				{
@@ -3060,26 +3147,13 @@ int main(int argc, char *argv[])
 						TimerRect.w = TimerTemp;
 						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
 						if (TimerRect.w < 0) { // DB연동해야함
-							gameuser[NowPlayer - 1].Turn = 0;
 							if (bangsang == 1)
 							{
-								sprintf(ServerParam.message, "topic %s", Get_Random_Topic(cons));
+								sprintf(ServerParam.message, "timeout %s", Get_Random_Topic(cons));
 								sendall(&ServerParam);
+								TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 							}
-							while (1)
-							{
-								NowPlayer %= 4;
-								NowPlayer++;
-								if (gameuser[NowPlayer - 1].status != 0) {
-									gameuser[NowPlayer - 1].Turn = 1;
-									break;
-								}
-							}
-							NowTopic++;
-							if (NowTopic > MaxTopic) {
-								quit = 1;
-							}
-
+							
 						}
 						else {
 							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
@@ -3131,16 +3205,8 @@ int main(int argc, char *argv[])
 							Shift = 0;
 							han2unicode(Topics, InGameTopic);
 							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
-								gameuser[NowPlayer - 1].Turn = 0;
-								Me->Turn = 1;
-								NowPlayer = Me->Th;
-								NowTopic++;
-								if (NowTopic > MaxTopic) {
-									return 0;
-								}
-								Me->Count++;
-								UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-								TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
+								send(ClientParam.Cconnect_socket, query, 30, 0);
 							}
 							wcscpy(InGameChat, L"");
 							wcscpy(InGameTopic, L"");
@@ -3279,11 +3345,11 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 						//printf("render	");
 					}
-					if(Me->Turn == 1)
-					Streaming(  STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+					if (Me->Turn == 1)
+						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 					continue;
 				}
-				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket,Me->Turn) == 1) {
+				if (ChangeColor(&event, &canvas->Color, RgbRect, ClientParam.Cconnect_socket, Me->Turn) == 1) {
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
@@ -3343,7 +3409,7 @@ int main(int argc, char *argv[])
 					if (NewButton->Flag == ACTIVATED) {
 						//			SDL_Delay(100);
 						if (Me->Turn == 1)
-						Streaming( NEW, 0, 0, 0, ClientParam.Cconnect_socket);
+							Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;
@@ -3406,15 +3472,17 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (PassButton->Flag == ACTIVATED) {
 						if (Me->Turn == 1) {// DB연동
-							NowPlayer %= 4;
-							// Topis[NowTopic-1]의 문자열을 DB에서 바꿔주는 코드가 필요
-							NowPlayer++;
-							Me->Turn = 0;
-							gameuser[NowPlayer - 1].Turn = 1;
-							SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-							// send문으로 현재플레이어가 NowPlayer라는 걸 알려야 함
-							UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-							TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+							int i = NowPlayer;
+							while (1)
+							{
+								i %= 4;
+								i++;
+								if (gameuser[i - 1].status != 0) {
+									break;
+								}
+							}
+							sprintf(query, "pass %s %d", Get_Random_Topic(cons), i);
+							send(ClientParam.Cconnect_socket, query, 30, 0);
 						}
 						//			SDL_Delay(100);
 					}

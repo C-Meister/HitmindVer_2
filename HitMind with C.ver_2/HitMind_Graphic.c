@@ -1419,3 +1419,6 @@ void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 
 	}
 }
+void PrintInChatting(SDL_Renderer * renderer, Chating * chattings) {
+	
+}

@@ -102,6 +102,7 @@ void connectServer(SockParam *param) {
 클라이언트에게 신호가 오면 send로 보내주는 역할을 함
 */
 void HandleClient(SockParam *param) {
+	char query[30];
 	int ClientNumber = param->num;
 	while (1) {
 		if (param->sockethappen == 5)
@@ -156,6 +157,11 @@ void HandleClient(SockParam *param) {
 				sprintf(param->message, "connect %d %d", ClientNumber, param->gameuser[ClientNumber].ownnum);
 				sendall(param);
 
+			}
+			else if (strncmp(param->message, "currect answer", 14) == 0) {
+				sscanf(param->message, "currect answer %s", query);
+				sprintf(param->message, "answer %d %s", ClientNumber + 1, query);
+				sendall(param);
 			}
 			else if (strcmp(param->message, "game ready") == 0)
 			{
@@ -217,7 +223,7 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-			printf("%s\n", param->message);
+		//	printf("%s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				PushUserEvent(param->message);
 				continue;
@@ -228,7 +234,10 @@ void Clientrecv(SockParam *param) {
 					Sleep(1);
 				}
 			}
-
+			else if (strncmp(param->message, "pass ", 5) == 0) {
+				sscanf(param->message, "pass %s %d", param->topic, &param->num);
+				param->sockethappen = InGamePassButton;
+			}
 			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
 				i = 0;
@@ -271,6 +280,10 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "topic %s", param->topic);
 				param->sockethappen = NewTopicEvent;
 			}
+			else if (strncmp(param->message, "timeout ", 8) == 0) {
+				sscanf(param->message, "timeout %s", param->topic);
+				param->sockethappen = TimeOutEvent;
+			}
 			else if (strncmp(param->message, "i'm bang ", 8) == 0)
 			{
 				sscanf(param->message, "i'm bang %d", &num);
@@ -285,6 +298,10 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
 				param->sockethappen = UserHappenEvent;
+			}
+			else if (strncmp(param->message, "answer ", 7) == 0) {
+				sscanf(param->message, "answer %d %s", &param->num, param->topic);
+				param->sockethappen = CurrectAnswerEvent;
 			}
 			else if (strncmp(param->message, "exit ", 5) == 0)
 			{
