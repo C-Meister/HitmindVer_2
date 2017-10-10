@@ -102,7 +102,7 @@ void connectServer(SockParam *param) {
 클라이언트에게 신호가 오면 send로 보내주는 역할을 함
 */
 void HandleClient(SockParam *param) {
-	char query[30];
+	char query[256];
 	int ClientNumber = param->num;
 	while (1) {
 		if (param->sockethappen == 5)
@@ -110,7 +110,8 @@ void HandleClient(SockParam *param) {
 			closesocket(param->Sconnect_socket[ClientNumber]);
 			break;
 		}
-		if (recv(param->Sconnect_socket[ClientNumber], param->message, 40, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
+		if (recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
+			printf("Server : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0 && i != ClientNumber)
@@ -119,6 +120,11 @@ void HandleClient(SockParam *param) {
 				continue;
 			}
 			//printf("Recv()");
+			else if (strncmp(param->message, "chat ", 5) == 0) {
+				sscanf(param->message, "chat %[^\n]s", query);
+				sprintf(param->message, "chat %d %s", ClientNumber, query);
+				sendall(param);
+			}
 			else if (strncmp(param->message, "player connect", 13) == 0) { //받은 패킷이 player connect라면
 				//printf("%d 접속\n", ClientNumber);
 				sscanf(param->message, "player connect %d", &(param->gameuser[ClientNumber].ownnum));
@@ -223,7 +229,7 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-		//	printf("%s\n", param->message);
+			printf("Client : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				PushUserEvent(param->message);
 				continue;
@@ -233,6 +239,12 @@ void Clientrecv(SockParam *param) {
 				while (param->sockethappen != 0) {
 					Sleep(1);
 				}
+			}
+			else if (strncmp(param->message, "chat ", 5) == 0)
+			{
+				sscanf(param->message, "chat %d %[^\n]s", &param->num, param->chat_message);
+				param->sockethappen = SocketChattingEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "pass ", 5) == 0) {
 				sscanf(param->message, "pass %s %d", param->topic, &param->num);
@@ -244,7 +256,7 @@ void Clientrecv(SockParam *param) {
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
 
-					//printf("%s\n", param->message);
+					printf("PlayerCheck : %s\n", param->message);
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
@@ -274,43 +286,51 @@ void Clientrecv(SockParam *param) {
 				param->gameuser[param->num].status = 1;
 				param->gameuser[param->num].ownnum = num2;
 				param->sockethappen = UserHappenEvent;
-
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "topic ", 6) == 0) {
 				sscanf(param->message, "topic %s", param->topic);
 				param->sockethappen = NewTopicEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "timeout ", 8) == 0) {
 				sscanf(param->message, "timeout %s", param->topic);
 				param->sockethappen = TimeOutEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "i'm bang ", 8) == 0)
 			{
 				sscanf(param->message, "i'm bang %d", &num);
 				param->gameuser[num].Master = 1;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "ready ", 5) == 0) {
 				sscanf(param->message, "ready %d", &num);
 				param->gameuser[num].status = 2;
 				param->sockethappen = UserHappenEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "noready ", 7) == 0) {
 				sscanf(param->message, "noready %d", &num);
 				param->gameuser[num].status = 1;
 				param->sockethappen = UserHappenEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "answer ", 7) == 0) {
 				sscanf(param->message, "answer %d %s", &param->num, param->topic);
 				param->sockethappen = CurrectAnswerEvent;
+				PushSocketEvent();
 			}
 			else if (strncmp(param->message, "exit ", 5) == 0)
 			{
 				sscanf(param->message, "exit %d", &param->num);
 				param->gameuser[param->num].status = 0;
 				param->sockethappen = UserHappenEvent;
+				PushSocketEvent();
 			}
 			else if (strcmp(param->message, "bangsang exit") == 0) {
 				param->sockethappen = MasterExitEvent;
+				PushSocketEvent();
 			}
 			else if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);

@@ -204,9 +204,11 @@ typedef struct Socket_Parameters {
 	uintptr_t Clientthread;
 	char playerinfo[MAXPEOPLE][30];
 	char message[200];
+	char chat_message[256];
 	char serverip[50];
 	char nextserverip[50];
 	int sockethappen;
+
 	int num;
 	char * topic;
 	Hit_User * myuser;

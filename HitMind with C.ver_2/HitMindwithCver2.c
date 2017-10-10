@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 	int setting_main = 0;
 	int isplaygame = 0;
 	int pass_length = 0;
-	char query[128];
+	char query[256];
 	char utf8[256] = "";// utf8 변환에 필요한 배열
 	int my_game_number = 0;
 	char wtf8[768] = "";
@@ -2626,7 +2626,7 @@ int main(int argc, char *argv[])
 			sprintf(query, "update user set status = 0 where num = %d", myuser->ownnum);
 			mysql_query(cons, query);
 		}
-		system("cls");
+	//	system("cls");
 		if (isplaygame == 1)
 		{
 			qquit = 0;
@@ -2790,7 +2790,8 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == SocketChattingEvent)
 				{
-
+					ClientParam.sockethappen = 0;
+					gameuser[ClientParam.num].ownnum;
 				}
 				if (ClientParam.sockethappen == ChangeHostEvent)
 				{
@@ -3219,6 +3220,11 @@ int main(int argc, char *argv[])
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 
 				}
+				if (ClientParam.sockethappen == SocketChattingEvent)
+				{
+					ClientParam.sockethappen = 0;
+					gameuser[ClientParam.num].ownnum;
+				}
 				if (ClientParam.sockethappen == TimeOutEvent) {
 					ClientParam.sockethappen = 0;
 					gameuser[NowPlayer - 1].Turn = 0;
@@ -3356,6 +3362,10 @@ int main(int argc, char *argv[])
 							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
 								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
 								send(ClientParam.Cconnect_socket, query, 30, 0);
+							}
+							else {
+								sprintf(query, "chat %S", InGameChat);
+								send(ClientParam.Cconnect_socket, query, 180, 0);
 							}
 							wcscpy(InGameChat, L"");
 							wcscpy(InGameTopic, L"");
