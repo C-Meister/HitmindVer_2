@@ -3553,6 +3553,11 @@ int main(int argc, char *argv[])
 				Sleep(1);
 			}
 			ClientParam.sockethappen = 0;
+			if (Me->Turn == 1) {
+				// 내 턴
+				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+				Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+			}
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
