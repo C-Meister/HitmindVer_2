@@ -206,6 +206,9 @@ int main(int argc, char *argv[])
 						RenderTextureXYWH(renderer, TitleText, set_start_x - (Display_X * 0.078), Display_Y / 10, Display_X / 2, Display_Y / 3);
 						PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255, 1);
 						RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
+
+
+						
 						SDL_RenderPresent(renderer);
 						sum = 0;
 					}
@@ -1277,7 +1280,7 @@ int main(int argc, char *argv[])
 					}
 
 				}
-
+				
 
 				textinput = false;
 
@@ -2633,6 +2636,8 @@ int main(int argc, char *argv[])
 			int statusprint = 0;
 			int isready = 0;
 			int byee = 0;
+			sprintf(query, "update user set status = 3 where ownnum = %d", myuser->ownnum);
+			mysql_query(cons, query);
 			if (ClientParam.Cconnect_socket == 0)
 			{
 				loginsuccess = 1;
@@ -2719,8 +2724,8 @@ int main(int argc, char *argv[])
 								enter = true;
 							else if (wcslen(ID_put) > 0) {
 								LobbyShift = 0;
-								sprintf(query, "chatting %S", ID_put);
-								send(ClientParam.Cconnect_socket, query, 40, 0);
+								sprintf(query, "chat %S", ID_put);
+								send(ClientParam.Cconnect_socket, query, 180, 0);
 							}
 						}
 
@@ -3126,6 +3131,7 @@ int main(int argc, char *argv[])
 			UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 			//
 			// 타이머 생성
+			int currectshowtimer = 0;
 			int DefaultTimer = TimerRect.w;
 			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
@@ -3148,6 +3154,9 @@ int main(int argc, char *argv[])
 				Sleep(1);
 			}
 			ClientParam.sockethappen = 0;
+			char pasttopic[128] = { 0 };
+			strcpy(pasttopic, Topics);
+
 			if (Me->Turn == 1) {
 				// 내 턴
 				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
@@ -3168,7 +3177,7 @@ int main(int argc, char *argv[])
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-
+					strcpy(pasttopic, Topics);
 				}
 				if (ClientParam.sockethappen == MasterExitEvent)
 				{
@@ -3212,13 +3221,51 @@ int main(int argc, char *argv[])
 					ClientParam.sockethappen = 0;
 					NowTopic++;
 					gameuser[NowPlayer - 1].Turn = 0;
-					gameuser[ClientParam.num - 1].Turn = 1;
-					gameuser[ClientParam.num - 1].Count++;
+					
+					gameuser[ClientParam.num - 1].Count++;		
 					NowPlayer = ClientParam.num;
-					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					//시작
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+					FillRoundRect(renderer, 211, 211, 211, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.18, 20 * ((float)Display_X / 1920));
+					FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.04, 20 * ((float)Display_X / 1920));
+					Put_Text_Center(renderer, "알림", Display_X * 0.48, Display_Y * 0.4, Display_X * 0.06, Display_Y * 0.04, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
 
+					FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.455, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
+					FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.515, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
+
+					//변수를 출력해야 할 곳
+					//사람 이름
+					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.422, Display_Y * 0.46, Display_X * 0.08, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
+					Put_Text_Center(renderer,gameuser[NowPlayer-1].Nickname, Display_X * 0.422, Display_Y * 0.465, Display_X * 0.08, Display_Y * 0.03, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
+					PutText(renderer, "님이 맞추셨습니다.", Display_X * 0.505, Display_Y * 0.468, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					//정답
+					PutText(renderer, "정답은", Display_X * 0.43, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.47, Display_Y * 0.52, Display_X * 0.1, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
+					Put_Text_Center(renderer, pasttopic, Display_X * 0.47, Display_Y * 0.521, Display_X * 0.1, Display_Y * 0.04, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
+					
+					PutText(renderer, "입니다.", Display_X * 0.5735, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					strcpy(pasttopic, Topics);
+					
+					
+					currectshowtimer = 1;
+					
+				}
+				if (currectshowtimer != 0 && event.user.code == TIMER && event.type == SDL_USEREVENT)
+				{
+					TimerTemp = DefaultTimer;
+					currectshowtimer++;
+					if (currectshowtimer > 60)
+					{
+						currectshowtimer = 0;
+						SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+						gameuser[NowPlayer - 1].Turn = 1;
+						if (Me->Turn == 1) {
+							// 내 턴
+							Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+							Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+						}
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+					}
 				}
 				if (ClientParam.sockethappen == SocketChattingEvent)
 				{
