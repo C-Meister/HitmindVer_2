@@ -3558,7 +3558,7 @@ int main(int argc, char *argv[])
 				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 				Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
 			}
-			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
+			uintptr_t timerthread = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
@@ -3577,6 +3577,8 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == MasterExitEvent)
 				{
+					send(ClientParam.Cconnect_socket, "exit", 30, 0);
+					
 					ClientParam.sockethappen = 0;
 					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
 					mysql_query(cons, query);
@@ -3584,11 +3586,12 @@ int main(int argc, char *argv[])
 					isplaygame = 0;
 					loginsuccess = 1;
 					roop = 1;
-					send(ClientParam.Cconnect_socket, "exit", 30, 0);
 					Sleep(10);
 					ClientParam.sockethappen = 5;
 					ClientParam.Cconnect_socket = 0;
 					quit = 1;
+
+					WSACleanup();
 				}
 				if (ClientParam.sockethappen == UserHappenEvent)
 				{
@@ -3717,6 +3720,36 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
+					if (event.key.keysym.sym == SDLK_ESCAPE) {
+						
+						if (bangsang == 1) {
+							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+							mysql_query(cons, query);
+							strcpy(ServerParam.message, "bangsang exit");
+							sendall(&ServerParam);
+							Sleep(100);
+							ServerParam.sockethappen = 5;
+							closesocket(ServerParam.Slisten_socket);
+							bangsang = 0;
+						}
+						else
+						{
+							sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+							mysql_query(cons, query);
+							isstartgame = 0;
+							isplaygame = 0;
+							loginsuccess = 1;
+							roop = 1;
+							send(ClientParam.Cconnect_socket, "exit", 30, 0);
+							Sleep(100);
+							ClientParam.sockethappen = 5;
+							ClientParam.Cconnect_socket = 0;
+							WSACleanup();
+							quit = true;
+						}
+					
+						break;
+					}
 					if (Chat != ACTIVATED)
 						break;
 					if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
@@ -3766,6 +3799,7 @@ int main(int argc, char *argv[])
 						hangeul = false;
 						textinput = true;
 					}
+					
 					else {
 						hangeul = true;
 						slice++;
@@ -3773,17 +3807,6 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_QUIT:
 
-
-					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					mysql_query(cons, query);
-					isstartgame = 0;
-					isplaygame = 0;
-					loginsuccess = 1;
-					roop = 1;
-					send(ClientParam.Cconnect_socket, "exit", 30, 0);
-					Sleep(100);
-					ClientParam.sockethappen = 5;
-					ClientParam.Cconnect_socket = 0;
 					if (bangsang == 1) {
 						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 						mysql_query(cons, query);
@@ -3794,7 +3817,21 @@ int main(int argc, char *argv[])
 						closesocket(ServerParam.Slisten_socket);
 						bangsang = 0;
 					}
-					WSACleanup();
+					else
+					{
+						sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						isstartgame = 0;
+						isplaygame = 0;
+						loginsuccess = 1;
+						roop = 1;
+						send(ClientParam.Cconnect_socket, "exit", 30, 0);
+						Sleep(100);
+						ClientParam.sockethappen = 5;
+						ClientParam.Cconnect_socket = 0;
+						WSACleanup();
+					}
+
 					quit = true;
 					break;
 				case SDL_WINDOWEVENT:
@@ -4023,6 +4060,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
+			
 			quit = 0;
 			free(canvas);
 			free(StrongSlider);
