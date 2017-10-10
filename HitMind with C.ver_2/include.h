@@ -27,12 +27,15 @@
 #define CurrectAnswerEvent 8
 #define SocketChattingEvent 33
 #define TimeOutEvent 35
+//SDL_Event UserEvent
+#define TIMER 0
+#define SOCKETHAPPEN 5
 
+//Draw
 #define PENCILCLICK 1
 #define PENCILDRAG 2
 #define ERASERCLICK 3
 #define ERASERDRAG 4
-#define TIMER 0
 #define STRONG 5
 #define COLOR 6
 #define NEW 7 
@@ -329,9 +332,10 @@ void PrintUserInfo(SDL_Renderer* Renderer, User *User, SDL_Rect UserRect);
 void CenterArrange(Text * Text);
 void CreateText(Text* Text, SDL_Renderer * Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 void RenderText( Text * Text);
+void PushSocketEvent(void);
 void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
-int RoomX_Setting(roomX *roomx[],int Display_x);
+int RoomX_Setting(roomX *roomx, int Display_x);
 //---------------MySql 함수---------------
 int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
 //인지 체크하는 함수

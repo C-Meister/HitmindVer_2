@@ -1350,6 +1350,12 @@ void PushUserEvent(char receive[]) {
 	SDL_PushEvent(&ViewEvent);
 	return;
 }
+void PushSocketEvent(void) {
+	SDL_Event event = { 0, };
+	event.type = SDL_USEREVENT;
+	event.user.code = SOCKETHAPPEN;
+	SDL_PushEvent(&event);
+}
 void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 	int data1 = (int)pdata1;
 	int data2 = (int)pdata2;

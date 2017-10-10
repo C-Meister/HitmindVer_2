@@ -319,7 +319,7 @@ void Clientrecv(SockParam *param) {
 				param->sockethappen = ChangeHostEvent;
 				// 소켓 닫음
 				// 오픈 서버
-				WSACleanup(param->wsadata);
+				WSACleanup();
 				OpenServer(param);
 				break;
 			}
@@ -329,7 +329,7 @@ void Clientrecv(SockParam *param) {
 				// 소켓 닫음
 				closesocket(param->Cconnect_socket);
 				// 서버 연결
-				WSACleanup(param->wsadata);
+				WSACleanup();
 				connectServer(param);
 				break;
 			}
