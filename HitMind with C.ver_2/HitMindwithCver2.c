@@ -60,8 +60,11 @@ int main(int argc, char *argv[])
 	}
 	Mix_Music *lobbymusic = Mix_LoadMUS("sound/lobby.mp3");
 	Mix_Music *mainmusic = Mix_LoadMUS("sound/login.mp3");
+	Mix_Chunk *erasersound = Mix_LoadWAV("sound/erase.wav");
+	Mix_Chunk *pencilsound = Mix_LoadWAV("sound/pencil.wav");
+	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
-	Mix_VolumeMusic(BGmusic);
+	Mix_VolumeMusic(BGmusic*1.28);
 
 	
 
@@ -2039,7 +2042,7 @@ int main(int argc, char *argv[])
 					warning.ison = 0;
 					PutText(renderer, "방만들기", Display_X * 0.72 + 20, Display_Y * 0.047 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, 35 * ((float)Display_Y) / 1080, 255, 255, 255, 2);
 					int question_value = 10;	//5 ~ 50
-					int question_time = 30;		// 10 ~ 180
+					int question_time = 60;		// 10 ~ 180
 					Slider * slide_question = (Slider *)malloc(sizeof(Slider));
 					Slider * slide_time = (Slider *)malloc(sizeof(Slider));
 					CreateSlider(slide_question, Slider_Bar, Slider_slide, set_start_x + set_start_w * 0.3, set_start_y + set_start_h * 0.72, set_start_w * 0.5, set_start_h * 0.03, set_start_w * 0.03, set_start_h * 0.08, &question_value, 5, 50, question_value, HORIZONTAL);
@@ -2321,9 +2324,11 @@ int main(int argc, char *argv[])
 						FillRoundRect(renderer, 0, 176, 240, set_start_x + set_start_w * 0.83, set_start_y + set_start_h * 0.855, set_start_w* 0.12, set_start_h * 0.1, 32 * ((float)Display_X / 1920));
 
 						//question_value 출력
-						PutText(renderer, _itoa(question_value, db_id, 10), set_start_x + set_start_w * 0.85, set_start_y + set_start_h * 0.7, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, _itoa(question_value, db_id, 10), set_start_x + set_start_w * 0.83, set_start_y + set_start_h * 0.685, set_start_w* 0.12, set_start_h * 0.1, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
+						
 						//question_time 출력
-						PutText(renderer, _itoa(question_time, db_id, 10), set_start_x + set_start_w * 0.845, set_start_y + set_start_h * 0.87, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, _itoa(question_time, db_id, 10), set_start_x + set_start_w * 0.83, set_start_y + set_start_h * 0.855, set_start_w* 0.12, set_start_h * 0.1, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
+						
 
 						DrawSlider(renderer, slide_time);
 
@@ -2557,8 +2562,11 @@ int main(int argc, char *argv[])
 
 
 					}
-					changesetting(BGmusic, Sound, Display_X, Display_Y, Full);
+				
 					Mix_VolumeMusic(BGmusic*1.28);
+					Mix_VolumeChunk(erasersound,Sound*1.28);
+					Mix_VolumeChunk(pencilsound, Sound*1.28);
+					Mix_VolumeChunk(killsound, Sound*1.28);
 
 					SDL_DestroyTexture(Setting_back);
 					SDL_DestroyTexture(Setting_Close_click);
@@ -3208,6 +3216,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == CurrectAnswerEvent)
 				{
+					Mix_PlayChannel(0, killsound, 0);
 					ClientParam.sockethappen = 0;
 					NowTopic++;
 					gameuser[NowPlayer - 1].Turn = 0;
@@ -3520,8 +3529,10 @@ int main(int argc, char *argv[])
 					continue;
 				}
 				if (UpdateButton(PencilButton, &event) == 1) {
+					
 					DrawButton(PencilButton);
 					if (PencilButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, pencilsound, 0); //연필 사운드
 						EraserButton->Flag = DEACTIVATED;
 						DrawButton(EraserButton);
 						canvas->Flag = PENCIL;
@@ -3533,14 +3544,17 @@ int main(int argc, char *argv[])
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+						
 					}
 					SDL_RenderPresent(renderer);
 					//printf("render	");
+					
 					continue;
 				}
 				if (UpdateButton(EraserButton, &event) == 1) {
 					DrawButton(EraserButton);
 					if (EraserButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, erasersound, 0); //지우게 사운드
 						PencilButton->Flag = DEACTIVATED;
 						DrawButton(PencilButton);
 						canvas->Flag = ERASER;
@@ -3655,6 +3669,8 @@ int main(int argc, char *argv[])
 				}
 			}
 			TerminateThread(SoundThread, 0); //쓰레드 종료
+			Mix_PauseMusic();
+			Mix_PlayMusic(lobbymusic,-1);
 			TerminateThread(timerthread, 0);
 			quit = 0;
 			free(canvas);
