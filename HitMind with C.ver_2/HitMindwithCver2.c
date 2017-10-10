@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 	ZeroMemory(&ServerParam, sizeof(SockParam));
 	ZeroMemory(&ClientParam, sizeof(SockParam));
 	int bangsang = 0;
+	srand((unsigned)time(NULL));
 
 	ServerParam.s = &server;
 	ServerParam.c = &client;
@@ -62,7 +63,7 @@ int main(int argc, char *argv[])
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic);
 
-	//_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
+	
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -1286,7 +1287,7 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-
+			
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			ClientParam.topic = Topics;
@@ -2878,10 +2879,16 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(can);
 			isplaygame = 0;
 		}
+
+
 		if (isstartgame == 1)
 		{
-
-
+			Mix_PauseMusic();
+			DWORD ExitSoundThread=0;
+			HANDLE SoundThread = (HANDLE)_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
+			
+			
+			
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			int MaxTopic = My_Room.question; //총 토픽 개수
@@ -2907,7 +2914,8 @@ int main(int argc, char *argv[])
 			SDL_Rect TimerRect = { Display_X*0.011,Display_Y*0.76,Display_X*0.8 - Display_X*0.017,Display_Y*0.007 };
 			SDL_Rect UserRect = { Display_X*0.011,Display_Y*0.79,Display_X*0.8*0.24,Display_Y*0.19 };
 			SDL_Color TextColor = { 0,0,0,0 };
-
+			
+			
 
 			SDL_Texture * PencilTexture = LoadTexture(renderer, ".//design//pencil2.png");
 			SDL_Texture * RecycleTexture = LoadTexture(renderer, ".//design//Recycle.jpg");
@@ -3501,6 +3509,7 @@ int main(int argc, char *argv[])
 					continue;
 				}
 			}
+			TerminateThread(SoundThread, 0); //쓰레드 종료
 			quit = 0;
 			free(canvas);
 			free(StrongSlider);
@@ -3528,6 +3537,7 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(HEnterTexture);
 			SDL_DestroyTexture(CharacterTexture);
 			SDL_DestroyTexture(StatusTexture);
+			
 		}
 	}
 
@@ -3547,8 +3557,7 @@ int main(int argc, char *argv[])
 	{
 		SDL_FreeCursor(cursor);
 	}
-	Mix_FreeMusic(lobbymusic);
-	Mix_FreeMusic(mainmusic);
+	Mix_CloseAudio();
 	SDL_DestroyTexture(LoadingBar);
 	SDL_DestroyTexture(WaitBar);
 	SDL_DestroyTexture(TitleText);
