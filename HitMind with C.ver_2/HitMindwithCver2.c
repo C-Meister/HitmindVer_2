@@ -1363,7 +1363,7 @@ int main(int argc, char *argv[])
 				chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
 			}
 			if (chatingH >(Display_Y*0.17)) {
-				chatslide->End = chatingH - (Display_Y *(0.17));
+				chatslide->End = chatingH - (Display_Y *(0.17))+ 30 * ((float)Display_X / 1920);
 				MoveSlider_value(chatslide, chatslide->End);
 			}
 			else {
@@ -1615,7 +1615,7 @@ int main(int argc, char *argv[])
 								chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
 							}
 							if (chatingH >(Display_Y*0.17)) {
-								chatslide->End = chatingH - (Display_Y *(0.17)) ;
+								chatslide->End = chatingH - (Display_Y *(0.17))+30 * ((float)Display_X / 1920);
 								MoveSlider_value(chatslide, *chatslide->Value);
 								chatmovehappen = true;
 							}

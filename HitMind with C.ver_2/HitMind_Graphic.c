@@ -1248,22 +1248,22 @@ void Timer(unsigned int time) {
 		SDL_PushEvent(&event);
 	}
 }
-int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m) {
+int PutText_ln(char * name, int Limit_w, int Limit_y, int Limit_h, SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m) {
 	int DeltaY = 0, Shift = 0, Length = 150;
 	char Name[30]; Unicode unicode[256] = L""; Unicode Sentence[151] = L"";
 	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
 	SDL_Color Color = { r,g,b,0 };
-	SDL_Surface * Surface = NULL;	SDL_Texture* NameTexture= NULL;	SDL_Texture* MsgTexture= NULL;
+	SDL_Surface * Surface = NULL;	SDL_Texture* NameTexture = NULL;	SDL_Texture* MsgTexture = NULL;
 	SDL_Rect Src = { 0 };	SDL_Rect Dst = { 0 };
 	if (m == 1)
-		Surface = TTF_RenderUNICODE_Blended(Font_Size[size],unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Surface = TTF_RenderUNICODE_Blended(Font_Size[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	else if (m == 2)
 		Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	NameTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
 	SDL_QueryTexture(NameTexture, NULL, NULL, &Src.w, &Src.h);
 	Dst.x = x; Dst.y = y; Dst.w = Src.w; Dst.h = Src.h;
-	if(Dst.y>=Limit_y && Dst.y+Dst.h<=Limit_y+Limit_h)
+	if (Dst.y >= Limit_y && Dst.y + Dst.h <= Limit_y + Limit_h)
 		SDL_RenderCopy(renderer, NameTexture, &Src, &Dst);
 	SDL_DestroyTexture(NameTexture);
 	Dst.x += Src.w;
@@ -1272,19 +1272,19 @@ int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * re
 	while (1) {
 		if (Shift > wcslen(unicode))
 			break;
-		wcsncpy(Sentence, unicode+ Shift, Length);
+		wcsncpy(Sentence, unicode + Shift, Length);
 		Sentence[Length] = '\0';
-		if (m==1)
-			TTF_SizeUNICODE(Font_Size[size], Sentence, &Src.w,&Src.h);
-		else if(m==2)
+		if (m == 1)
+			TTF_SizeUNICODE(Font_Size[size], Sentence, &Src.w, &Src.h);
+		else if (m == 2)
 			TTF_SizeUNICODE(Font_Size2[size], Sentence, &Src.w, &Src.h);
 		if (Src.w > Limit_w&&Length>0) {
-			Length*= Limit_w / (float)Src.w;
+			Length *= Limit_w / (float)Src.w;
 		}
 		else {
 			Shift += Length;
 			Length = 150;
-			if (Dst.y < Limit_y || Dst.y+Dst.h > Limit_y + Limit_h) {
+			if (Dst.y < Limit_y || Dst.y + Dst.h > Limit_y + Limit_h) {
 				Dst.y += Dst.h;
 				DeltaY += Dst.h;
 				continue;
@@ -1296,15 +1296,8 @@ int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * re
 			MsgTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 			SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
 			Dst.w = Src.w;
-			Dst.h = Src.h;
-			if (Dst.y < Limit_y || Dst.y > Limit_y + Limit_h) {
-		//		SDL_DestroyTexture(NTexture);
-			//	SDL_DestroyTexture(STexture);
-			//	return 0;
-			}
-			SDL_RenderCopy(renderer, STexture, &Src, &Dst);
-//			SDL_RenderPresent(renderer);
-			SDL_DestroyTexture(STexture);
+			SDL_RenderCopy(renderer, MsgTexture, &Src, &Dst);// 렌더러에 출력
+			SDL_DestroyTexture(MsgTexture);//텍스쳐 파괴
 			Dst.y += Dst.h;
 			DeltaY += Dst.h;
 		}
