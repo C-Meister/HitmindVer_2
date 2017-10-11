@@ -318,11 +318,11 @@ int main(int argc, char *argv[])
 
 										}
 										else if (PASSWORD_INPUT == 1 || pass_length > 0) {
-											strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
-											UTF82EUCKR(db_id, 512, wtf8, 768);
+											strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+											UTF82EUCKR(db_id, 512, utf8, 768);
 											db_id[strlen(db_id)] = '\0';
-											strcpy(wtf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
-											UTF82EUCKR(db_password, 512, wtf8, 768);
+											strcpy(utf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
+											UTF82EUCKR(db_password, 512, utf8, 768);
 											db_password[strlen(db_password)] = '\0';
 											myuser = User_Login_sql(cons, db_id, db_password);
 											if (myuser == -1)
@@ -506,11 +506,11 @@ int main(int argc, char *argv[])
 							}
 							if (PutButtonImage(renderer, login_button_id_noclick, login_button_id_click, set_start_x + Display_X*0.254, set_start_y + Display_Y*0.252, Display_X*0.076, Display_Y*0.065, &event, &happen))	//로그인 버튼
 							{
-								strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
-								UTF82EUCKR(db_id, 512, wtf8, 768);
+								strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+								UTF82EUCKR(db_id, 512, utf8, 768);
 								db_id[strlen(db_id)] = '\0';
-								strcpy(wtf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
-								UTF82EUCKR(db_password, 512, wtf8, 768);
+								strcpy(utf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
+								UTF82EUCKR(db_password, 512, utf8, 768);
 								db_password[strlen(db_password)] = '\0';
 								if (myuser != 0 && myuser != -1) {
 
