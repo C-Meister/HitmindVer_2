@@ -27,7 +27,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -1290,7 +1289,7 @@ int main(int argc, char *argv[])
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			ClientParam.topic = Topics;
-
+			int Deltachat = 5;
 			int allchating_cnt = 0;
 			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
@@ -1335,6 +1334,7 @@ int main(int argc, char *argv[])
 			ClientParam.gameuser = gameuser;
 			ServerParam.gameuser = gameuser;
 
+			int chatingH = 0;
 			int maxchating = 0;
 			int dkdkdk = 0;
 			sprintf(query, "LV %d", myuser->level);
@@ -1343,13 +1343,24 @@ int main(int argc, char *argv[])
 			int nonhappen = 0;
 			usercount = getUesrStatus(cons, MemBerList);
 			int pastusercount = usercount;
-			if (ReadChating_all(cons, chatings) != 0)
+			if ((maxchating=ReadChating_all(cons, chatings)) != 0)
 				allchating_cnt = chatings[0].ownnum;
 			int pastchating_cnt = allchating_cnt;
 			int chatmovehappen = 0;
 			int newdataed = 1;
+			int jeonsong = 0;
 			int LobbyShift = 0;
-
+			for (int i = 0; i < maxchating; i++) {
+				chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
+			}
+			if (chatingH >(Display_Y*0.17)) {
+				chatslide->End = chatingH - (Display_Y *(0.17));
+				MoveSlider_value(chatslide, chatslide->End);
+			}
+			else {
+				chatslide->End = 0;
+				MoveSlider_value(chatslide, 0);
+			}
 			roomX roomx[2];
 			RoomX_Setting(roomx, Display_X);
 			SDL_Delay(100);
@@ -1379,37 +1390,14 @@ int main(int argc, char *argv[])
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
-				SDL_WaitEventTimeout(&event, 1000);
+				if (SDL_WaitEventTimeout(&event, 1000) == 0) {
+					event.type = NULL;
+				}
 				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
 				}
-				if (RefrashEvent == 1)
-				{
-					if (!(event.type == SDL_TEXTEDITING || event.type == SDL_KEYDOWN || event.type == SDL_TEXTINPUT)) {
-						usercount = getUesrStatus(cons, MemBerList);
-						if (usercount != pastusercount) {
-
-							pastusercount = usercount;
-						}
-						newdata[2] = 1;
-						if ((maxchating = ReadChating_all(cons, chatings)) != 0)
-							allchating_cnt = chatings[0].ownnum;
-						if (allchating_cnt != pastchating_cnt) {
-							newdata[1] = 1;
-							pastchating_cnt = allchating_cnt;
-							chatmovehappen = 1;
-
-						}
-						roomcount = Get_Room_List(cons, rooms);
-						if (roomcount != pastroomcount)
-						{
-							newdata[0] = 1;
-							pastroomcount = roomcount;
-						}
-						RefrashEvent = 0;
-					}
-				}
+				
 				switch (event.type)
 				{
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -1477,7 +1465,7 @@ int main(int argc, char *argv[])
 									textinput = true;
 									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
 										allchating_cnt = chatings[0].ownnum;
-									MoveSlider_value(chatslide, chatslide->End);
+									jeonsong = 1;
 									chatmovehappen = 1;
 								}
 							}
@@ -1524,7 +1512,7 @@ int main(int argc, char *argv[])
 						}
 						else {
 							hangeul = true;
-							slice++;
+								slice++;
 						}
 					}
 					break;
@@ -1550,26 +1538,36 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_MOUSEWHEEL:
 					if (event.wheel.y == 1) {
-
 						//	if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
-						if (chattingdrag > chatslide->Start && chattingdrag <= chatslide->End)
-						{
-							if (chattingdrag - 10 > chatslide->Start) {
-								MoveSlider_value(chatslide, chattingdrag - 10);
+				//		if (chattingdrag > chatslide->Start && chattingdrag <= chatslide->End)
+				//		{
+							if (chattingdrag - Deltachat >= chatslide->Start) {
+								MoveSlider_value(chatslide, chattingdrag - Deltachat);
 								chatmovehappen = true;
 							}
-						}
+							else {
+								if (*chatslide->Value != chatslide->Start)
+									chatmovehappen = true;
+								MoveSlider_value(chatslide, chatslide->Start);
+							}
+				//		}
 					}
 					if (event.wheel.y == -1) {
 						//		if (event.motion.x < Display_X * 0.7 && event.motion.y > Display_Y * 0.7)
-						if (chattingdrag >= chatslide->Start && chattingdrag < chatslide->End)
-						{
-							if (chattingdrag + 10 < chatslide->End) {
-								MoveSlider_value(chatslide, chattingdrag + 10);
+				//		if (chattingdrag >= chatslide->Start && chattingdrag < chatslide->End)
+				//		{
+							if (chattingdrag + Deltachat <= chatslide->End) {
+								MoveSlider_value(chatslide, chattingdrag + Deltachat);
 								chatmovehappen = true;
 							}
-						}
+							else {
+								if(*chatslide->Value !=chatslide->End)
+									chatmovehappen = true;
+								MoveSlider_value(chatslide, chatslide->End);
+							}
+				//		}
 					}
+					break;
 				}
 
 				//	}
@@ -1587,7 +1585,49 @@ int main(int argc, char *argv[])
 			|
 			|
 			*/
+				if (jeonsong==1||(RefrashEvent == 1 && !(event.type == SDL_TEXTEDITING || event.type == SDL_KEYDOWN || event.type == SDL_TEXTINPUT)))
+				{
+					
+						usercount = getUesrStatus(cons, MemBerList);
+						if (usercount != pastusercount) {
 
+							pastusercount = usercount;
+						}
+						newdata[2] = 1;
+						if ((maxchating = ReadChating_all(cons, chatings)) != 0)
+							allchating_cnt = chatings[0].ownnum;
+						if (allchating_cnt != pastchating_cnt) {
+							newdata[1] = 1;
+							pastchating_cnt = allchating_cnt;
+							chatmovehappen = 1;
+							chatingH = 0;
+							for (int i = 0; i < maxchating; i++) {
+								chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
+							}
+							if (chatingH >(Display_Y*0.17)) {
+								chatslide->End = chatingH - (Display_Y *(0.17)) ;
+								MoveSlider_value(chatslide, *chatslide->Value);
+								chatmovehappen = true;
+							}
+							else {
+								chatslide->End = 0;
+								MoveSlider_value(chatslide, 0);
+								chatmovehappen = true;
+							}
+						}
+						roomcount = Get_Room_List(cons, rooms);
+						if (roomcount != pastroomcount)
+						{
+							newdata[0] = 1;
+							pastroomcount = roomcount;
+						}
+						RefrashEvent = 0;
+						if (jeonsong == 1) {
+							MoveSlider_value(chatslide, chatslide->End);
+						
+							jeonsong = 0;
+						}
+				}
 
 
 			//1번구역
@@ -1603,6 +1643,7 @@ int main(int argc, char *argv[])
 				}
 				//4번구역
 				if (newdata[1] || chatmovehappen) {
+				//	MoveSlider_value(chatslide, chattingdrag );
 					FillRoundRect(renderer, 255, 255, 255, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.27, 14);
 					DrawRoundRect(renderer, 191, 191, 191, 9, Display_Y * 0.7 + 10 - 1, Display_X * 0.7 + 2, Display_Y * 0.27 + 2, 14, 1);
 					FillUpRoundRect(renderer, 146, 208, 80, 10, Display_Y * 0.7 + 10, Display_X * 0.7, Display_Y * 0.035, 14);
@@ -1615,11 +1656,11 @@ int main(int argc, char *argv[])
 				if (newdata[1] || chatmovehappen) {
 					int DeltaY = 0;
 					//printf("happen\n");
-					for (i = maxchating - 1; i >= 0; i--)
+					for (i = maxchating-1; i >=0; i--)
 					{
 						//	sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
 						//	if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
-						DeltaY += PutText_ln(chatings[i].name, Display_X*0.63, Display_Y*0.75, Display_Y*0.15, renderer, chatings[i].message, Display_X * 0.04, DeltaY + Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						DeltaY += PutText_ln(chatings[i].name, Display_X*0.65, Display_Y *( 0.7+ 0.035) + 10, Display_Y * (0.17), renderer, chatings[i].message, Display_X * 0.02, (Display_Y*(0.7+0.035)+10)+ DeltaY  - chattingdrag + 15 * ((float)Display_X / 1920), 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						//	PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					}
 					newdata[1] = 0;
@@ -1664,7 +1705,7 @@ int main(int argc, char *argv[])
 						enter = false;
 						textinput = true;
 						allchating_cnt = ReadChating_all(cons, chatings);
-						MoveSlider_value(chatslide, chatslide->End);
+					//	MoveSlider_value(chatslide, chatslide->End);
 						newdata[1] = 1;
 						chatmovehappen = 1;
 
@@ -2568,7 +2609,7 @@ int main(int argc, char *argv[])
 
 					RoomX_Setting(roomx, Display_X);
 					newdataed = 1;
-					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
+					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, 30,15/*(Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10)*/, VERTICAL);
 					continue;
 				}
 
@@ -2952,7 +2993,7 @@ int main(int argc, char *argv[])
 
 			CreateCanvas(view, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
 			CreateCanvas(canvas, renderer, 10 + 14, 10 + 14, Display_X * 0.8 - 2 * 14, Display_Y * 0.76 - 2 * 14, 10);
-			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
+			CreateSlider(StrongSlider, BoxTexture, BarTexture, Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 - (1920.0*1920)/(Display_X*Display_X) + 10 + (Display_Y * 0.34*0.275), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.05), Display_X*0.02, Display_Y*0.05, &canvas->Strong, 1.0, MaxStrong, 20.0 / 70 * MaxStrong, HORIZONTAL);
 			CreateButton(PencilButton, renderer, PencilTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
 			CreateButton(EraserButton, renderer, EraserTexture, floor(MaxStrong * 10 / 70.0), Sample.x - MaxStrong / 2.0 + 2 * (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
 			CreateButton(NewButton, renderer, NewTexture, floor(MaxStrong * 7.5 / 70.0), Sample.x - MaxStrong / 2.0 + 3 * (Display_X*0.1825*0.22), Sample.y - MaxStrong / 2.0, MaxStrong, MaxStrong, 0, 0, 255, 64);
@@ -3002,6 +3043,8 @@ int main(int argc, char *argv[])
 			SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 			FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 			//
+			SDL_FillRectXYWH(renderer, LineRect.x, LineRect.y, LineRect.w, LineRect.h, 146, 208, 80);
+			// 초록색 선
 			// 채팅창 
 			RenderTexture(renderer, DChatTexture, &ChatRect);
 			RenderTexture(renderer, EnterTexture, &EnterRect);

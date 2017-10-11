@@ -262,10 +262,11 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
+int HeightOfText(char * name, int Limit_w, SDL_Renderer * renderer, char * sentence, int size, int m);
 void Viewing(View * View, int code, void* data1, void* data2);
 void Streaming(int code, int x, int y, int Strong, SOCKET sending);
 void PushUserEvent(char receive[]);
-int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
+int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
