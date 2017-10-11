@@ -62,10 +62,20 @@ int main(int argc, char *argv[])
 	Mix_Music *mainmusic = Mix_LoadMUS("sound/login.mp3");
 	Mix_Chunk *erasersound = Mix_LoadWAV("sound/erase.wav");
 	Mix_Chunk *pencilsound = Mix_LoadWAV("sound/pencil.wav");
+	Mix_Chunk *booksound = Mix_LoadWAV("sound/book.wav");
+	Mix_Chunk *resound = Mix_LoadWAV("sound/re.wav");
+	Mix_Chunk *whysound = Mix_LoadWAV("sound/why.wav");
+	Mix_Chunk *passsound = Mix_LoadWAV("sound/pass.wav");
 	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic*1.28);
-
+	Mix_VolumeChunk(erasersound, Sound*1.28);
+	Mix_VolumeChunk(pencilsound, Sound*1.28);
+	Mix_VolumeChunk(killsound, Sound*1.28);
+	Mix_VolumeChunk(booksound, Sound*1.28);
+	Mix_VolumeChunk(whysound, Sound*1.28);
+	Mix_VolumeChunk(passsound, Sound*1.28);
+	Mix_VolumeChunk(resound, Sound*1.28);
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
@@ -2563,13 +2573,17 @@ int main(int argc, char *argv[])
 
 						SDL_RenderPresent(renderer);
 
-
+						Mix_VolumeMusic(BGmusic*1.28);
 					}
 
 					Mix_VolumeMusic(BGmusic*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
 					Mix_VolumeChunk(pencilsound, Sound*1.28);
 					Mix_VolumeChunk(killsound, Sound*1.28);
+					Mix_VolumeChunk(booksound, Sound*1.28);
+					Mix_VolumeChunk(whysound, Sound*1.28);
+					Mix_VolumeChunk(passsound, Sound*1.28);
+					Mix_VolumeChunk(resound, Sound*1.28);
 
 					SDL_DestroyTexture(Setting_back);
 					SDL_DestroyTexture(Setting_Close_click);
@@ -3670,6 +3684,7 @@ int main(int argc, char *argv[])
 					DrawButton(NewButton);
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, booksound, 0); //북 사운드
 						//			SDL_Delay(100);
 						if (Me->Turn == 1)
 							Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
@@ -3700,6 +3715,7 @@ int main(int argc, char *argv[])
 					DrawButton(MagButton);
 					SDL_RenderPresent(renderer);
 					if (MagButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, whysound, 0);
 						if (Me->Turn == 0) {// DB연동
 							// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
 							han2unicode(Topics, InGameTopic);
@@ -3719,6 +3735,7 @@ int main(int argc, char *argv[])
 					DrawButton(RecycleButton);
 					SDL_RenderPresent(renderer);
 					if (RecycleButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, resound, 0);
 						if (Me->Turn == 1) { // DB연동
 							sprintf(query, "topic %s", Get_Random_Topic(cons));
 							send(ClientParam.Cconnect_socket, query, 30, 0);
@@ -3734,6 +3751,7 @@ int main(int argc, char *argv[])
 					DrawButton(PassButton);
 					SDL_RenderPresent(renderer);
 					if (PassButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, passsound, 0);
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
 							while (1)
