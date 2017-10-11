@@ -27,8 +27,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-
-	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -1501,9 +1499,7 @@ int main(int argc, char *argv[])
 						{
 							if (hangeul == true && enter == false)
 								enter = true;
-
 						}
-
 						else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 							strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 							SDL_SetClipboardText(wtf8);// 클립보드에 넣음
@@ -1522,7 +1518,7 @@ int main(int argc, char *argv[])
 						}
 						else {
 							hangeul = true;
-								slice++;
+							slice++;
 						}
 					}
 					break;
