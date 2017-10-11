@@ -1470,6 +1470,7 @@ int main(int argc, char *argv[])
 									textinput = true;
 									if ((maxchating = ReadChating_all(cons, chatings)) != 0)
 										allchating_cnt = chatings[0].ownnum;
+									
 									jeonsong = 1;
 									chatmovehappen = 1;
 								}
@@ -2769,6 +2770,8 @@ int main(int argc, char *argv[])
 								LobbyShift = 0;
 								sprintf(query, "chat %S", ID_put);
 								send(ClientParam.Cconnect_socket, query, 180, 0);
+								wcscpy(ID_put, L"");
+
 							}
 						}
 
@@ -3499,6 +3502,7 @@ int main(int argc, char *argv[])
 							if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
 								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
 								send(ClientParam.Cconnect_socket, query, 30, 0);
+
 							}
 							else {
 								sprintf(query, "chat %S", InGameChat);
