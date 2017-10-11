@@ -1311,7 +1311,7 @@ int main(int argc, char *argv[])
 			Refrash.event = &RefrashEvent;
 			Refrash.time = 500;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &Refrash, 0, NULL);
-			Chating chatings[12] = { 0, };
+			Chating chatings[30] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
