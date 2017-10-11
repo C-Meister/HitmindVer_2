@@ -156,6 +156,10 @@ typedef struct MYSQL_CHATING {
 	char message[512];
 	char time[30];
 }Chating;
+typedef struct SOCKET_CHATING {
+	char name[30];
+	char message[512];
+}SOCKCHAT;
 typedef struct Button {
 	SDL_Renderer *Renderer;
 	SDL_Texture * ButtonTexture;
@@ -267,10 +271,11 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
+int HeightOfText(char * name, int Limit_w, SDL_Renderer * renderer, char * sentence, int size, int m);
 void Viewing(View * View, int code, void* data1, void* data2);
 void Streaming(int code, int x, int y, int Strong, SOCKET sending);
 void PushUserEvent(char receive[]);
-int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
+int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
@@ -384,3 +389,5 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int message
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
+//int addChat(SOCKCHAT *Chatlist[],char *data, char *name,int currentnum);
+//void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT * Chatlist[], int first);
