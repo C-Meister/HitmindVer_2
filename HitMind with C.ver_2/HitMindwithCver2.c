@@ -1370,6 +1370,7 @@ int main(int argc, char *argv[])
 				chatslide->End = 0;
 				MoveSlider_value(chatslide, 0);
 			}
+			RESET(gameuser);
 			roomX roomx[2];
 			RoomX_Setting(roomx, Display_X);
 			SDL_Delay(100);
