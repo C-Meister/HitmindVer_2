@@ -27,6 +27,7 @@
 #define CurrectAnswerEvent 8
 #define SocketChattingEvent 33
 #define TimeOutEvent 35
+#define MatchEndEvent 25
 //SDL_Event UserEvent
 #define TIMER 0
 #define SOCKETHAPPEN 5

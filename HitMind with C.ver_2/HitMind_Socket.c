@@ -46,15 +46,6 @@ void OpenServer(SockParam *param) {
 
 			break;
 		}
-		else if (param->Sconnect_socket[idx] == -1) {
-
-			//printf("error\n");
-			closesocket(param->Slisten_socket);
-
-			Sleep(2000);
-
-			exit(1);
-		}
 		else if (param->Sconnect_socket[idx] != 0) {
 
 			param->num = idx;
@@ -236,6 +227,7 @@ void Clientrecv(SockParam *param) {
 			}
 			else if (strcmp(param->message, "game start") == 0) {
 				param->sockethappen = WaitRoomStartEvent;
+				PushSocketEvent();
 				while (param->sockethappen != 0) {
 					Sleep(1);
 				}
@@ -249,6 +241,11 @@ void Clientrecv(SockParam *param) {
 			else if (strncmp(param->message, "pass ", 5) == 0) {
 				sscanf(param->message, "pass %s %d", param->topic, &param->num);
 				param->sockethappen = InGamePassButton;
+				PushSocketEvent();
+				while (param->sockethappen == InGamePassButton)
+				{
+					Sleep(1);
+				}
 			}
 			else if (strcmp(param->message, "playercheck start") == 0) {	// 받은 패킷이 playercheck start라면
 
@@ -324,6 +321,11 @@ void Clientrecv(SockParam *param) {
 					Sleep(1);
 				}
 			}
+			else if (strcmp(param->message, "ingame end") == 0) {
+				closesocket(param->Cconnect_socket);
+				WSACleanup();
+				break;
+			}
 			else if (strncmp(param->message, "exit ", 5) == 0)
 			{
 				sscanf(param->message, "exit %d", &param->num);
@@ -334,6 +336,11 @@ void Clientrecv(SockParam *param) {
 			else if (strcmp(param->message, "bangsang exit") == 0) {
 				param->sockethappen = MasterExitEvent;
 				PushSocketEvent();
+				while (param->sockethappen == MasterExitEvent)
+				{
+					Sleep(1);
+				}
+				
 			}
 			else if (strcmp(param->message, "nexthost") == 0) { // nexthost를 받았을 경우
 				send(param->Cconnect_socket, "nexthostip", 180, 0);
@@ -358,6 +365,7 @@ void Clientrecv(SockParam *param) {
 			}
 			else if (strcmp(param->message, "ingame start") == 0) {
 				param->sockethappen = InGameStartEvent;
+				PushSocketEvent();
 				while (param->sockethappen != 0) {
 					Sleep(1);
 				}
