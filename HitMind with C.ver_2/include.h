@@ -318,6 +318,7 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer * Renderer, int x, int y, int w,
 int UpdateCanvas(Canvas * Canvas, SDL_Event * event, SOCKET sending);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
+int PutButtonImageText(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, int ww, int hh, char *texts, SDL_Event * event, int *happen);
 int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
 void MoveSlider_value(Slider *Slider, int value);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);

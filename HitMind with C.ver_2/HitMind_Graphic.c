@@ -76,6 +76,34 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 			return 1;
 	return 0;
 }
+int PutButtonImageText(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, int ww, int hh, char *texts ,SDL_Event * event, int *happen) {//이미지 버튼 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = ww;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = hh;//매개변수h를 직사각형의 높이에 대입
+	int mouse_x, mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	if (mouse_x > x && mouse_y > y && mouse_x < x + w && mouse_y < y + h)
+	{
+		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		*happen = true;
+		PutText(Renderer, texts, x + Display_X*0.026, y + Display_Y*0.0027, 21 * ((float)Display_X / 1920), 255, 255, 255, 1);
+	}
+	else {
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		PutText(Renderer, texts, x + Display_X*0.026, y+Display_Y*0.0027, 21*((float)Display_X/1920), 0, 0, 0, 1);
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+	return 0;
+}
 int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen) {//이미지 버튼 선언
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화

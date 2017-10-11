@@ -563,7 +563,7 @@ int main(int argc, char *argv[])
 								}
 							}
 
-							if (PutButtonImage(renderer, autologin_noclick, autologin_click, set_start_x + Display_X*0.02, set_start_y + Display_Y*0.259, Display_X*0.101, Display_Y*0.043, &event, &happen))	//자동로그인 체크박스
+							if (PutButtonImageText(renderer, autologin_noclick, autologin_click, set_start_x + Display_X*0.021, set_start_y + Display_Y*0.26, Display_X*0.101, Display_Y*0.033, Display_X*0.018, Display_Y*0.0314,"자동 로그인", &event, &happen))	//자동로그인 체크박스
 							{
 								MouseUP_Wait;
 								if (autologin_checking == 0)
@@ -579,7 +579,7 @@ int main(int argc, char *argv[])
 							}
 							if (autologin_checking == 1)		//로그인 체크
 							{
-								RenderTextureXYWH(renderer, autologin_check, set_start_x + Display_X*0.011, set_start_y + Display_Y*0.235, Display_X*0.11, Display_Y*0.074);
+								RenderTextureXYWH(renderer, autologin_check, set_start_x + Display_X*0.011, set_start_y + Display_Y*0.235, Display_X*0.04375, Display_Y*0.074);
 							}
 							if (PutButtonImage(renderer, login_signup_noclick, login_signup_click, set_start_x + Display_X*0.044, set_start_y + Display_Y* 0.310, Display_X*0.094, Display_Y*0.065, &event, &happen))	//회원가입 버튼
 							{
