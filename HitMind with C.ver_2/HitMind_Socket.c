@@ -224,7 +224,7 @@ void Clientrecv(SockParam *param) {
 	int num2;
 	while (1) {
 
-		if (param->sockethappen == 5) {
+		if (param->endhappen == 1) {
 			closesocket(param->Cconnect_socket);
 			break;
 		}
@@ -320,6 +320,9 @@ void Clientrecv(SockParam *param) {
 				sscanf(param->message, "answer %d %s", &param->num, param->topic);
 				param->sockethappen = CurrectAnswerEvent;
 				PushSocketEvent();
+				while (param->sockethappen == CurrectAnswerEvent) {
+					Sleep(1);
+				}
 			}
 			else if (strncmp(param->message, "exit ", 5) == 0)
 			{

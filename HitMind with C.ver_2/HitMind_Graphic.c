@@ -76,6 +76,34 @@ int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * 
 			return 1;
 	return 0;
 }
+int PutButtonImageText(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, int ww, int hh, char *texts ,SDL_Event * event, int *happen) {//이미지 버튼 선언
+	SDL_Rect Src;// 직사각형 선언
+	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
+	Src.y = 0;// 직사각형의 왼쪽위 꼭짓점의 y좌표초기화
+	SDL_Rect Dst;
+	Dst.x = x;//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = y;//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = ww;//매개변수w를 직사각형의 너비에 대입
+	Dst.h = hh;//매개변수h를 직사각형의 높이에 대입
+	int mouse_x, mouse_y;
+	SDL_GetMouseState(&mouse_x, &mouse_y);
+	if (mouse_x > x && mouse_y > y && mouse_x < x + w && mouse_y < y + h)
+	{
+		SDL_QueryTexture(MouseOnImage, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, MouseOnImage, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		*happen = true;
+		PutText(Renderer, texts, x + Display_X*0.026, y + Display_Y*0.0027, 21 * ((float)Display_X / 1920), 255, 255, 255, 1);
+	}
+	else {
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+		SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+		PutText(Renderer, texts, x + Display_X*0.026, y+Display_Y*0.0027, 21*((float)Display_X/1920), 0, 0, 0, 1);
+	}
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+		if (event->button.x > x && event->button.y > y && event->button.x < x + w && event->button.y < y + h)
+			return 1;
+	return 0;
+}
 int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen) {//이미지 버튼 선언
 	SDL_Rect Src;// 직사각형 선언
 	Src.x = 0;// 직사각형의 왼쪽위 꼭짓점의 x좌표초기화
@@ -335,6 +363,16 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
+void DrawRect(SDL_Renderer * renderer, int r, int g, int b, int x, int y, int w, int h)
+{
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.h = h;
+	rect.w = w;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 0);
+	SDL_RenderFillRect(renderer, &rect);
+}
 void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	int out_x, out_y;
@@ -526,8 +564,10 @@ void MoveSlider_value(Slider *Slider, int value) {
 	*Slider->Value = value;
 }
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider) {
-	RenderTexture(Renderer, Slider->BarTexture, &Slider->Bar);
-	RenderTexture(Renderer, Slider->BoxTexture, &Slider->Box);
+	if (Slider->Start != Slider->End) {
+		RenderTexture(Renderer, Slider->BarTexture, &Slider->Bar);
+		RenderTexture(Renderer, Slider->BoxTexture, &Slider->Box);
+	}
 	return;
 }
 int UpdateSlider(Slider* Slider,  SDL_Event * event) {
@@ -568,24 +608,32 @@ int UpdateSlider(Slider* Slider,  SDL_Event * event) {
 
 		if (Slider->Click == true) {
 			if (Slider->Flag == HORIZONTAL) {
-				if (x > Slider->Bar.x + Slider->Bar.w)
+				if (x > Slider->Bar.x + Slider->Bar.w) {
 					Slider->Box.x = Slider->Bar.x + Slider->Bar.w - Slider->Box.w / 2;
-				else if (x < Slider->Bar.x)
+					*Slider->Value = Slider->End;
+				}
+				else if (x < Slider->Bar.x) {
 					Slider->Box.x = Slider->Bar.x - Slider->Box.w / 2;
+					*Slider->Value = Slider->Start;
+				}
 				else {
 					Slider->Box.x = x - Slider->Box.w / 2;
+					*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 				}
-				*Slider->Value = floor((Slider->Box.x + Slider->Box.w / 2.0 - Slider->Bar.x) / Slider->Bar.w*(Slider->End - Slider->Start) + Slider->Start);
 			}
 			else if (Slider->Flag == VERTICAL) {
-				if (y > Slider->Bar.y + Slider->Bar.h)
-					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2;
-				else if (y < Slider->Bar.y)
-					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2;
-				else {
-					Slider->Box.y = y - Slider->Box.h / 2;
+				if (y > Slider->Bar.y + Slider->Bar.h) {
+					Slider->Box.y = Slider->Bar.y + Slider->Bar.h - Slider->Box.h / 2.0;
+					*Slider->Value = Slider->End;
 				}
-				*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
+				else if (y < Slider->Bar.y) {
+					Slider->Box.y = Slider->Bar.y - Slider->Box.h / 2;
+					*Slider->Value = Slider->Start;
+				}
+				else {
+					Slider->Box.y = y - ceil(Slider->Box.h / 2.0);
+					*Slider->Value = floor((Slider->Box.y + Slider->Box.h / 2.0 - Slider->Bar.y) / Slider->Bar.h*(Slider->End - Slider->Start) + Slider->Start);
+				}
 			}
 			return 1;
 		}
@@ -1200,56 +1248,53 @@ void Timer(unsigned int time) {
 		SDL_PushEvent(&event);
 	}
 }
-int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m) {
-	Unicode unicode[256] = L"";		//역시나 임시로 TTF_DrawText를 쓰기 위한 unicode생성
-	char NameTemp[30];
-	int DeltaY = 0;
-	sprintf(NameTemp, "%s : ",name);
-	han2unicode(NameTemp, unicode);	//옮긴다
+int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m) {
+	int DeltaY = 0, Shift = 0, Length = 150;
+	char Name[30]; Unicode unicode[256] = L""; Unicode Sentence[151] = L"";
+	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
 	SDL_Color Color = { r,g,b,0 };
-	SDL_Surface * Surface = 0;
-	SDL_Texture* NTexture;
-	SDL_Texture* STexture;
-	SDL_Rect Src;
-	SDL_Rect Dst;
-	Src.x = 0;
-	Src.y = 0;
+	SDL_Surface * Surface = NULL;	SDL_Texture* NameTexture= NULL;	SDL_Texture* MsgTexture= NULL;
+	SDL_Rect Src = { 0 };	SDL_Rect Dst = { 0 };
 	if (m == 1)
-		Surface = TTF_RenderUNICODE_Blended(Font_Size[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Surface = TTF_RenderUNICODE_Blended(Font_Size[size],unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	else if (m == 2)
 		Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], unicode, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
-	NTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+	NameTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
 	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
-	SDL_QueryTexture(NTexture, NULL, NULL, &Src.w, &Src.h);
+	SDL_QueryTexture(NameTexture, NULL, NULL, &Src.w, &Src.h);
 	Dst.x = x; Dst.y = y; Dst.w = Src.w; Dst.h = Src.h;
-	if (Dst.y < Limit_y || Dst.y > Limit_y+Limit_h) {
-		SDL_DestroyTexture(NTexture);
-			return 0;
-	}
-	SDL_RenderCopy(renderer, NTexture, &Src, &Dst);
-//	SDL_RenderPresent(renderer);
-	int Shift = 0;
-	int length = 150;
-	Dst.x+= Src.w;
+	if(Dst.y>=Limit_y && Dst.y+Dst.h<=Limit_y+Limit_h)
+		SDL_RenderCopy(renderer, NameTexture, &Src, &Dst);
+	SDL_DestroyTexture(NameTexture);
+	Dst.x += Src.w;
 	Limit_w -= Src.w;
-	han2unicode(sentence, unicode);	//옮긴다
-	Unicode SentenceTemp[151] = L"";
+	han2unicode(sentence, unicode);
 	while (1) {
-		wcsncpy(SentenceTemp, unicode + Shift, length);
-		if (m == 1)
-			Surface = TTF_RenderUNICODE_Blended(Font_Size[size], SentenceTemp, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
-		else if (m == 2)
-			Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], SentenceTemp, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
-		STexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
-		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
-		SDL_QueryTexture(STexture, NULL, NULL, &Src.w, &Src.h);
-		if (Src.w > Limit_w&&length>0) {
-			length--;
-			memset(SentenceTemp, 0, sizeof(SentenceTemp));
-			SDL_DestroyTexture(STexture);
+		if (Shift > wcslen(unicode))
+			break;
+		wcsncpy(Sentence, unicode+ Shift, Length);
+		Sentence[Length] = '\0';
+		if (m==1)
+			TTF_SizeUNICODE(Font_Size[size], Sentence, &Src.w,&Src.h);
+		else if(m==2)
+			TTF_SizeUNICODE(Font_Size2[size], Sentence, &Src.w, &Src.h);
+		if (Src.w > Limit_w&&Length>0) {
+			Length*= Limit_w / (float)Src.w;
 		}
 		else {
-			Shift += length;
+			Shift += Length;
+			Length = 150;
+			if (Dst.y < Limit_y || Dst.y+Dst.h > Limit_y + Limit_h) {
+				Dst.y += Dst.h;
+				DeltaY += Dst.h;
+				continue;
+			}
+			if (m == 1)
+				Surface = TTF_RenderUNICODE_Blended(Font_Size[size], Sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+			else if (m == 2)
+				Surface = TTF_RenderUNICODE_Blended(Font_Size2[size], Sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+			MsgTexture = SDL_CreateTextureFromSurface(renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+			SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
 			Dst.w = Src.w;
 			Dst.h = Src.h;
 			if (Dst.y < Limit_y || Dst.y > Limit_y + Limit_h) {
@@ -1261,15 +1306,26 @@ int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * re
 //			SDL_RenderPresent(renderer);
 			SDL_DestroyTexture(STexture);
 			Dst.y += Dst.h;
-			length = 150;
-			if (Shift > wcslen(unicode))
-				break;
 			DeltaY += Dst.h;
 		}
 	}
-	SDL_DestroyTexture(NTexture);
-	SDL_DestroyTexture(STexture);
 	return DeltaY;
+}
+int HeightOfText(char * name, int Limit_w,SDL_Renderer * renderer, char * sentence, int size,int m) {
+	char Name[30]; Unicode unicode[256] = L"";
+	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
+	SDL_Rect Src = { 0 };
+	if (m == 1)
+		TTF_SizeUNICODE(Font_Size[size], unicode, &Src.w, &Src.h);
+	else if (m == 2)
+		TTF_SizeUNICODE(Font_Size2[size], unicode, &Src.w, &Src.h);
+	Limit_w -= Src.w;
+	han2unicode(sentence, unicode);
+	if (m == 1)
+		TTF_SizeUNICODE(Font_Size[size], unicode, &Src.w, &Src.h);
+	else if (m == 2)
+		TTF_SizeUNICODE(Font_Size2[size], unicode, &Src.w, &Src.h);
+	return (int)(Src.h*SDL_ceil(Src.w/(float)Limit_w));
 }
 void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text * CountText,Text * TopicText,int NowTopic,int MaxTopic) {
 	sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
