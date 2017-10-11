@@ -156,6 +156,10 @@ typedef struct MYSQL_CHATING {
 	char message[512];
 	char time[30];
 }Chating;
+typedef struct SOCKET_CHATING {
+	char name[30];
+	char message[512];
+}SOCKCHAT;
 typedef struct Button {
 	SDL_Renderer *Renderer;
 	SDL_Texture * ButtonTexture;
@@ -208,7 +212,7 @@ typedef struct Socket_Parameters {
 	char serverip[50];
 	char nextserverip[50];
 	int sockethappen;
-
+	int endhappen;
 	int num;
 	char * topic;
 	Hit_User * myuser;
@@ -267,10 +271,11 @@ void soundplay();
 //외부 ip를 받아옴
 char * GetExternalIP();
 //---------------그래픽 함수--------------
+int HeightOfText(char * name, int Limit_w, SDL_Renderer * renderer, char * sentence, int size, int m);
 void Viewing(View * View, int code, void* data1, void* data2);
 void Streaming(int code, int x, int y, int Strong, SOCKET sending);
 void PushUserEvent(char receive[]);
-int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, unsigned int x, unsigned int y, int size, int r, int g, int b, int m);
+int PutText_ln(char * name, int Limit_w, int Limit_y,int Limit_h,SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m);
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
@@ -293,6 +298,7 @@ SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, in
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
 int hancheck(int unicode);
+void DrawRect(SDL_Renderer * renderer, int r, int g, int b, int x, int y, int w, int h);
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
@@ -308,6 +314,7 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
 int UpdateSlider(Slider* Slider, SDL_Event *event);
+void ScoreSort(User * users);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int * happen);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
@@ -382,3 +389,5 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int message
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
+//int addChat(SOCKCHAT *Chatlist[],char *data, char *name,int currentnum);
+//void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT * Chatlist[], int first);
