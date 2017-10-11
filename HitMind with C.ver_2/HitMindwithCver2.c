@@ -1417,8 +1417,6 @@ int main(int argc, char *argv[])
 							wchar[0] = sum;
 							if (wcslen(ID_put) < 255)
 								wcscat(ID_put, wchar);// 전체채팅
-
-
 							if (event.text.text[0] == -29)
 								slice = 1;
 							else
@@ -1478,7 +1476,6 @@ int main(int argc, char *argv[])
 								}
 							}
 						}
-
 						else if (event.key.keysym.sym == SDLK_RALT)
 							hanyeong = !(hanyeong);
 						else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(ID_put) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
