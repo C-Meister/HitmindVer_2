@@ -1401,7 +1401,6 @@ int main(int argc, char *argv[])
 				if (SDL_WaitEventTimeout(&event, 1000) == 0) {
 					event.type = NULL;
 				}
-				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
 				}
