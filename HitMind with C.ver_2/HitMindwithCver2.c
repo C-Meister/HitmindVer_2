@@ -27,6 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
+	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -61,10 +62,20 @@ int main(int argc, char *argv[])
 	Mix_Music *mainmusic = Mix_LoadMUS("sound/login.mp3");
 	Mix_Chunk *erasersound = Mix_LoadWAV("sound/erase.wav");
 	Mix_Chunk *pencilsound = Mix_LoadWAV("sound/pencil.wav");
+	Mix_Chunk *booksound = Mix_LoadWAV("sound/book.wav");
+	Mix_Chunk *resound = Mix_LoadWAV("sound/re.wav");
+	Mix_Chunk *whysound = Mix_LoadWAV("sound/why.wav");
+	Mix_Chunk *passsound = Mix_LoadWAV("sound/pass.wav");
 	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic*1.28);
-
+	Mix_VolumeChunk(erasersound, Sound*1.28);
+	Mix_VolumeChunk(pencilsound, Sound*1.28);
+	Mix_VolumeChunk(killsound, Sound*1.28);
+	Mix_VolumeChunk(booksound, Sound*1.28);
+	Mix_VolumeChunk(whysound, Sound*1.28);
+	Mix_VolumeChunk(passsound, Sound*1.28);
+	Mix_VolumeChunk(resound, Sound*1.28);
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
@@ -121,7 +132,7 @@ int main(int argc, char *argv[])
 	int isplaygame = 0;
 	int pass_length = 0;
 	char query[256];
-	char utf8[256] = "";// utf8 변환에 필요한 배열
+	char utf8[256] = "";// wtf8 변환에 필요한 배열
 	int my_game_number = 0;
 	char wtf8[768] = "";
 	int slice = 0;
@@ -307,11 +318,11 @@ int main(int argc, char *argv[])
 
 										}
 										else if (PASSWORD_INPUT == 1 || pass_length > 0) {
-											strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
-											UTF82EUCKR(db_id, 512, utf8, 768);
+											strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+											UTF82EUCKR(db_id, 512, wtf8, 768);
 											db_id[strlen(db_id)] = '\0';
-											strcpy(utf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
-											UTF82EUCKR(db_password, 512, utf8, 768);
+											strcpy(wtf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
+											UTF82EUCKR(db_password, 512, wtf8, 768);
 											db_password[strlen(db_password)] = '\0';
 											myuser = User_Login_sql(cons, db_id, db_password);
 											if (myuser == -1)
@@ -400,9 +411,9 @@ int main(int argc, char *argv[])
 								else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 									if (ID_INPUT)
 									{
-										strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+										strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 
-										SDL_SetClipboardText(wtf8);// 클립보드에 넣음
+										SDL_SetClipboardText(utf8);// 클립보드에 넣음
 									}
 								}
 								else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
@@ -495,11 +506,11 @@ int main(int argc, char *argv[])
 							}
 							if (PutButtonImage(renderer, login_button_id_noclick, login_button_id_click, set_start_x + Display_X*0.254, set_start_y + Display_Y*0.252, Display_X*0.076, Display_Y*0.065, &event, &happen))	//로그인 버튼
 							{
-								strcpy(utf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
-								UTF82EUCKR(db_id, 512, utf8, 768);
+								strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
+								UTF82EUCKR(db_id, 512, wtf8, 768);
 								db_id[strlen(db_id)] = '\0';
-								strcpy(utf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
-								UTF82EUCKR(db_password, 512, utf8, 768);
+								strcpy(wtf8, UNICODE2UTF8(Password_put, wcslen(Password_put)));
+								UTF82EUCKR(db_password, 512, wtf8, 768);
 								db_password[strlen(db_password)] = '\0';
 								if (myuser != 0 && myuser != -1) {
 
@@ -2599,13 +2610,17 @@ int main(int argc, char *argv[])
 
 						SDL_RenderPresent(renderer);
 
-
+						Mix_VolumeMusic(BGmusic*1.28);
 					}
 
 					Mix_VolumeMusic(BGmusic*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
 					Mix_VolumeChunk(pencilsound, Sound*1.28);
 					Mix_VolumeChunk(killsound, Sound*1.28);
+					Mix_VolumeChunk(booksound, Sound*1.28);
+					Mix_VolumeChunk(whysound, Sound*1.28);
+					Mix_VolumeChunk(passsound, Sound*1.28);
+					Mix_VolumeChunk(resound, Sound*1.28);
 
 					SDL_DestroyTexture(Setting_back);
 					SDL_DestroyTexture(Setting_Close_click);
@@ -3238,6 +3253,7 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == MasterExitEvent)
 				{
+
 					send(ClientParam.Cconnect_socket, "exit", 30, 0);
 
 					ClientParam.sockethappen = 0;
@@ -3278,15 +3294,16 @@ int main(int argc, char *argv[])
 					Mix_PlayChannel(0, killsound, 0);
 					ClientParam.sockethappen = 0;
 					NowTopic++;
+					
+					gameuser[NowPlayer - 1].Turn = 0;
+
+					gameuser[ClientParam.num - 1].Count++;
+					NowPlayer = ClientParam.num;
 					if (NowTopic > MaxTopic) {
 						showscore = 1;
 						quit = true;
 						break;
 					}
-					gameuser[NowPlayer - 1].Turn = 0;
-
-					gameuser[ClientParam.num - 1].Count++;
-					NowPlayer = ClientParam.num;
 					//시작
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					FillRoundRect(renderer, 211, 211, 211, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.18, 20 * ((float)Display_X / 1920));
@@ -3756,6 +3773,7 @@ int main(int argc, char *argv[])
 					DrawButton(NewButton);
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, booksound, 0); //북 사운드
 						//			SDL_Delay(100);
 						if (Me->Turn == 1)
 							Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
@@ -3786,6 +3804,7 @@ int main(int argc, char *argv[])
 					DrawButton(MagButton);
 					SDL_RenderPresent(renderer);
 					if (MagButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, whysound, 0);
 						if (Me->Turn == 0) {// DB연동
 							// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
 							han2unicode(Topics, InGameTopic);
@@ -3805,6 +3824,7 @@ int main(int argc, char *argv[])
 					DrawButton(RecycleButton);
 					SDL_RenderPresent(renderer);
 					if (RecycleButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, resound, 0);
 						if (Me->Turn == 1) { // DB연동
 							sprintf(query, "topic %s", Get_Random_Topic(cons));
 							send(ClientParam.Cconnect_socket, query, 30, 0);
@@ -3820,6 +3840,7 @@ int main(int argc, char *argv[])
 					DrawButton(PassButton);
 					SDL_RenderPresent(renderer);
 					if (PassButton->Flag == ACTIVATED) {
+						Mix_PlayChannel(0, passsound, 0);
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
 							while (1)
@@ -3921,10 +3942,15 @@ int main(int argc, char *argv[])
 				if (bangsang == 1) {
 					//	sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 					//	mysql_query(cons, query);
-					strcpy(ServerParam.message, "bangsang exit");
+					strcpy(ServerParam.message, "ingame end");
 					sendall(&ServerParam);
-					
+					TerminateThread(server, 0);
+					for (i = 0; i < MAXPEOPLE; i++)
+						if (ServerParam.Sconnect_socket[i] != 0)
+							closesocket(ServerParam.Sconnect_socket[i]);
+					closesocket(ServerParam.Slisten_socket);
 				}
+				
 				while (!quit)
 				{
 					SDL_PollEvent(&event);
@@ -3937,24 +3963,8 @@ int main(int argc, char *argv[])
 						quit = 1;
 						break;
 					}
-					
-					if (ClientParam.sockethappen == MasterExitEvent)
-					{
-						ClientParam.sockethappen = 0;
-					//	sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					//	mysql_query(cons, query);
-						send(ClientParam.Cconnect_socket, "exit", 30, 0);
-						ClientParam.endhappen = 1;
-						ClientParam.Cconnect_socket = 0;
-						WSACleanup();
-					}
 				}
-				if (bangsang == 1)
-				{
-					ServerParam.endhappen = 1;
-					closesocket(ServerParam.Slisten_socket);
-					bangsang = 0;
-				}
+				bangsang = 0;
 				
 				quit = 0;
 			}
@@ -3988,7 +3998,6 @@ int main(int argc, char *argv[])
 	SDL_DestroyTexture(TitleImage);
 	TTF_Quit();
 	SDL_DestroyRenderer(renderer);
-
 
 	SDL_DestroyWindow(Window);
 	SDL_Quit();
