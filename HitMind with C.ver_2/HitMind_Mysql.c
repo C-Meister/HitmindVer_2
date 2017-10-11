@@ -248,7 +248,7 @@ int ReadChating_all(MYSQL *cons, Chating * chatings)
 	MYSQL_ROW rows;
 	memset(chatings, 0, sizeof(chatings));
 	int i = 0; 
-	mysql_query(cons, "select * from all_chating order by ownnum desc limit 12");
+	mysql_query(cons, "select * from all_chating order by ownnum desc limit 30");
 	sql_result = mysql_store_result(cons);
 	while ((rows = mysql_fetch_row(sql_result)) != 0)
 	{
