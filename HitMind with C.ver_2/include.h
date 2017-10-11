@@ -156,6 +156,10 @@ typedef struct MYSQL_CHATING {
 	char message[512];
 	char time[30];
 }Chating;
+typedef struct SOCKET_CHATING {
+	char name[30];
+	char message[512];
+}SOCKCHAT;
 typedef struct Button {
 	SDL_Renderer *Renderer;
 	SDL_Texture * ButtonTexture;
@@ -381,3 +385,5 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int message
 int ReadChating_all(MYSQL *cons, Chating * chatings);
 //방을 만듬, 방이름, 비밀번호, 모드, 문제 개수, 문제 시간 이 필요함
 int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode, int question, int timer);
+//int addChat(SOCKCHAT *Chatlist[],char *data, char *name,int currentnum);
+//void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT * Chatlist[], int first);

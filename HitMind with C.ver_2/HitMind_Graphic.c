@@ -1253,9 +1253,9 @@ int PutText_ln(char * name,int Limit_w,int Limit_y,int Limit_h,SDL_Renderer * re
 			Dst.w = Src.w;
 			Dst.h = Src.h;
 			if (Dst.y < Limit_y || Dst.y > Limit_y + Limit_h) {
-				SDL_DestroyTexture(NTexture);
-				SDL_DestroyTexture(STexture);
-				return 0;
+		//		SDL_DestroyTexture(NTexture);
+			//	SDL_DestroyTexture(STexture);
+			//	return 0;
 			}
 			SDL_RenderCopy(renderer, STexture, &Src, &Dst);
 //			SDL_RenderPresent(renderer);
@@ -1425,6 +1425,26 @@ void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 
 	}
 }
-void PrintInChatting(SDL_Renderer * renderer, Chating * chattings) {
-	
+/*int addChat(SOCKCHAT **Chatlist,char *data, char *name, int currentnum) {
+	if (currentnum + 1 == 20) {
+		currentnum = 0;
+	}
+	strcpy(&(Chatlist[currentnum]->message), data);
+	strcpy(&(Chatlist[currentnum]->name), name);
+	return currentnum;
 }
+void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT **Chatlist, int first) {
+	int temp = first;
+	int DeltaY = 0;
+	while (1) {
+		temp++;
+		if (temp == first) {
+			return;
+		}
+		else {
+			DeltaY += PutText_ln(Chatlist[temp]->name, Display_X*0.63, Display_Y*0.75, Display_Y*0.15, renderer, Chatlist[temp]->message, Display_X * 0.04, DeltaY + Display_Y * (1.08 - (0.03)), 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+
+		}
+	}
+
+}*/

@@ -2995,8 +2995,9 @@ int main(int argc, char *argv[])
 			Mix_PauseMusic();
 			DWORD ExitSoundThread=0;
 			HANDLE SoundThread = (HANDLE)_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
-			
-			
+			int cnum = 0;
+			SOCKCHAT Chattings[20] = { 0, };
+
 			
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
@@ -3223,7 +3224,32 @@ int main(int argc, char *argv[])
 				if (ClientParam.sockethappen == SocketChattingEvent)
 				{
 					ClientParam.sockethappen = 0;
-					gameuser[ClientParam.num].ownnum;
+					int endpoint = 0;
+					if (cnum + 1 == 20) {
+						cnum = 0;
+					}
+					strcpy(Chattings[cnum].message, ClientParam.chat_message);
+					strcpy(Chattings[cnum].name, gameuser[ClientParam.num].Nickname);
+					
+					int temp = cnum;
+					int DeltaY = 0;
+					int scroll = 0;
+					while (1) {
+						if (Chattings[temp].message != 0 && Chattings[temp].name != 0) {
+							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.63, 0,1000000, renderer, Chattings[temp].message, Display_X * 0.04, DeltaY + Display_Y * 0.5 +(scroll* 0.04) , 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+							printf("%d\n", DeltaY);
+							scroll++;
+						}
+						if (temp == cnum+1 && endpoint == 1)
+							break;
+						temp--;
+
+						if (temp == -1) {
+							temp = 19;
+							endpoint = 1;
+						}
+					}
+					cnum++;
 				}
 				if (ClientParam.sockethappen == TimeOutEvent) {
 					ClientParam.sockethappen = 0;
