@@ -27,12 +27,15 @@
 #define CurrectAnswerEvent 8
 #define SocketChattingEvent 33
 #define TimeOutEvent 35
+//SDL_Event UserEvent
+#define TIMER 0
+#define SOCKETHAPPEN 5
 
+//Draw
 #define PENCILCLICK 1
 #define PENCILDRAG 2
 #define ERASERCLICK 3
 #define ERASERDRAG 4
-#define TIMER 0
 #define STRONG 5
 #define COLOR 6
 #define NEW 7 
@@ -201,9 +204,11 @@ typedef struct Socket_Parameters {
 	uintptr_t Clientthread;
 	char playerinfo[MAXPEOPLE][30];
 	char message[200];
+	char chat_message[256];
 	char serverip[50];
 	char nextserverip[50];
 	int sockethappen;
+	int endhappen;
 	int num;
 	char * topic;
 	Hit_User * myuser;
@@ -289,6 +294,7 @@ SDL_Texture * LoadTextureEx(SDL_Renderer * Renderer, const char *file, int r, in
 //SDL - RenderTextureEX 텍스쳐를 특별하게 출력함 인자값 : 렌더러, 이미지, 위치, 각도
 void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * Rect, int angle);
 int hancheck(int unicode);
+void DrawRect(SDL_Renderer * renderer, int r, int g, int b, int x, int y, int w, int h);
 char* UNICODE2UTF8(wchar_t* unicode, int len);
 wchar_t* UTF82UNICODE(char* UTF8, int len);
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength);
@@ -304,6 +310,7 @@ int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, 
 void CreateSlider(Slider * Slider, SDL_Texture * BoxTexture, SDL_Texture * BarTexture, int Bar_x, int Bar_y, int Bar_w, int Bar_h, int Box_w, int Box_h, int *Value, float Start, float End, float Default, int Flag);
 void DrawSlider(SDL_Renderer *Renderer, Slider * Slider);
 int UpdateSlider(Slider* Slider, SDL_Event *event);
+void ScoreSort(User * users);
 int PutRoundButton(SDL_Renderer* Renderer, int r, int g, int b, int put_r, int put_g, int put_b, int rect_r, int rect_g, int rect_b, int x, int y, int w, int h, int radius, int strong, SDL_Event *event, int * happen);
 void SDL_FillUpRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillUpRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
@@ -314,6 +321,7 @@ void CreateCanvas(Canvas * Canvas, SDL_Renderer * Renderer, int x, int y, int w,
 int UpdateCanvas(Canvas * Canvas, SDL_Event * event, SOCKET sending);
 //SDL - PutButtonImage 이미지 버튼을 만든다 기존은 Texture의 이미지를, 마우스를 올리면 MouseOnImage로 변한다
 int PutButtonImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
+int PutButtonImageText(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, int ww, int hh, char *texts, SDL_Event * event, int *happen);
 int PutButtonImage_click(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, int x, int y, int w, int h, SDL_Event * event, int *happen);
 void MoveSlider_value(Slider *Slider, int value);
 void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, int bg_music, int music, int isfull);
@@ -330,9 +338,10 @@ void PrintUserInfo(SDL_Renderer* Renderer, User *User, SDL_Rect UserRect);
 void CenterArrange(Text * Text);
 void CreateText(Text* Text, SDL_Renderer * Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 void RenderText( Text * Text);
+void PushSocketEvent(void);
 void Put_Text_Center(SDL_Renderer* Renderer, char *sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m);
 int PutButtonWithImage(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Texture * MouseOnImage, SDL_Texture * MouseClickImage,int x, int y, int w, int h, SDL_Event * event, int *Flag);
-int RoomX_Setting(roomX *roomx[],int Display_x);
+int RoomX_Setting(roomX *roomx, int Display_x);
 //---------------MySql 함수---------------
 int GetRoomUser(MYSQL * cons, User * friends, SDL_Renderer * renderer);
 //인지 체크하는 함수
