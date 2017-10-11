@@ -28,6 +28,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 int main(int argc, char *argv[])
 {
 
+	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -209,9 +210,8 @@ int main(int argc, char *argv[])
 						RenderTextureXYWH(renderer, TitleText, set_start_x - (Display_X * 0.078), Display_Y / 10, Display_X / 2, Display_Y / 3);
 						PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255, 1);
 						RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
-
-
-
+						// -------------------------------------------------------
+							
 						SDL_RenderPresent(renderer);
 						sum = 0;
 					}
@@ -2944,7 +2944,7 @@ int main(int argc, char *argv[])
 					roop = 1;
 					send(ClientParam.Cconnect_socket, "exit", 30, 0);
 					Sleep(100);
-					ClientParam.sockethappen = 5;
+					ClientParam.endhappen = 1;
 					ClientParam.Cconnect_socket = 0;
 					byee = 0;
 					if (bangsang == 1) {
@@ -3024,7 +3024,7 @@ int main(int argc, char *argv[])
 			wchar_t InGameChat[256] = L"";
 			wchar_t InGameTopic[256] = L"";
 			int Shift = 0; int Chat = DEACTIVATED; int Enter = DEACTIVATED; textinput = false;
-
+			int showscore = 0;
 			float MaxStrong = 70.0*Display_X / 1920, PencilStrong = 55.0, EraserStrong = 55.0;
 			SDL_Point Sample = { Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07) + MaxStrong / 2, Display_Y * 0.64 + Display_X*0.005 + (Display_Y * 0.34*0.13) };
 			SDL_Rect RgbRect = { Display_X * 0.8 + Display_X*0.011 + (Display_X*0.1825*0.07), Display_Y * 0.64 + Display_X*0.005 + (Display_Y * 0.34*0.375), Display_X * 0.1825 - 2 * (Display_X*0.1825*0.07), (Display_Y * 0.34*0.6) };
@@ -3193,14 +3193,14 @@ int main(int argc, char *argv[])
 					send(ClientParam.Cconnect_socket, "exit", 30, 0);
 
 					ClientParam.sockethappen = 0;
-					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					mysql_query(cons, query);
+			//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+			//		mysql_query(cons, query);
 					isstartgame = 0;
 					isplaygame = 0;
 					loginsuccess = 1;
 					roop = 1;
 					Sleep(10);
-					ClientParam.sockethappen = 5;
+					ClientParam.endhappen = 1;
 					ClientParam.Cconnect_socket = 0;
 					quit = 1;
 
@@ -3230,6 +3230,11 @@ int main(int argc, char *argv[])
 					Mix_PlayChannel(0, killsound, 0);
 					ClientParam.sockethappen = 0;
 					NowTopic++;
+					if (NowTopic > MaxTopic) {
+						showscore = 1;
+						quit = true;
+						break;
+					}
 					gameuser[NowPlayer - 1].Turn = 0;
 
 					gameuser[ClientParam.num - 1].Count++;
@@ -3255,7 +3260,7 @@ int main(int argc, char *argv[])
 
 					PutText(renderer, "입니다.", Display_X * 0.5735, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					strcpy(pasttopic, Topics);
-
+					
 
 					currectshowtimer = 1;
 
@@ -3304,9 +3309,7 @@ int main(int argc, char *argv[])
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 				}
-				if (NowTopic > MaxTopic) {
-					quit = 1;
-				}
+				
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("render	");
@@ -3394,8 +3397,8 @@ int main(int argc, char *argv[])
 						}
 
 						if (bangsang == 1) {
-							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
+						//	sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						//	mysql_query(cons, query);
 							strcpy(ServerParam.message, "bangsang exit");
 							sendall(&ServerParam);
 							Sleep(100);
@@ -3405,15 +3408,15 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
+					//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					//		mysql_query(cons, query);
 							isstartgame = 0;
 							isplaygame = 0;
 							loginsuccess = 1;
 							roop = 1;
 							send(ClientParam.Cconnect_socket, "exit", 30, 0);
 							Sleep(100);
-							ClientParam.sockethappen = 5;
+							ClientParam.endhappen = 1;
 							ClientParam.Cconnect_socket = 0;
 							WSACleanup();
 							quit = true;
@@ -3497,8 +3500,8 @@ int main(int argc, char *argv[])
 					}
 
 					if (bangsang == 1) {
-						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
+				//		sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+				//		mysql_query(cons, query);
 						strcpy(ServerParam.message, "bangsang exit");
 						sendall(&ServerParam);
 						Sleep(100);
@@ -3508,11 +3511,11 @@ int main(int argc, char *argv[])
 					}
 					else
 					{
-						sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-						mysql_query(cons, query);
+				//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+				//		mysql_query(cons, query);
 						send(ClientParam.Cconnect_socket, "exit", 30, 0);
 						Sleep(100);
-						ClientParam.sockethappen = 5;
+						ClientParam.endhappen = 1;
 						ClientParam.Cconnect_socket = 0;
 						WSACleanup();
 						quit = true;
@@ -3537,8 +3540,8 @@ int main(int argc, char *argv[])
 						}
 
 						if (bangsang == 1) {
-							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
+					//		sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+					//		mysql_query(cons, query);
 							strcpy(ServerParam.message, "bangsang exit");
 							sendall(&ServerParam);
 							Sleep(100);
@@ -3548,11 +3551,11 @@ int main(int argc, char *argv[])
 						}
 						else
 						{
-							sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
+					//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					//		mysql_query(cons, query);
 							send(ClientParam.Cconnect_socket, "exit", 30, 0);
 							Sleep(100);
-							ClientParam.sockethappen = 5;
+							ClientParam.endhappen = 1;
 							ClientParam.Cconnect_socket = 0;
 							WSACleanup();
 							quit = true;
@@ -3796,6 +3799,79 @@ int main(int argc, char *argv[])
 			SDL_DestroyTexture(CharacterTexture);
 			SDL_DestroyTexture(StatusTexture);
 
+			if (showscore == 1) {
+				isstartgame = 0;
+				isplaygame = 0;
+				loginsuccess = 1;
+				roop = 1;
+				ScoreSort(gameuser);
+				FillUpRoundRect(renderer, 217, 217, 217, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.5, 0);
+
+				DrawUpRoundRect(renderer, 127, 127, 127, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.5, 0, 1);
+				FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.06, 0);
+				DrawUpRoundRect(renderer, 65, 113, 156, Display_X * 0.35, Display_Y * 0.3 - 1, Display_X * 0.3, Display_Y * 0.06 + 2, 0, 1);
+				Put_Text_Center(renderer, "경기결과", Display_X * 0.32, Display_Y * 0.29, Display_X * 0.36, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+
+				FillRoundRect(renderer, 0, 112, 192, Display_X * 0.357, Display_Y * 0.37, Display_X * 0.286, Display_Y * 0.08, 18 * ((float)Display_X / 1920));
+				DrawRect(renderer, 0, 176, 240, Display_X * 0.452, Display_Y * 0.371, Display_X * 0.003, Display_Y * 0.079);
+				DrawRect(renderer, 0, 176, 240, Display_X * 0.545, Display_Y * 0.371, Display_X * 0.003, Display_Y * 0.079);
+				Put_Text_Center(renderer, "순위", Display_X * 0.36, Display_Y * 0.371, Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+				Put_Text_Center(renderer, "닉네임", Display_X * 0.46, Display_Y * 0.371, Display_X * 0.08, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+				Put_Text_Center(renderer, "맞힌 개수", Display_X * 0.55, Display_Y * 0.371, Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+				
+				
+				for (int i = 0; i < MAXPEOPLE; i++)
+				{
+					if (gameuser[i].status != 0)
+					{
+						FillRoundRect(renderer, 0, 176, 240, Display_X * 0.357, Display_Y * (0.37 + (0.09 * (i+1))), Display_X * 0.286, Display_Y * 0.08, 18 * ((float)Display_X / 1920));
+						DrawRect(renderer, 0, 112, 192, Display_X * 0.452, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
+						DrawRect(renderer, 0, 112, 192, Display_X * 0.545, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
+						Put_Text_Center(renderer, _itoa(i+1, query, 10), Display_X * 0.36, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+						Put_Text_Center(renderer, gameuser[i].Nickname, Display_X * 0.46, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.08, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+						Put_Text_Center(renderer, _itoa(gameuser[i].Count, query, 10), Display_X * 0.55, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+
+					}
+				}
+				SDL_RenderPresent(renderer);
+				quit = 1;
+				if (bangsang == 1) {
+					//	sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+					//	mysql_query(cons, query);
+					strcpy(ServerParam.message, "bangsang exit");
+					sendall(&ServerParam);
+					
+				}
+				while (!quit)
+				{
+					SDL_PollEvent(&event);
+					switch (event.type)
+					{
+					case SDL_QUIT:
+						quit = 1;
+						break;
+					}
+					PutRoundButton(renderer, 146, 208, 80, 101, 154, 41, 146, 208, 80, Display_X * 0.7, Display_Y * 0.7, Display_X * 0.05, Display_Y * 0.03, 20, 0, &event, &happen);
+					if (ClientParam.sockethappen == MasterExitEvent)
+					{
+						ClientParam.sockethappen = 0;
+					//	sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+					//	mysql_query(cons, query);
+						send(ClientParam.Cconnect_socket, "exit", 30, 0);
+						ClientParam.endhappen = 1;
+						ClientParam.Cconnect_socket = 0;
+						WSACleanup();
+					}
+				}
+				if (bangsang == 1)
+				{
+					ServerParam.sockethappen = 5;
+					closesocket(ServerParam.Slisten_socket);
+					bangsang = 0;
+				}
+				
+				quit = 0;
+			}
 		}
 	}
 

@@ -335,6 +335,16 @@ void RenderTextureEx(SDL_Renderer* Renderer, SDL_Texture * Texture, SDL_Rect * R
 	SDL_RenderCopyEx(Renderer, Texture, &Src, &Dst, angle, &center, SDL_FLIP_NONE);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
+void DrawRect(SDL_Renderer * renderer, int r, int g, int b, int x, int y, int w, int h)
+{
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.h = h;
+	rect.w = w;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 0);
+	SDL_RenderFillRect(renderer, &rect);
+}
 void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong) {
 	SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, color.a);
 	int out_x, out_y;
