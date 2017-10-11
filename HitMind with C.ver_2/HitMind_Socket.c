@@ -39,7 +39,7 @@ void OpenServer(SockParam *param) {
 		for (idx = 0; param->Sconnect_socket[idx] != 0; idx++);
 		param->Sconnect_socket[idx] = temp_socket;
 		//printf("accept()\n");
-		if (param->sockethappen == 5)
+		if (param->endhappen == 1)
 		{
 			bye = 1;
 			closesocket(param->Slisten_socket);
@@ -105,13 +105,13 @@ void HandleClient(SockParam *param) {
 	char query[256];
 	int ClientNumber = param->num;
 	while (1) {
-		if (param->sockethappen == 5)
+		if (param->endhappen == 1)
 		{
 			closesocket(param->Sconnect_socket[ClientNumber]);
 			break;
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
-			printf("Server : %s\n", param->message);
+	//		printf("Server : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0 && i != ClientNumber)
@@ -229,7 +229,7 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-			printf("Client : %s\n", param->message);
+	//		printf("Client : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				PushUserEvent(param->message);
 				continue;
@@ -256,7 +256,7 @@ void Clientrecv(SockParam *param) {
 				while (1) {
 					recv(param->Cconnect_socket, param->message, 180, 0);
 
-					printf("PlayerCheck : %s\n", param->message);
+				//	printf("PlayerCheck : %s\n", param->message);
 					if (!(strcmp(param->message, "playercheck finish")))
 						break;
 					strcpy(param->playerinfo[i], param->message);	// param.playerinfo[0]~param.playerinfo[7]에다가 플레이어 정보 저장
