@@ -3189,6 +3189,13 @@ int main(int argc, char *argv[])
 			double TimerTemp = (double)TimerRect.w;
 			double TimerRate = (TimerRect.w / (double)LimitTime)*(Time / (double)1000); // 타이머가 Time(ms)초 마다 줄어드는 길이
 			// 
+			int chattingdrag = 0;
+			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
+			SDL_Texture * Slider_Box = LoadTextureEx(renderer, ".\\design\\Box.png", 255, 255, 255);
+			HANDLE timerthread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
+			Slider * chatslide = (Slider *)malloc(sizeof(Slider));
+			CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_X*0.005 + Display_Y*0.62*0.37, Display_X * 0.01, Display_Y * 0.35, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, (Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
+			DrawSlider(renderer, chatslide);
 			SDL_RenderPresent(renderer);
 			send(ClientParam.Cconnect_socket, "game ready", 30, 0);
 			if (bangsang == 1)
@@ -3213,7 +3220,6 @@ int main(int argc, char *argv[])
 				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 				Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
 			}
-			HANDLE timerthread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Timer, Time, 0, 0);
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
@@ -3326,6 +3332,11 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == SocketChattingEvent)
 				{
+					int chatingH = 0;
+					for (int i = 0; i < 20; i++) {
+						chatingH += HeightOfText(Chattings[i].name,Display_X*0.15,renderer,Chattings[i].message, 25 * ((float)Display_X / 1920),1);
+					}
+
 					ClientParam.sockethappen = 0;
 					int endpoint = 0;
 					strcpy(Chattings[cnum].message, ClientParam.chat_message);

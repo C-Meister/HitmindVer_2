@@ -1285,9 +1285,9 @@ int PutText_ln(char * name, int Limit_w, int Limit_y, int Limit_h, SDL_Renderer 
 			Shift += Length;
 			Length = 150;
 			if (Dst.y < Limit_y || Dst.y + Dst.h > Limit_y + Limit_h) {
-		//		Dst.y += Dst.h;
-		//		DeltaY += Dst.h;
-		//		continue;
+				Dst.y += Dst.h;
+				DeltaY += Dst.h;
+				continue;
 			}
 			if (m == 1)
 				Surface = TTF_RenderUNICODE_Blended(Font_Size[size], Sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
