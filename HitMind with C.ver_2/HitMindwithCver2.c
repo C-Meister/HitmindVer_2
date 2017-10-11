@@ -3077,6 +3077,7 @@ int main(int argc, char *argv[])
 			SDL_Rect CountRect = { Display_X * 0.8 + Display_X * 0.1825*0.1 + Display_X*0.011, Display_X*0.005 + Display_Y*0.21*0.333, Display_X * 0.1825 - 2 * Display_X * 0.1825*0.1, Display_Y * 0.05 };
 			SDL_Rect ChatRect = { Display_X * 0.8 + Display_X*0.1825*0.035 + Display_X*0.011, Display_X*0.005 + Display_Y*0.62*0.933, Display_X * 0.1825*0.96 - 2 * Display_X*0.1825*0.1, Display_Y * 0.05 };
 			SDL_Rect EnterRect = { Display_X * 0.8 + Display_X*0.1825*0.825 + Display_X*0.011, Display_X*0.005 + Display_Y*0.62*0.93635, Display_X * 0.1825*0.15, Display_Y * 0.04 };
+			// 책갈피
 			SDL_Rect TimerRect = { Display_X*0.011,Display_Y*0.76,Display_X*0.8 - Display_X*0.017,Display_Y*0.007 };
 			SDL_Rect UserRect = { Display_X*0.011,Display_Y*0.79,Display_X*0.8*0.24,Display_Y*0.19 };
 			SDL_Color TextColor = { 0,0,0,0 };
@@ -3332,31 +3333,30 @@ int main(int argc, char *argv[])
 				{
 					ClientParam.sockethappen = 0;
 					int endpoint = 0;
-					if (cnum + 1 == 20) {
-						cnum = 0;
-					}
 					strcpy(Chattings[cnum].message, ClientParam.chat_message);
 					strcpy(Chattings[cnum].name, gameuser[ClientParam.num].Nickname);
 					
-					int temp = cnum;
+					int temp = (cnum+1)%20;
 					int DeltaY = 0;
 					int scroll = 0;
+					SDL_FillRectXYWH(renderer, Display_X * 0.8 + Display_X*0.8*0.0217 + Display_X*0.0, Display_X*0.005 + Display_Y*0.62*0.37, Display_X*0.15, Display_Y * 0.35,255,255,255);
 					while (1) {
-						if (Chattings[temp].message != 0 && Chattings[temp].name != 0) {
-							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.63, 0,1000000, renderer, Chattings[temp].message, Display_X * 0.04, DeltaY + Display_Y * 0.5 +(scroll* 0.04) , 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						if (strlen(Chattings[temp].message) > 0) {
+							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.15, Display_X*0.005 + Display_Y*0.595*0.37, Display_Y * 0.35, renderer, Chattings[temp].message, Display_X * 0.8 + Display_X*0.8*0.002 + Display_X*0.02, Display_X*0.005 + Display_Y*0.595*0.37 +DeltaY, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 							printf("%d\n", DeltaY);
 							scroll++;
 						}
-						if (temp == cnum+1 && endpoint == 1)
+						if (temp == cnum)
 							break;
-						temp--;
-
-						if (temp == -1) {
-							temp = 19;
-							endpoint = 1;
+						temp++;
+						if (temp == 20) {
+							temp = 0;
 						}
 					}
 					cnum++;
+					if (cnum  == 20) {
+						cnum = 0;
+					}
 				}
 				if (ClientParam.sockethappen == TimeOutEvent) {
 					ClientParam.sockethappen = 0;
@@ -3508,8 +3508,13 @@ int main(int argc, char *argv[])
 								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
 								send(ClientParam.Cconnect_socket, query, 30, 0);
 							}
-							else {
-								sprintf(query, "chat %S", InGameChat);
+							else if (wcslen(InGameChat) > 0){
+								char char_message[512] = "";
+								char qwery[850];
+								strcpy(qwery, UNICODE2UTF8(InGameChat, 256));
+								UTF82EUCKR(char_message, 512, qwery, 850);
+								char_message[strlen(char_message)] = '\0';
+								sprintf(query, "chat %s", char_message);
 								send(ClientParam.Cconnect_socket, query, 180, 0);
 							}
 							wcscpy(InGameChat, L"");
@@ -3533,8 +3538,8 @@ int main(int argc, char *argv[])
 						}
 					}
 					else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면			
-						strcpy(utf8, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
-						SDL_SetClipboardText(utf8);// 클립보드에 넣음
+						strcpy(wtf8, UNICODE2UTF8(InGameChat, wcslen(InGameChat)));
+						SDL_SetClipboardText(wtf8);// 클립보드에 넣음
 					}
 					else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
 						slice = 0;
