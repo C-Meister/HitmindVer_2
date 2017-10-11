@@ -27,8 +27,6 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-
-	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -1313,7 +1311,7 @@ int main(int argc, char *argv[])
 			Refrash.event = &RefrashEvent;
 			Refrash.time = 500;
 			_beginthreadex(NULL, 0, (_beginthreadex_proc_type)HitMind_Timer, &Refrash, 0, NULL);
-			Chating chatings[12] = { 0, };
+			Chating chatings[30] = { 0, };
 			int usercount = 0;
 			memset(&ID_put, 0, sizeof(ID_put));
 			int chattingput = 0;
@@ -1403,7 +1401,6 @@ int main(int argc, char *argv[])
 				if (SDL_WaitEventTimeout(&event, 1000) == 0) {
 					event.type = NULL;
 				}
-				//	SDL_PollEvent(&event);
 				if (UpdateSlider(chatslide, &event)) {
 					chatmovehappen = 1;
 				}
@@ -1419,8 +1416,6 @@ int main(int argc, char *argv[])
 							wchar[0] = sum;
 							if (wcslen(ID_put) < 255)
 								wcscat(ID_put, wchar);// 전체채팅
-
-
 							if (event.text.text[0] == -29)
 								slice = 1;
 							else
@@ -1480,7 +1475,6 @@ int main(int argc, char *argv[])
 								}
 							}
 						}
-
 						else if (event.key.keysym.sym == SDLK_RALT)
 							hanyeong = !(hanyeong);
 						else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(ID_put) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
@@ -1501,9 +1495,7 @@ int main(int argc, char *argv[])
 						{
 							if (hangeul == true && enter == false)
 								enter = true;
-
 						}
-
 						else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
 							strcpy(wtf8, UNICODE2UTF8(ID_put, wcslen(ID_put)));
 							SDL_SetClipboardText(wtf8);// 클립보드에 넣음
@@ -1522,7 +1514,7 @@ int main(int argc, char *argv[])
 						}
 						else {
 							hangeul = true;
-								slice++;
+							slice++;
 						}
 					}
 					break;
@@ -2993,7 +2985,7 @@ int main(int argc, char *argv[])
 					if (bangsang == 1) {
 						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 						mysql_query(cons, query);
-						ServerParam.sockethappen = 5;
+						ServerParam.endhappen = 1;
 						send(ClientParam.Cconnect_socket, "bangsang exit", 30, 0);
 						Sleep(100);
 						closesocket(ServerParam.Slisten_socket);
@@ -3270,7 +3262,7 @@ int main(int argc, char *argv[])
 					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-
+					strcpy(pasttopic, Topics);
 				}
 				if (ClientParam.sockethappen == CurrectAnswerEvent)
 				{
@@ -3473,7 +3465,7 @@ int main(int argc, char *argv[])
 							strcpy(ServerParam.message, "bangsang exit");
 							sendall(&ServerParam);
 							Sleep(100);
-							ServerParam.sockethappen = 5;
+							ServerParam.endhappen = 1;
 							closesocket(ServerParam.Slisten_socket);
 							bangsang = 0;
 						}
@@ -3581,7 +3573,7 @@ int main(int argc, char *argv[])
 						strcpy(ServerParam.message, "bangsang exit");
 						sendall(&ServerParam);
 						Sleep(100);
-						ServerParam.sockethappen = 5;
+						ServerParam.endhappen = 1;
 						closesocket(ServerParam.Slisten_socket);
 						bangsang = 0;
 					}
@@ -3621,7 +3613,7 @@ int main(int argc, char *argv[])
 							strcpy(ServerParam.message, "bangsang exit");
 							sendall(&ServerParam);
 							Sleep(100);
-							ServerParam.sockethappen = 5;
+							ServerParam.endhappen = 1;
 							closesocket(ServerParam.Slisten_socket);
 							bangsang = 0;
 						}
@@ -3910,7 +3902,7 @@ int main(int argc, char *argv[])
 					}
 				}
 				SDL_RenderPresent(renderer);
-				quit = 1;
+				quit = 0;
 				if (bangsang == 1) {
 					//	sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 					//	mysql_query(cons, query);
@@ -3923,11 +3915,14 @@ int main(int argc, char *argv[])
 					SDL_PollEvent(&event);
 					switch (event.type)
 					{
+					case SDL_KEYDOWN:
+						quit = 1;
+						break;
 					case SDL_QUIT:
 						quit = 1;
 						break;
 					}
-					PutRoundButton(renderer, 146, 208, 80, 101, 154, 41, 146, 208, 80, Display_X * 0.7, Display_Y * 0.7, Display_X * 0.05, Display_Y * 0.03, 20, 0, &event, &happen);
+					
 					if (ClientParam.sockethappen == MasterExitEvent)
 					{
 						ClientParam.sockethappen = 0;
@@ -3941,7 +3936,7 @@ int main(int argc, char *argv[])
 				}
 				if (bangsang == 1)
 				{
-					ServerParam.sockethappen = 5;
+					ServerParam.endhappen = 1;
 					closesocket(ServerParam.Slisten_socket);
 					bangsang = 0;
 				}
@@ -3983,6 +3978,7 @@ int main(int argc, char *argv[])
 	SDL_DestroyWindow(Window);
 	SDL_Quit();
 
+	ShowWindow(GetConsoleWindow(), 1);
 
 	return 0;
 }
