@@ -4175,12 +4175,19 @@ int main(int argc, char *argv[])
 					if (MagButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, whysound, 0);
 						if (Me->Turn == 0) {// DB연동
-											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+							FillRoundRect(renderer, 146, 208, 80, TopicText->Limit.x, TopicText->Limit.y, TopicText->Limit.w, TopicText->Limit.h, Display_X * 0.004);
 							han2unicode(Topics, InGameTopic);
-							wchar_t TheNumber[3] = L"";
-							swprintf(TheNumber, 3, L"%d", (int)wcslen(InGameTopic));
-							wcscpy(InGameChat, TheNumber);
-							textinput = true;
+							memset(&TopicText->sentence, 0, sizeof(TopicText->sentence));
+							for (i = 0; i < (int)wcslen(InGameTopic); i++)
+							{
+								TopicText->sentence[i] = '?';
+							}
+							CenterArrange(TopicText);
+							RenderText(TopicText);
+											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+							
+							SDL_RenderPresent(renderer);
+
 						}
 						//			SDL_Delay(100);
 					}
