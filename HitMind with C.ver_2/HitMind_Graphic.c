@@ -1315,7 +1315,9 @@ int PutText_ln(char * name, int Limit_w, int Limit_y, int Limit_h, SDL_Renderer 
 	return DeltaY;
 }
 int HeightOfText(char * name, int Limit_w,SDL_Renderer * renderer, char * sentence, int size,int m) {
-	char Name[30]; Unicode unicode[256] = L"";
+	if (strcmp(sentence, "") == 0)
+		return 0;
+	/*char Name[30]; Unicode unicode[256] = L"";
 	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
 	SDL_Rect Src = { 0 };
 	if (m == 1)
@@ -1328,7 +1330,37 @@ int HeightOfText(char * name, int Limit_w,SDL_Renderer * renderer, char * senten
 		TTF_SizeUNICODE(Font_Size[size], unicode, &Src.w, &Src.h);
 	else if (m == 2)
 		TTF_SizeUNICODE(Font_Size2[size], unicode, &Src.w, &Src.h);
-	return (int)(Src.h*SDL_ceil(Src.w/(float)Limit_w));
+	return (int)(Src.h*SDL_ceil(Src.w/(float)Limit_w));*/
+	int DeltaY = 0, Shift = 0, Length = 150;
+	char Name[30]; Unicode unicode[256] = L""; Unicode Sentence[151] = L"";
+	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
+	SDL_Rect Src = { 0 };	
+	if (m == 1)
+		TTF_SizeUNICODE(Font_Size[size], unicode, &Src.w, &Src.h);
+	else if (m == 2)
+		TTF_SizeUNICODE(Font_Size2[size], unicode, &Src.w, &Src.h);
+	Limit_w -= Src.w;
+	han2unicode(sentence, unicode);
+	while (1) {
+		if (Shift > wcslen(unicode))
+			break;
+		wcsncpy(Sentence, unicode + Shift, Length);
+		Sentence[Length] = '\0';
+		if (m == 1)
+			TTF_SizeUNICODE(Font_Size[size], Sentence, &Src.w, &Src.h);
+		else if (m == 2)
+			TTF_SizeUNICODE(Font_Size2[size], Sentence, &Src.w, &Src.h);
+		if (Src.w > Limit_w&&Length>0) {
+			//	Length *= Limit_w / (float)Src.w;
+			Length--;
+		}
+		else {
+			Shift += Length;
+			Length = 150;
+			DeltaY += Src.h;
+		}
+	}
+	return DeltaY;
 }
 void UpdateUserInfo(User* Player,User * Me,char *Topics,SDL_Rect UserRect,Text * CountText,Text * TopicText,int NowTopic,int MaxTopic) {
 	sprintf(CountText->sentence, "%d/%d", NowTopic, MaxTopic);
