@@ -1458,6 +1458,7 @@ void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 	}
 	else if (code == STRONG) {
 		View->Strong = data1 / 100000.0 * Display_X;
+		printf("view->strong : %d\n", View->Strong);
 		return;
 	}
 	else if (code == NEW) {
