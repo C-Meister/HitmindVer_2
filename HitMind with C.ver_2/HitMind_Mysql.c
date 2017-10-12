@@ -360,3 +360,14 @@ int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode
 	}
 	return 1;
 }
+
+int Insert_Topic_sql(MYSQL *cons, char *my_name, wchar_t * topic)
+{
+	char char_message[256] = "";
+	char query[512];
+	strcpy(query, UNICODE2UTF8(topic, 256));
+	UTF82EUCKR(char_message, 256, query, 512);
+	char_message[strlen(char_message)] = 0;
+	sprintf(query, "insert into topic (top, writer) values ('%s', '%s')", char_message, my_name);
+	return mysql_query(cons, query);
+}
