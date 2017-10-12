@@ -1461,7 +1461,8 @@ void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 		return;
 	}
 	else if (code == NEW) {
-		SDL_FillRectXYWH(View->Renderer, View->Rect.x, View->Rect.y, View->Rect.w, View->Rect.h, 255, 255, 255);
+		FillRoundRect(View->Renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+		DrawRoundRect(View->Renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
 		return;
 	}
 	int x = data1 / 100000.0*Display_X;

@@ -30,7 +30,7 @@
 #define MatchEndEvent 25
 //SDL_Event UserEvent
 #define TIMER 0
-#define SOCKETHAPPEN 5
+#define SOCKETHAPPEN 55
 
 //Draw
 #define PENCILCLICK 1
