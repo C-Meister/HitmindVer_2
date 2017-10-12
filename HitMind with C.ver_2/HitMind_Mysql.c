@@ -292,7 +292,7 @@ int InsertChating_all(MYSQL *cons, char * username, wchar_t* message,int message
 	wchar_t UnicodeOfMessage[256] = L"";
 	han2unicode(char_message, UnicodeOfMessage);
 	if (hannum(message,messagelength)!=hannum(UnicodeOfMessage,wcslen(UnicodeOfMessage))) {
-		strcpy(char_message, "Warning 0x6974 : [InValid Conversion]");
+		strcpy(char_message, "[InValid Conversion]");
 	}
 	sprintf(query, "insert into all_chating (name, message) values ('%s', '%s')", username, char_message);
 	if (mysql_query(cons, query) != 0)
