@@ -220,10 +220,9 @@ void Clientrecv(SockParam *param) {
 			break;
 		}
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
-	//		printf("Client : %s\n", param->message);
-			if (!(strncmp(param->message, "Ddata", 5))) {
+			printf("Client : %s\n", param->message);
+			if ((strncmp(param->message, "Ddata", 5) == 0)) {
 				PushUserEvent(param->message);
-				continue;
 			}
 			else if (strcmp(param->message, "game start") == 0) {
 				param->sockethappen = WaitRoomStartEvent;
