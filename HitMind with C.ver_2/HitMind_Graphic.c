@@ -799,6 +799,15 @@ void SDL_FillRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r,
 	SDL_RenderFillRect(renderer, &rect);
 
 }
+void SDL_DrawRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b) {
+	SDL_Rect rect;
+	rect.x = x;
+	rect.y = y;
+	rect.w = w;
+	rect.h = h;
+	SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+	SDL_RenderDrawRect(renderer, &rect);
+}
 void CreateCanvas(Canvas * Canvas, SDL_Renderer *Renderer, int x, int y, int w, int h, int strong) {
 	Canvas->Click = false;
 	Canvas->Strong = strong;
