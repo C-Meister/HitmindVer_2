@@ -1340,9 +1340,9 @@ int main(int argc, char *argv[])
 			SDL_Texture * Chating_put = LoadTexture(renderer, ".\\design\\chatting2.png");
 			SDL_Texture * Chating_click = LoadTexture(renderer, ".\\design\\chattingput.png");
 			SDL_Texture * Slider_Box = LoadTextureEx(renderer, ".\\design\\Box.png", 255, 255, 255);
+			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
 			SDL_Texture * Room_Back_noclick = LoadTexture(renderer, ".\\design\\room1.png");
 			SDL_Texture * Room_Back_click = LoadTexture(renderer, ".\\design\\room2.png");
-			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
 			SDL_Texture * Room_Lock = LoadTexture(renderer, ".\\design\\lockicon.png");
 			SDL_Texture * left1 = LoadTexture(renderer, ".\\design\\left1.png");
 			SDL_Texture * left2 = LoadTexture(renderer, ".\\design\\left2.png");
@@ -2468,6 +2468,7 @@ int main(int argc, char *argv[])
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
 					int fullt = Full;
+					int bbokt= Sound;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2532,16 +2533,16 @@ int main(int argc, char *argv[])
 						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.18, 6 * ((float)Display_X / 1920), set_start_h * 0.143, 91, 155, 213);
 						PutText(renderer, "효과음", set_start_x + set_start_w * 0.08, set_start_y + set_start_h * 0.21, 35 * ((float)Display_X / 1920), 0, 0, 0, 2);
 						FillRoundRect(renderer, 0, 176, 240, set_start_x + set_start_w * 0.81, set_start_y + set_start_h * 0.2, set_start_w * 0.15, set_start_h * 0.1, 25 * ((float)Display_X / 1920));
-						PutText(renderer, _itoa(Sound, db_id, 10), set_start_x + set_start_w * 0.85, set_start_y + set_start_h * 0.216, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
+						//PutText(renderer, _itoa(Sound, db_id, 10), set_start_x + set_start_w * 0.85, set_start_y + set_start_h * 0.216, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, _itoa(Sound, db_id, 10), set_start_x + set_start_w * 0.81, set_start_y + set_start_h * 0.2, set_start_w * 0.15, set_start_h * 0.1, 255, 255, 255, 30 * ((float)Display_X / 1920), 1);
 						//배경음악
 						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.36, set_start_w * 0.94, set_start_h * 0.14, 13);
 						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.36 - 3, set_start_w * 0.94 + 6, set_start_h * 0.14 + 6, 13, 2);
 						SDL_FillRectXYWH(renderer, set_start_x + set_start_w * 0.27, set_start_y + set_start_h * 0.36, 6 * ((float)Display_X / 1920), set_start_h * 0.143, 91, 155, 213);
 						PutText(renderer, "배경음악", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.39, 32 * ((float)Display_X / 1920), 0, 0, 0, 2);
 						FillRoundRect(renderer, 0, 176, 240, set_start_x + set_start_w * 0.81, set_start_y + set_start_h * 0.38, set_start_w * 0.15, set_start_h * 0.1, 25 * ((float)Display_X / 1920));
-						PutText(renderer, _itoa(BGmusic, db_id, 10), set_start_x + set_start_w * 0.85, set_start_y + set_start_h * 0.396, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-
+						//PutText(renderer, _itoa(BGmusic, db_id, 10), set_start_x + set_start_w * 0.85, set_start_y + set_start_h * 0.396, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, _itoa(BGmusic, db_id, 10), set_start_x + set_start_w * 0.81, set_start_y + set_start_h * 0.38, set_start_w * 0.15, set_start_h * 0.1, 255, 255, 255, 30 * ((float)Display_X / 1920), 1);
 						//해상도 설정
 						FillRoundRect(renderer, 255, 255, 255, set_start_x + set_start_w * 0.03, set_start_y + set_start_h * 0.54, set_start_w * 0.94, set_start_h * 0.22, 13);
 						DrawRoundRect(renderer, 191, 191, 191, set_start_x + set_start_w * 0.03 - 3, set_start_y + set_start_h * 0.54 - 3, set_start_w * 0.94 + 6, set_start_h * 0.22 + 6, 13, 2);
@@ -2559,13 +2560,15 @@ int main(int argc, char *argv[])
 						}
 						if (Full == 1)
 						{
-							PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+							//PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+							Put_Text_Center(renderer,"FULL", set_start_x + set_start_w * 0.7, set_start_y + set_start_h * 0.65, set_start_x * 0.2, set_start_h * 0.1, 255, 255, 255, 30 * ((float)Display_X / 1920), 1);
 							display_value = 10;
 							slider_display->Box.x = slider_display->Bar.x + slider_display->Bar.w - slider_display->Box.w / 2;
 						}
 						else
 						{
-							PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 189, 189, 189, 1);
+							//PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 189, 189, 189, 1);
+							Put_Text_Center(renderer, "FULL", set_start_x + set_start_w * 0.7, set_start_y + set_start_h * 0.65, set_start_x * 0.2, set_start_h * 0.1, 210, 210, 210, 30 * ((float)Display_X / 1920), 1);
 							UpdateSlider(slider_display, &event);
 						}
 						UpdateSlider(slider_sound, &event);
@@ -2607,14 +2610,22 @@ int main(int argc, char *argv[])
 						DrawSlider(renderer, slider_sound);
 						DrawSlider(renderer, slider_bgsound);
 						DrawSlider(renderer, slider_display);
-						PutText(renderer, "고객문의", set_start_x + set_start_w * 0.093, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, "크래딧", set_start_x + set_start_w * 0.42, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						PutText(renderer, "설문조사", set_start_x + set_start_w * 0.693, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						//PutText(renderer, "고객문의", set_start_x + set_start_w * 0.093, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, "고객문의", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
+						//PutText(renderer, "크래딧", set_start_x + set_start_w * 0.42, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, "크래딧",set_start_x + set_start_w * 0.36, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
+						//PutText(renderer, "설문조사", set_start_x + set_start_w * 0.693, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
+						Put_Text_Center(renderer, "설문조사", set_start_x + set_start_w * 0.66, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
 
 						SDL_RenderPresent(renderer);
 
 						Mix_VolumeMusic(BGmusic*1.28);
-					}
+
+						if (bbokt != Sound) {
+							Mix_PlayChannel(0, bboksound, 0);
+							Mix_VolumeChunk(bboksound, Sound*1.28);
+							bbokt = Sound;
+						}
 
 					Mix_VolumeMusic(BGmusic*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
@@ -2647,8 +2658,10 @@ int main(int argc, char *argv[])
 					SDL_Texture * Input_Topic_click = LoadTexture(renderer, ".\\login\\ID2.png");
 					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 217, 217, 217);
 					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 0, 0, 0);
-					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 146, 208, 80);
-					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 65, 113, 156);
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 146, 208, 80);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 65, 113, 156);
+					SDL_Texture * login_close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * login_close_click = LoadTexture(renderer, ".\\login\\close2.png");
 					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
 					strcpy(buff, "작성자 : ");
 					warning.ison = 0;
@@ -2769,14 +2782,13 @@ int main(int argc, char *argv[])
 							inserttopic = 0;
 							break;
 						}
-						if (PutRoundButton(renderer, 146, 208, 80, 140, 223, 65, 65, 113, 156, Display_X * 0.59 - 1, Display_Y * 0.3 + 1, Display_X * 0.06 + 1, Display_Y * 0.06 - 1, 0, 0, &event, &happen)) {
+						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1,&event, &happen)) {
 							inserttopic = 0;
 						}
+						
+							RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						
 
-						RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
-						PutText_Unicode(renderer, Topic_Input, Display_X * 0.365, Display_Y * 0.43, 25 * ((float)Display_X / 1920), color, 1);
-
-						PutText(renderer, "X", Display_X * 0.613, Display_Y * 0.31, 40 * ((float)Display_X / 1920), 255, 255, 255, 2);
 						if (PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen)) {
 							if (wcslen(Topic_Input) > 0) {
 								Insert_Topic_sql(cons, myuser->name, Topic_Input);
@@ -2796,6 +2808,9 @@ int main(int argc, char *argv[])
 					}
 					warning.ison = 0;
 					SDL_DestroyTexture(Input_Topic_click);
+					
+					SDL_DestroyTexture(login_close_noclick);
+					SDL_DestroyTexture(login_close_click);
 
 					newdataed = 1;
 				}
@@ -2852,7 +2867,19 @@ int main(int argc, char *argv[])
 			qquit = 0;
 			int statusprint = 0;
 			int isready = 0;
+
+			int ChatBlank = 17.5 * ((float)Display_X / 1920);
+			int ChatLimitY = Display_Y*0.735 + 10 + ChatBlank;
+			int ChatLimitH = Display_Y *0.92 - (Display_Y *0.735 + 10) - 2 * ChatBlank;
+			int ChatingDrag = 0;
+			int Deltachat = 5 * ((float)Display_X / 1920);
 			int byee = 0;
+			SDL_Texture * Slider_Box = LoadTextureEx(renderer, ".\\design\\Box.png", 255, 255, 255);
+			SDL_Texture * Slider_slider_up = LoadTexture(renderer, ".\\design\\slider_up.png");
+			Slider * ChatSlide = (Slider *)malloc(sizeof(Slider));
+			CreateSlider(ChatSlide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &ChatingDrag, 0, 0, Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10), VERTICAL);
+
+
 			SOCKCHAT Chattings[20] = { 0, };
 			int cnum = 0;
 			sprintf(query, "update user set status = 3 where ownnum = %d", myuser->ownnum);
@@ -2947,10 +2974,11 @@ int main(int argc, char *argv[])
 								strcpy(qwery, UNICODE2UTF8(ID_put, 256));
 								UTF82EUCKR(char_message, 512, qwery, 850);
 								char_message[strlen(char_message)] = '\0';
-								sprintf(query, "chat %s", char_message);
-								send(ClientParam.Cconnect_socket, query, 180, 0);
+								sprintf(qwery, "chat %s", char_message);
+								send(ClientParam.Cconnect_socket, qwery, 850, 0);
 								wcscpy(ID_put, L"");
-
+								textinput = true;
+								LobbyShift = 0;
 							}
 						}
 
@@ -3018,34 +3046,111 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-				if (ClientParam.sockethappen == SocketChattingEvent)
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.918, Display_X * 0.05, Display_Y * 0.047, 8, 0, &event, &happen)&& (wcslen(ID_put) > 0)) {
+					char char_message[512] = "";
+					char qwery[850];
+					strcpy(qwery, UNICODE2UTF8(ID_put, 256));
+					UTF82EUCKR(char_message, 512, qwery, 850);
+					char_message[strlen(char_message)] = '\0';
+					sprintf(qwery, "chat %s", char_message);
+					send(ClientParam.Cconnect_socket, qwery, 850, 0);
+					wcscpy(ID_put, L"");
+					textinput = true;
+					LobbyShift = 0;
+				}
+				PutText(renderer, "전송", Display_X * 0.62, Display_Y * 0.925, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				if (ClientParam.sockethappen == SocketChattingEvent || event.type == SDL_MOUSEWHEEL || UpdateSlider(ChatSlide, &event) == true)
 				{
-
-					ClientParam.sockethappen = 0;
+					int ChatingH = 0;
+					if (event.type == SDL_MOUSEWHEEL) {
+						if (event.wheel.y == 1) {
+							if (ChatingDrag - Deltachat >= ChatSlide->Start) {
+								MoveSlider_value(ChatSlide, ChatingDrag - Deltachat);
+							}
+							else {
+								if (*ChatSlide->Value != ChatSlide->Start);
+								MoveSlider_value(ChatSlide, ChatSlide->Start);
+							}
+						}
+						if (event.wheel.y == -1) {
+							if (ChatingDrag + Deltachat <= ChatSlide->End) {
+								MoveSlider_value(ChatSlide, ChatingDrag + Deltachat);
+							}
+							else {
+								if (*ChatSlide->Value != ChatSlide->End);
+								MoveSlider_value(ChatSlide, ChatSlide->End);
+							}
+						}
+						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+						SDL_Rect rect = { ChatSlide->Box.x , ChatSlide->Bar.y - ChatSlide->Box.h / 2.0, ChatSlide->Box.w, ChatSlide->Bar.h + ChatSlide->Box.h };
+						SDL_RenderFillRect(renderer, &rect);
+						DrawSlider(renderer, ChatSlide);
+					}
+					else if (ClientParam.sockethappen != SocketChattingEvent) {
+						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+						SDL_Rect rect = { ChatSlide->Box.x , ChatSlide->Bar.y - ChatSlide->Box.h / 2.0, ChatSlide->Box.w, ChatSlide->Bar.h + ChatSlide->Box.h };
+						SDL_RenderFillRect(renderer, &rect);
+						DrawSlider(renderer, ChatSlide);
+					}
+					else {
+						strcpy(Chattings[cnum].message, ClientParam.chat_message);
+						strcpy(Chattings[cnum].name, gameuser[ClientParam.num].Nickname);
+						for (int i = 0; i < 20; i++) {
+							ChatingH += HeightOfText(Chattings[i].name, Display_X*0.65, renderer, Chattings[i].message, 30 * ((float)Display_X / 1920), 1);
+						}
+						if (ChatingH > ChatLimitH) {
+							ChatSlide->End = ChatingH - ChatLimitH;
+							MoveSlider_value(ChatSlide, ChatSlide->End);
+						}
+						else {
+							ChatSlide->End = 0;
+							MoveSlider_value(ChatSlide, 0);
+						}
+						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+						SDL_Rect rect = { ChatSlide->Box.x , ChatSlide->Bar.y - ChatSlide->Box.h / 2.0, ChatSlide->Box.w, ChatSlide->Bar.h + ChatSlide->Box.h };
+						SDL_RenderFillRect(renderer, &rect);
+						DrawSlider(renderer, ChatSlide);
+					}
 					int endpoint = 0;
-					strcpy(Chattings[cnum].message, ClientParam.chat_message);
-					strcpy(Chattings[cnum].name, gameuser[ClientParam.num].Nickname);
 
-					int temp = (cnum + 1) % 20;
+					int temp;
+					if (ClientParam.sockethappen == SocketChattingEvent) {
+						temp = (cnum + 1) % 20;
+					}
+					else {
+						temp = cnum;
+					}
 					int DeltaY = 0;
-					int scroll = 0;
-					SDL_FillRectXYWH(renderer, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87, Display_X*0.67, Display_Y * 0.15, 255, 255, 255);
+					SDL_FillRectXYWH(renderer, Display_X * 0.02, ChatLimitY-ChatBlank, Display_X*0.65, ChatLimitH+2*ChatBlank, 255, 255, 255);
 					while (1) {
 						if (strlen(Chattings[temp].message) > 0) {
-							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.66, Display_X*0.195 + Display_Y*0.6*0.37, Display_Y * 0.35, renderer, Chattings[temp].message, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87 + DeltaY, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
-							printf("%d\n", DeltaY);
-							scroll++;
+							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.65, ChatLimitY - ChatBlank, ChatLimitH + 2 * ChatBlank, renderer, Chattings[temp].message, Display_X * 0.02, ChatLimitY + DeltaY - ChatingDrag, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
 						}
-						if (temp == cnum)
-							break;
+						if (ClientParam.sockethappen == SocketChattingEvent) {
+							if (temp == cnum)
+								break;
+						}
+						else {
+							if (temp == (20 + cnum - 1) % 20)
+								break;
+						}
 						temp++;
 						if (temp == 20) {
 							temp = 0;
 						}
 					}
-					cnum++;
-					if (cnum == 20) {
-						cnum = 0;
+					if (ClientParam.sockethappen == SocketChattingEvent) {
+						cnum++;
+						if (cnum == 20) {
+							cnum = 0;
+						}
+					}
+					SDL_RenderPresent(renderer);
+					if (ClientParam.sockethappen == SocketChattingEvent) {
+						ClientParam.sockethappen = 0;
+					}
+					else {
+						continue;
 					}
 				}
 				if (ClientParam.sockethappen == ChangeHostEvent)
@@ -3598,6 +3703,33 @@ int main(int argc, char *argv[])
 					//printf("render	");
 					continue;
 				}
+				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
+					if (Enter == ACTIVATED&&wcslen(InGameChat) > 0) {
+						Shift = 0;
+						han2unicode(Topics, InGameTopic);
+						if (Me->Turn == 0 && wcscmp(InGameTopic, InGameChat) == 0) {// DB연동
+							sprintf(query, "currect answer %s", Get_Random_Topic(cons));
+							send(ClientParam.Cconnect_socket, query, 30, 0);
+
+						}
+						else if (wcslen(InGameChat) > 0) {
+							char char_message[512] = "";
+							char qwery[850];
+							strcpy(qwery, UNICODE2UTF8(InGameChat, 256));
+							UTF82EUCKR(char_message, 512, qwery, 850);
+							char_message[strlen(char_message)] = '\0';
+							sprintf(query, "chat %s", char_message);
+							send(ClientParam.Cconnect_socket, query, 180, 0);
+						}
+						wcscpy(InGameChat, L"");
+						wcscpy(InGameTopic, L"");
+						Enter = HIGHLIGHT;
+						textinput = true;
+					}
+					SDL_RenderPresent(renderer);
+					//printf("render   ");
+					continue;
+				}
 				if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
 					if (Chat == DEACTIVATED) {
 						wcscpy(InGameChat, L"");
@@ -4048,15 +4180,6 @@ int main(int argc, char *argv[])
 					if (PassButton->Flag == ACTIVATED)
 						PassButton->Flag = HIGHLIGHT;
 					//printf("render	");
-					continue;
-				}
-				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
-					if (Enter == ACTIVATED) {
-						wcscpy(InGameChat, L"");
-						Enter = HIGHLIGHT;
-					}
-					SDL_RenderPresent(renderer);
-					//printf("render   ");
 					continue;
 				}
 			}
