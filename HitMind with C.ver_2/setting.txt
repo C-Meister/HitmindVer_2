@@ -1,6 +1,6 @@
 <HitMid_Setting>
 배경음악 : 0
 효과음 : 0
-Display_X : 1152
-Display_Y : 648
+Display_X : 1536
+Display_Y : 864
 fullscreen : 0
