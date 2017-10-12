@@ -1288,7 +1288,8 @@ int PutText_ln(char * name, int Limit_w, int Limit_y, int Limit_h, SDL_Renderer 
 		else if (m == 2)
 			TTF_SizeUNICODE(Font_Size2[size], Sentence, &Src.w, &Src.h);
 		if (Src.w > Limit_w&&Length>0) {
-			Length *= Limit_w / (float)Src.w;
+		//	Length *= Limit_w / (float)Src.w;
+			Length--;
 		}
 		else {
 			Shift += Length;
