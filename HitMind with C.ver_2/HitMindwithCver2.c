@@ -2966,6 +2966,7 @@ int main(int argc, char *argv[])
 								wcscpy(ID_put, L"");
 								textinput = true;
 								LobbyShift = 0;
+								enter = false;
 							}
 						}
 
