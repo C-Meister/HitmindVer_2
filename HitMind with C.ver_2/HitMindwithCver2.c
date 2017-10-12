@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-
+	ShowWindow(GetConsoleWindow(), 0);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -2678,15 +2678,16 @@ int main(int argc, char *argv[])
 					wchar_t Topic_Input[128] = L"";
 					int inserttopic = 1;
 					char buff[128] = "";
-					SDL_Texture * Input_Topic_noclick = LoadTexture(renderer, ".\\login\\ID1.png");
 					SDL_Texture * Input_Topic_click = LoadTexture(renderer, ".\\login\\ID2.png");
-					SDL_Texture * Input_Topic_noclick2 = LoadTexture(renderer, ".\\login\\ID3.png");
 					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 217, 217, 217);
 					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 0, 0, 0);
-					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 146, 208, 80);
-					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 65, 113, 156);
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 146, 208, 80);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 65, 113, 156);
+					SDL_Texture * login_close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * login_close_click = LoadTexture(renderer, ".\\login\\close2.png");
 					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
 					strcpy(buff, "작성자 : ");
+					warning.ison = 0;
 					strcat(buff, myuser->name);
 					PutText(renderer, buff, Display_X * 0.36, Display_Y * 0.38, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 					chattingput = 0;
@@ -2696,87 +2697,107 @@ int main(int argc, char *argv[])
 						switch (event.type)
 						{
 						case SDL_TEXTINPUT: // 채팅 입력 이벤트
-							if (chattingput) {
-								if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
-								{
-									wcscpy(wchar, L"");
-									sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
-									wchar[0] = sum;
-									if (wcslen(Topic_Input) < 255)
-										wcscat(Topic_Input, wchar);// 전체채팅
+
+							if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+							{
+								wcscpy(wchar, L"");
+								sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+								wchar[0] = sum;
+								if (wcslen(Topic_Input) < 13)
+									wcscat(Topic_Input, wchar);// 전체채팅
 
 
-									if (event.text.text[0] == -29)
-										slice = 1;
-									else
-										slice = 1 + !((wchar[0] - 0xac00) % 28);
-								}
-								else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
-									wcscpy(wchar, L"");
-									swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-									if (wcslen(Topic_Input) < 255)
-										wcscat(Topic_Input, wchar);
-									hangeul = false;
-									slice = 0;
-								}
-								textinput = true;
+								if (event.text.text[0] == -29)
+									slice = 1;
+								else
+									slice = 1 + !((wchar[0] - 0xac00) % 28);
 							}
+							else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+								wcscpy(wchar, L"");
+								swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+								if (wcslen(Topic_Input) < 13)
+									wcscat(Topic_Input, wchar);
+								hangeul = false;
+								slice = 0;
+							}
+							textinput = true;
 							break;
 						case SDL_KEYDOWN:
-							if (chattingput) {
-								if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-									if (hangeul == true && enter == false)
-										enter = true;
-									else if (wcslen(Topic_Input) > 0) {
-										Insert_Topic_sql(cons, myuser->name, Topic_Input);
-										memset(Topic_Input, 0, sizeof(Topic_Input));
-									}
-								}
 
-								else if (event.key.keysym.sym == SDLK_RALT)
-									hanyeong = !(hanyeong);
-								else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(Topic_Input) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
-								{
-									if (slice == 0) {
-										if (LobbyShift > 0)
-											LobbyShift--;
-										Topic_Input[wcslen(Topic_Input) - 1] = '\0';
-
-										textinput = true;
+							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+								if (hangeul == true && enter == false)
+									enter = true;
+								else if (wcslen(Topic_Input) > 0) {
+									if (Insert_Topic_sql(cons, myuser->name, Topic_Input) != 0)
+									{
+										warning.ison = 1;
+										warning.x = Display_X * 0.5;
+										warning.y = Display_Y * 0.38;
+										warning.r = 255;
+										warning.g = 0;
+										warning.b = 0;
+										strcpy(warning.message, "주제가 존재합니다.");
+										warning.size = 20 * ((float)Display_X / 1920);
 									}
 									else {
-										//		////printf("\nslice상태");
-										slice--;
+										warning.ison = 1;
+										warning.x = Display_X * 0.5;
+										warning.y = Display_Y * 0.38;
+										warning.r = 0;
+										warning.g = 0;
+										warning.b = 0;
+										strcpy(warning.message, "주제 추가 성공.");
+										warning.size = 20 * ((float)Display_X / 1920);
+
 									}
+									memset(Topic_Input, 0, sizeof(Topic_Input));
 								}
-								else if (event.key.keysym.sym == SDLK_TAB)
-								{
-									if (hangeul == true && enter == false)
-										enter = true;
+							}
 
-								}
+							else if (event.key.keysym.sym == SDLK_RALT)
+								hanyeong = !(hanyeong);
+							else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(Topic_Input) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
+							{
+								if (slice == 0) {
+									if (LobbyShift > 0)
+										LobbyShift--;
+									Topic_Input[wcslen(Topic_Input) - 1] = '\0';
 
-								else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
-									strcpy(wtf8, UNICODE2UTF8(Topic_Input, wcslen(Topic_Input)));
-									SDL_SetClipboardText(wtf8);// 클립보드에 넣음
-								}
-								else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
-									slice = 0;
-									if (strlen(SDL_GetClipboardText()) >= 768)
-										break;
-									Unicode UnicodeOfClipboard[256] = L"";
-									wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
-									if (wcslen(UnicodeOfClipboard) + wcslen(Topic_Input) >= 256)
-										break;
-									wcscat(Topic_Input, UnicodeOfClipboard);// 클립보드에서 가져옴
-									hangeul = false;
 									textinput = true;
 								}
 								else {
-									hangeul = true;
-									slice++;
+									//		////printf("\nslice상태");
+									slice--;
 								}
 							}
+							else if (event.key.keysym.sym == SDLK_TAB)
+							{
+								if (hangeul == true && enter == false)
+									enter = true;
+
+							}
+
+							else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
+								strcpy(wtf8, UNICODE2UTF8(Topic_Input, wcslen(Topic_Input)));
+								SDL_SetClipboardText(wtf8);// 클립보드에 넣음
+							}
+							else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+								slice = 0;
+								if (strlen(SDL_GetClipboardText()) >= 768)
+									break;
+								Unicode UnicodeOfClipboard[256] = L"";
+								wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
+								if (wcslen(UnicodeOfClipboard) + wcslen(Topic_Input) >= 256)
+									break;
+								wcscat(Topic_Input, UnicodeOfClipboard);// 클립보드에서 가져옴
+								hangeul = false;
+								textinput = true;
+							}
+							else {
+								hangeul = true;
+								slice++;
+							}
+
 							if (event.key.keysym.sym == SDLK_ESCAPE)
 								inserttopic = 0;
 							break;
@@ -2784,21 +2805,198 @@ int main(int argc, char *argv[])
 							inserttopic = 0;
 							break;
 						}
-						if (PutRoundButton(renderer, 146, 208, 80, 140, 223, 65, 65, 113, 156, Display_X * 0.59 - 1, Display_Y * 0.3 + 1, Display_X * 0.06 + 1, Display_Y * 0.06 - 1, 0, 0, &event, &happen)) {
+						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1, &event, &happen)) {
 							inserttopic = 0;
 						}
 
 						RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						PutText_Unicode(renderer, Topic_Input, Display_X * 0.365, Display_Y * 0.43, 25 * ((float)Display_X / 1920), color, 1);
 
-
-						PutText(renderer, "X", Display_X * 0.613, Display_Y * 0.31, 40 * ((float)Display_X / 1920), 255, 255, 255, 2);
-						PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen);
+						if (PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen)) {
+							if (wcslen(Topic_Input) > 0) {
+								Insert_Topic_sql(cons, myuser->name, Topic_Input);
+								memset(Topic_Input, 0, sizeof(Topic_Input));
+							}
+						}
 						PutText(renderer, "추가", Display_X * 0.6, Display_Y * 0.436, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
+						if (warning.ison == 1)
+						{
+							SDL_FillRectXYWH(renderer, warning.x, warning.y, Display_X * 0.1, Display_Y * 0.04, 217, 217, 217);
+
+
+							PutText(renderer, warning.message, warning.x, warning.y, warning.size, warning.r, warning.g, warning.b, 1);
+							warning.ison = 0;
+						}
 						SDL_RenderPresent(renderer);
 					}
+					warning.ison = 0;
 					SDL_DestroyTexture(Input_Topic_click);
-					SDL_DestroyTexture(Input_Topic_noclick);
-					SDL_DestroyTexture(Input_Topic_noclick2);
+
+					SDL_DestroyTexture(login_close_noclick);
+					SDL_DestroyTexture(login_close_click);
+
+					newdataed = 1;
+				}if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event, &happen)) //닉네임 변경 버튼
+				{
+					wchar_t Topic_Input[128] = L"";
+					int inserttopic = 1;
+					char buff[128] = "";
+					SDL_Texture * Input_Topic_click = LoadTexture(renderer, ".\\login\\ID2.png");
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 217, 217, 217);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 0, 0, 0);
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 146, 208, 80);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 65, 113, 156);
+					SDL_Texture * login_close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * login_close_click = LoadTexture(renderer, ".\\login\\close2.png");
+					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
+					strcpy(buff, "작성자 : ");
+					warning.ison = 0;
+					strcat(buff, myuser->name);
+					PutText(renderer, buff, Display_X * 0.36, Display_Y * 0.38, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					chattingput = 0;
+					while (inserttopic)
+					{
+						SDL_WaitEvent(&event);
+						switch (event.type)
+						{
+						case SDL_TEXTINPUT: // 채팅 입력 이벤트
+
+							if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+							{
+								wcscpy(wchar, L"");
+								sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+								wchar[0] = sum;
+								if (wcslen(Topic_Input) < 13)
+									wcscat(Topic_Input, wchar);// 전체채팅
+
+
+								if (event.text.text[0] == -29)
+									slice = 1;
+								else
+									slice = 1 + !((wchar[0] - 0xac00) % 28);
+							}
+							else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+								wcscpy(wchar, L"");
+								swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+								if (wcslen(Topic_Input) < 13)
+									wcscat(Topic_Input, wchar);
+								hangeul = false;
+								slice = 0;
+							}
+							textinput = true;
+							break;
+						case SDL_KEYDOWN:
+
+							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+								if (hangeul == true && enter == false)
+									enter = true;
+								else if (wcslen(Topic_Input) > 0) {
+									if (Insert_Topic_sql(cons, myuser->name, Topic_Input) != 0)
+									{
+										warning.ison = 1;
+										warning.x = Display_X * 0.5;
+										warning.y = Display_Y * 0.38;
+										warning.r = 255;
+										warning.g = 0;
+										warning.b = 0;
+										strcpy(warning.message, "주제가 존재합니다.");
+										warning.size = 20 * ((float)Display_X / 1920);
+									}
+									else {
+										warning.ison = 1;
+										warning.x = Display_X * 0.5;
+										warning.y = Display_Y * 0.38;
+										warning.r = 0;
+										warning.g = 0;
+										warning.b = 0;
+										strcpy(warning.message, "주제 추가 성공.");
+										warning.size = 20 * ((float)Display_X / 1920);
+
+									}
+									memset(Topic_Input, 0, sizeof(Topic_Input));
+								}
+							}
+
+							else if (event.key.keysym.sym == SDLK_RALT)
+								hanyeong = !(hanyeong);
+							else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(Topic_Input) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
+							{
+								if (slice == 0) {
+									if (LobbyShift > 0)
+										LobbyShift--;
+									Topic_Input[wcslen(Topic_Input) - 1] = '\0';
+
+									textinput = true;
+								}
+								else {
+									//		////printf("\nslice상태");
+									slice--;
+								}
+							}
+							else if (event.key.keysym.sym == SDLK_TAB)
+							{
+								if (hangeul == true && enter == false)
+									enter = true;
+
+							}
+
+							else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
+								strcpy(wtf8, UNICODE2UTF8(Topic_Input, wcslen(Topic_Input)));
+								SDL_SetClipboardText(wtf8);// 클립보드에 넣음
+							}
+							else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+								slice = 0;
+								if (strlen(SDL_GetClipboardText()) >= 768)
+									break;
+								Unicode UnicodeOfClipboard[256] = L"";
+								wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
+								if (wcslen(UnicodeOfClipboard) + wcslen(Topic_Input) >= 256)
+									break;
+								wcscat(Topic_Input, UnicodeOfClipboard);// 클립보드에서 가져옴
+								hangeul = false;
+								textinput = true;
+							}
+							else {
+								hangeul = true;
+								slice++;
+							}
+
+							if (event.key.keysym.sym == SDLK_ESCAPE)
+								inserttopic = 0;
+							break;
+						case SDL_QUIT:
+							inserttopic = 0;
+							break;
+						}
+						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1, &event, &happen)) {
+							inserttopic = 0;
+						}
+
+						RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						PutText_Unicode(renderer, Topic_Input, Display_X * 0.365, Display_Y * 0.43, 25 * ((float)Display_X / 1920), color, 1);
+
+						if (PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen)) {
+							if (wcslen(Topic_Input) > 0) {
+								Insert_Topic_sql(cons, myuser->name, Topic_Input);
+								memset(Topic_Input, 0, sizeof(Topic_Input));
+							}
+						}
+						PutText(renderer, "추가", Display_X * 0.6, Display_Y * 0.436, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
+						if (warning.ison == 1)
+						{
+							SDL_FillRectXYWH(renderer, warning.x, warning.y, Display_X * 0.1, Display_Y * 0.04, 217, 217, 217);
+
+
+							PutText(renderer, warning.message, warning.x, warning.y, warning.size, warning.r, warning.g, warning.b, 1);
+							warning.ison = 0;
+						}
+						SDL_RenderPresent(renderer);
+					}
+					warning.ison = 0;
+					SDL_DestroyTexture(Input_Topic_click);
+
+					SDL_DestroyTexture(login_close_noclick);
+					SDL_DestroyTexture(login_close_click);
 
 					newdataed = 1;
 				}
@@ -3620,7 +3818,8 @@ int main(int argc, char *argv[])
 					if (currectshowtimer > 60)
 					{
 						currectshowtimer = 0;
-						SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
 						gameuser[NowPlayer - 1].Turn = 1;
 						if (Me->Turn == 1) {
 							// 내 턴
@@ -3968,7 +4167,6 @@ int main(int argc, char *argv[])
 						sprintf(query, "pass %s %d", Get_Random_Topic(cons), i);
 						send(ClientParam.Cconnect_socket, query, 30, 0);
 					}
-
 					if (bangsang == 1) {
 						//		sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 						//		mysql_query(cons, query);
@@ -4176,12 +4374,19 @@ int main(int argc, char *argv[])
 					if (MagButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, whysound, 0);
 						if (Me->Turn == 0) {// DB연동
-											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+							FillRoundRect(renderer, 146, 208, 80, TopicText->Limit.x, TopicText->Limit.y, TopicText->Limit.w, TopicText->Limit.h, Display_X * 0.004);
 							han2unicode(Topics, InGameTopic);
-							wchar_t TheNumber[3] = L"";
-							swprintf(TheNumber, 3, L"%d", (int)wcslen(InGameTopic));
-							wcscpy(InGameChat, TheNumber);
-							textinput = true;
+							memset(&TopicText->sentence, 0, sizeof(TopicText->sentence));
+							for (i = 0; i < (int)wcslen(InGameTopic); i++)
+							{
+								TopicText->sentence[i] = '?';
+							}
+							CenterArrange(TopicText);
+							RenderText(TopicText);
+											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+							
+							SDL_RenderPresent(renderer);
+
 						}
 						//			SDL_Delay(100);
 					}
