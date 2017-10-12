@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	Mix_Chunk *whysound = Mix_LoadWAV("sound/why.wav");
 	Mix_Chunk *passsound = Mix_LoadWAV("sound/pass.wav");
 	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
+	Mix_Chunk *bboksound = Mix_LoadWAV("sound/bbok.wav");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic*1.28);
 	Mix_VolumeChunk(erasersound, Sound*1.28);
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 	Mix_VolumeChunk(whysound, Sound*1.28);
 	Mix_VolumeChunk(passsound, Sound*1.28);
 	Mix_VolumeChunk(resound, Sound*1.28);
-
+	Mix_VolumeChunk(bboksound, Sound*1.28);
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -2471,6 +2472,7 @@ int main(int argc, char *argv[])
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
 					int fullt = Full;
+					int bbokt= Sound*1.28;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2615,11 +2617,17 @@ int main(int argc, char *argv[])
 						PutText(renderer, "설문조사", set_start_x + set_start_w * 0.693, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
 						SDL_RenderPresent(renderer);
-
+						
 						Mix_VolumeMusic(BGmusic*1.28);
+						if (bbokt != Sound*1.28) {
+							Mix_PlayChannel(0, bboksound, 0);
+							Mix_VolumeChunk(bboksound, Sound*1.28);
+						}
+
 					}
 
 					Mix_VolumeMusic(BGmusic*1.28);
+					Mix_VolumeChunk(bboksound, Sound*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
 					Mix_VolumeChunk(pencilsound, Sound*1.28);
 					Mix_VolumeChunk(killsound, Sound*1.28);
@@ -2644,21 +2652,108 @@ int main(int argc, char *argv[])
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event, &happen)) //닉네임 변경 버튼
 				{
+					wchar_t Topic_Input[128] = L"";
 					int inserttopic = 1;
-					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.3, 217, 217, 217);
-					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.3, 0, 0, 0);
+					char buff[128] = "";
+					SDL_Texture * Input_Topic_noclick = LoadTexture(renderer, ".\\login\\ID1.png");
+					SDL_Texture * Input_Topic_click = LoadTexture(renderer, ".\\login\\ID2.png");
+					SDL_Texture * Input_Topic_noclick2 = LoadTexture(renderer, ".\\login\\ID3.png");
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 217, 217, 217);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 0, 0, 0);
 					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 146, 208, 80);
 					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 65, 113, 156);
 					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
-					strcpy(query, "작성자 : ");
-					strcat(query, myuser->name);
-					PutText(renderer, query, Display_X * 0.36, Display_Y * 0.38, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					strcpy(buff, "작성자 : ");
+					strcat(buff, myuser->name);
+					PutText(renderer, buff, Display_X * 0.36, Display_Y * 0.38, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					chattingput = 0;
 					while (inserttopic)
 					{
 						SDL_WaitEvent(&event);
 						switch (event.type)
 						{
+						case SDL_TEXTINPUT: // 채팅 입력 이벤트
+							if (chattingput) {
+								if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// 한글일 경우
+								{
+									wcscpy(wchar, L"");
+									sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
+									wchar[0] = sum;
+									if (wcslen(Topic_Input) < 255)
+										wcscat(Topic_Input, wchar);// 전체채팅
+
+
+									if (event.text.text[0] == -29)
+										slice = 1;
+									else
+										slice = 1 + !((wchar[0] - 0xac00) % 28);
+								}
+								else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
+									wcscpy(wchar, L"");
+									swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
+									if (wcslen(Topic_Input) < 255)
+										wcscat(Topic_Input, wchar);
+									hangeul = false;
+									slice = 0;
+								}
+								textinput = true;
+							}
+							break;
 						case SDL_KEYDOWN:
+							if (chattingput) {
+								if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
+									if (hangeul == true && enter == false)
+										enter = true;
+									else if (wcslen(Topic_Input) > 0) {
+										Insert_Topic_sql(cons, myuser->name, Topic_Input);
+										memset(Topic_Input, 0, sizeof(Topic_Input));
+									}
+								}
+
+								else if (event.key.keysym.sym == SDLK_RALT)
+									hanyeong = !(hanyeong);
+								else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(Topic_Input) > 0)// 키보드 백스페이스고 배열의 길이가 1이상일때
+								{
+									if (slice == 0) {
+										if (LobbyShift > 0)
+											LobbyShift--;
+										Topic_Input[wcslen(Topic_Input) - 1] = '\0';
+
+										textinput = true;
+									}
+									else {
+										//		////printf("\nslice상태");
+										slice--;
+									}
+								}
+								else if (event.key.keysym.sym == SDLK_TAB)
+								{
+									if (hangeul == true && enter == false)
+										enter = true;
+
+								}
+
+								else if (event.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 c를 눌렀다면
+									strcpy(wtf8, UNICODE2UTF8(Topic_Input, wcslen(Topic_Input)));
+									SDL_SetClipboardText(wtf8);// 클립보드에 넣음
+								}
+								else if (event.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL) {// 컨트롤 모드이고 v를 눌렀다면
+									slice = 0;
+									if (strlen(SDL_GetClipboardText()) >= 768)
+										break;
+									Unicode UnicodeOfClipboard[256] = L"";
+									wcscpy(UnicodeOfClipboard, UTF82UNICODE(SDL_GetClipboardText(), strlen(SDL_GetClipboardText())));
+									if (wcslen(UnicodeOfClipboard) + wcslen(Topic_Input) >= 256)
+										break;
+									wcscat(Topic_Input, UnicodeOfClipboard);// 클립보드에서 가져옴
+									hangeul = false;
+									textinput = true;
+								}
+								else {
+									hangeul = true;
+									slice++;
+								}
+							}
 							if (event.key.keysym.sym == SDLK_ESCAPE)
 								inserttopic = 0;
 							break;
@@ -2669,11 +2764,19 @@ int main(int argc, char *argv[])
 						if (PutRoundButton(renderer, 146, 208, 80, 140, 223, 65, 65, 113, 156, Display_X * 0.59 - 1, Display_Y * 0.3 + 1, Display_X * 0.06 + 1, Display_Y * 0.06 - 1, 0, 0, &event, &happen)) {
 							inserttopic = 0;
 						}
+						
+							RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						
+
 						PutText(renderer, "X", Display_X * 0.613, Display_Y * 0.31, 40 * ((float)Display_X / 1920), 255, 255, 255, 2);
-						PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.57, Display_Y * 0.53, Display_X*0.06, Display_Y * 0.04, 15 * ((float)Display_X / 1920), 0, &event, &happen);
-						PutText(renderer, "추가", Display_X * 0.585, Display_Y * 0.534, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
+						PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen);
+						PutText(renderer, "추가", Display_X * 0.6, Display_Y * 0.436, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
 						SDL_RenderPresent(renderer); 
 					}
+					SDL_DestroyTexture(Input_Topic_click);
+					SDL_DestroyTexture(Input_Topic_noclick);
+					SDL_DestroyTexture(Input_Topic_noclick2);
+
 					newdataed = 1;
 				}
 				PutText(renderer, "주제 추가", Display_X * 0.758, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255, 1);
