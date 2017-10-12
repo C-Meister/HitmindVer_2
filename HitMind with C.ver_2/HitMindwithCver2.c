@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 						PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255, 1);
 						RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 						// -------------------------------------------------------
-							
+						
 						SDL_RenderPresent(renderer);
 						sum = 0;
 					}
@@ -1293,7 +1293,10 @@ int main(int argc, char *argv[])
 
 				}
 
-
+					//	if (happen) {
+					
+					happen = 0;
+			//	}
 				textinput = false;
 
 
@@ -2638,10 +2641,39 @@ int main(int argc, char *argv[])
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.74, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event, &happen)) //닉네임 변경 버튼
 				{
-					roop = 1;
-					break;
+					int inserttopic = 1;
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.3, 217, 217, 217);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.3, 0, 0, 0);
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 146, 208, 80);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 65, 113, 156);
+					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
+					strcpy(query, "작성자 : ");
+					strcat(query, myuser->name);
+					PutText(renderer, query, Display_X * 0.36, Display_Y * 0.38, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+					while (inserttopic)
+					{
+						SDL_WaitEvent(&event);
+						switch (event.type)
+						{
+						case SDL_KEYDOWN:
+							if (event.key.keysym.sym == SDLK_ESCAPE)
+								inserttopic = 0;
+							break;
+						case SDL_QUIT:
+							inserttopic = 0;
+							break;
+						}
+						if (PutRoundButton(renderer, 146, 208, 80, 140, 223, 65, 65, 113, 156, Display_X * 0.59 - 1, Display_Y * 0.3 + 1, Display_X * 0.06 + 1, Display_Y * 0.06 - 1, 0, 0, &event, &happen)) {
+							inserttopic = 0;
+						}
+						PutText(renderer, "X", Display_X * 0.613, Display_Y * 0.31, 40 * ((float)Display_X / 1920), 255, 255, 255, 2);
+						PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.57, Display_Y * 0.53, Display_X*0.06, Display_Y * 0.04, 15 * ((float)Display_X / 1920), 0, &event, &happen);
+						PutText(renderer, "추가", Display_X * 0.585, Display_Y * 0.534, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
+						SDL_RenderPresent(renderer); 
+					}
+					newdataed = 1;
 				}
-				PutText(renderer, "닉네임 변경", Display_X * 0.75, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255, 1);
+				PutText(renderer, "주제 추가", Display_X * 0.758, Display_Y * 0.935, 25 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
 				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.86, Display_Y * 0.93, Display_X * 0.09, Display_Y * 0.04, 8, 1, &event, &happen)) //로그아웃 버튼
 				{

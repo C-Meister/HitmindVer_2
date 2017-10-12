@@ -308,6 +308,7 @@ int hannum(wchar_t unicode[], int len);
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
 void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
+void SDL_DrawRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
 void FillRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius);
 void DrawRoundRect(SDL_Renderer* Renderer, int r, int g, int b, int x, int y, int w, int h, int radius, int strong);
