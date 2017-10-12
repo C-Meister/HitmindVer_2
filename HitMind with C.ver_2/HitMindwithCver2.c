@@ -2727,6 +2727,8 @@ int main(int argc, char *argv[])
 			int statusprint = 0;
 			int isready = 0;
 			int byee = 0;
+			SOCKCHAT Chattings[20] = { 0, };
+			int cnum = 0;
 			sprintf(query, "update user set status = 3 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			if (ClientParam.Cconnect_socket == 0)
@@ -2814,8 +2816,12 @@ int main(int argc, char *argv[])
 							if (hangeul == true && enter == false)
 								enter = true;
 							else if (wcslen(ID_put) > 0) {
-								LobbyShift = 0;
-								sprintf(query, "chat %S", ID_put);
+								char char_message[512] = "";
+								char qwery[850];
+								strcpy(qwery, UNICODE2UTF8(ID_put, 256));
+								UTF82EUCKR(char_message, 512, qwery, 850);
+								char_message[strlen(char_message)] = '\0';
+								sprintf(query, "chat %s", char_message);
 								send(ClientParam.Cconnect_socket, query, 180, 0);
 								wcscpy(ID_put, L"");
 
@@ -2889,7 +2895,31 @@ int main(int argc, char *argv[])
 				if (ClientParam.sockethappen == SocketChattingEvent)
 				{
 					ClientParam.sockethappen = 0;
-					gameuser[ClientParam.num].ownnum;
+					int endpoint = 0;
+					strcpy(Chattings[cnum].message, ClientParam.chat_message);
+					strcpy(Chattings[cnum].name, gameuser[ClientParam.num].Nickname);
+
+					int temp = (cnum + 1) % 20;
+					int DeltaY = 0;
+					int scroll = 0;
+					SDL_FillRectXYWH(renderer, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87, Display_X*0.67, Display_Y * 0.15, 255, 255, 255);
+					while (1) {
+						if (strlen(Chattings[temp].message) > 0) {
+							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.66, Display_X*0.005 + Display_Y*0.595*0.37, Display_Y * 0.35, renderer, Chattings[temp].message, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87 + DeltaY, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+							printf("%d\n", DeltaY);
+							scroll++;
+						}
+						if (temp == cnum)
+							break;
+						temp++;
+						if (temp == 20) {
+							temp = 0;
+						}
+					}
+					cnum++;
+					if (cnum == 20) {
+						cnum = 0;
+					}
 				}
 				if (ClientParam.sockethappen == ChangeHostEvent)
 				{
