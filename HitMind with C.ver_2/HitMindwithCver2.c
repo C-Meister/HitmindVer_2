@@ -2660,8 +2660,10 @@ int main(int argc, char *argv[])
 					SDL_Texture * Input_Topic_noclick2 = LoadTexture(renderer, ".\\login\\ID3.png");
 					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 217, 217, 217);
 					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.3, Display_Y * 0.2, 0, 0, 0);
-					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 146, 208, 80);
-					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.24, Display_Y * 0.06, 65, 113, 156);
+					SDL_FillRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 146, 208, 80);
+					SDL_DrawRectXYWH(renderer, Display_X * 0.35, Display_Y * 0.3, Display_X * 0.26, Display_Y * 0.06, 65, 113, 156);
+					SDL_Texture * login_close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
+					SDL_Texture * login_close_click = LoadTexture(renderer, ".\\login\\close2.png");
 					PutText(renderer, "주제 추가", Display_X * 0.45, Display_Y * 0.31, 30 * ((float)Display_X / 1920), 255, 255, 255, 2);
 					strcpy(buff, "작성자 : ");
 					strcat(buff, myuser->name);
@@ -2761,21 +2763,22 @@ int main(int argc, char *argv[])
 							inserttopic = 0;
 							break;
 						}
-						if (PutRoundButton(renderer, 146, 208, 80, 140, 223, 65, 65, 113, 156, Display_X * 0.59 - 1, Display_Y * 0.3 + 1, Display_X * 0.06 + 1, Display_Y * 0.06 - 1, 0, 0, &event, &happen)) {
+						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1,&event, &happen)) {
 							inserttopic = 0;
 						}
 						
-							RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
 						
 
-						PutText(renderer, "X", Display_X * 0.613, Display_Y * 0.31, 40 * ((float)Display_X / 1920), 255, 255, 255, 2);
-						PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen);
+						PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen);
 						PutText(renderer, "추가", Display_X * 0.6, Display_Y * 0.436, 25 * ((float)Display_X / 1920), 255, 255, 255, 2);
 						SDL_RenderPresent(renderer); 
 					}
 					SDL_DestroyTexture(Input_Topic_click);
 					SDL_DestroyTexture(Input_Topic_noclick);
 					SDL_DestroyTexture(Input_Topic_noclick2);
+					SDL_DestroyTexture(login_close_noclick);
+					SDL_DestroyTexture(login_close_click);
 
 					newdataed = 1;
 				}
