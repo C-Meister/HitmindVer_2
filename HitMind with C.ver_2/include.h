@@ -366,6 +366,8 @@ int Mysql_wstr_query(MYSQL *cons, wchar_t * query);
 char * Get_Random_Topic(MYSQL *cons);	
 //?„ì´?”ì? ?¨ìŠ¤?Œë“œë¡?ë¡œê·¸?¸í•¨
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password);	
+
+int Insert_Topic_sql(MYSQL *cons, char *my_name, wchar_t * topic);
 //---------------Socket ÇÔ¼ö--------------
 void OpenServer(SockParam *param);
 // ¼­¹ö ¿°
