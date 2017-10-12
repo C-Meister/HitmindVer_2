@@ -1,6 +1,6 @@
 <HitMid_Setting>
-배경음악 : 16
-효과음 : 100
+배경음악 : 15
+효과음 : 0
 Display_X : 1920
 Display_Y : 1080
 fullscreen : 1

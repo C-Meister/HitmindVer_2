@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	Mix_Chunk *whysound = Mix_LoadWAV("sound/why.wav");
 	Mix_Chunk *passsound = Mix_LoadWAV("sound/pass.wav");
 	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
+	Mix_Chunk *bboksound = Mix_LoadWAV("sound/bbok.wav");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic*1.28);
 	Mix_VolumeChunk(erasersound, Sound*1.28);
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 	Mix_VolumeChunk(whysound, Sound*1.28);
 	Mix_VolumeChunk(passsound, Sound*1.28);
 	Mix_VolumeChunk(resound, Sound*1.28);
-
+	Mix_VolumeChunk(bboksound, Sound*1.28);
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -1587,21 +1588,21 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				//	}
-				/*
-				화면을 전체적으로 4등분함
+				//}
+			/*
+			화면을 전체적으로 4등분함
 
-			|	   2번구역
-			1번구역		 |----------------
-			|
-			|    3번구역
-			---------------------|
-			|-----------------
-			4번구역		 |
-			|     5번구역
-			|
-			|
-			*/
+		|	   2번구역
+		1번구역		 |----------------
+		|
+		|    3번구역
+		---------------------|
+		|-----------------
+		4번구역		 |
+		|     5번구역
+		|
+		|
+		*/
 				if (jeonsong == 1 || (RefrashEvent == 1 && !(event.type == SDL_TEXTEDITING || event.type == SDL_KEYDOWN || event.type == SDL_TEXTINPUT)))
 				{
 
@@ -2468,7 +2469,7 @@ int main(int argc, char *argv[])
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
 					int fullt = Full;
-					int bbokt= Sound;
+					int bbokt = Sound;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2561,7 +2562,7 @@ int main(int argc, char *argv[])
 						if (Full == 1)
 						{
 							//PutText(renderer, "FULL", set_start_x + set_start_w * 0.74, set_start_y + set_start_h * 0.67, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
-							Put_Text_Center(renderer,"FULL", set_start_x + set_start_w * 0.7, set_start_y + set_start_h * 0.65, set_start_x * 0.2, set_start_h * 0.1, 255, 255, 255, 30 * ((float)Display_X / 1920), 1);
+							Put_Text_Center(renderer, "FULL", set_start_x + set_start_w * 0.7, set_start_y + set_start_h * 0.65, set_start_x * 0.2, set_start_h * 0.1, 255, 255, 255, 30 * ((float)Display_X / 1920), 1);
 							display_value = 10;
 							slider_display->Box.x = slider_display->Bar.x + slider_display->Bar.w - slider_display->Box.w / 2;
 						}
@@ -2613,7 +2614,7 @@ int main(int argc, char *argv[])
 						//PutText(renderer, "고객문의", set_start_x + set_start_w * 0.093, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						Put_Text_Center(renderer, "고객문의", set_start_x + set_start_w * 0.06, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
 						//PutText(renderer, "크래딧", set_start_x + set_start_w * 0.42, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						Put_Text_Center(renderer, "크래딧",set_start_x + set_start_w * 0.36, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
+						Put_Text_Center(renderer, "크래딧", set_start_x + set_start_w * 0.36, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
 						//PutText(renderer, "설문조사", set_start_x + set_start_w * 0.693, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						Put_Text_Center(renderer, "설문조사", set_start_x + set_start_w * 0.66, set_start_y + set_start_h * 0.82, set_start_x * 0.3, set_start_h * 0.12, 255, 255, 255, 35 * ((float)Display_X / 1920), 1);
 
@@ -2626,7 +2627,7 @@ int main(int argc, char *argv[])
 							Mix_VolumeChunk(bboksound, Sound*1.28);
 							bbokt = Sound;
 						}
-
+					}
 					Mix_VolumeMusic(BGmusic*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
 					Mix_VolumeChunk(pencilsound, Sound*1.28);
@@ -2692,7 +2693,7 @@ int main(int argc, char *argv[])
 							else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// 영어 입력 시
 								wcscpy(wchar, L"");
 								swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text 문자열 그냥 연결시켜버림
-								if (wcslen(Topic_Input) < 255)
+								if (wcslen(Topic_Input) < 13)
 									wcscat(Topic_Input, wchar);
 								hangeul = false;
 								slice = 0;
@@ -2782,12 +2783,12 @@ int main(int argc, char *argv[])
 							inserttopic = 0;
 							break;
 						}
-						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1,&event, &happen)) {
+						if (PutButtonImage(renderer, login_close_noclick, login_close_click, Display_X * 0.6 - 1, Display_Y * 0.3 + 1, Display_X * 0.05 + 1, Display_Y * 0.065 - 1, &event, &happen)) {
 							inserttopic = 0;
 						}
-						
-							RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
-						
+
+						RenderTextureXYWH(renderer, Input_Topic_click, Display_X * 0.36, Display_Y * 0.425, Display_X*0.22, Display_Y*0.05);
+						PutText_Unicode(renderer, Topic_Input, Display_X * 0.365, Display_Y * 0.43, 25 * ((float)Display_X / 1920), color, 1);
 
 						if (PutRoundButton(renderer, 0, 176, 80, 0, 217, 98, 0, 0, 0, Display_X * 0.583, Display_Y * 0.425, Display_X*0.06, Display_Y * 0.05, 20 * ((float)Display_X / 1920), 0, &event, &happen)) {
 							if (wcslen(Topic_Input) > 0) {
@@ -2799,7 +2800,7 @@ int main(int argc, char *argv[])
 						if (warning.ison == 1)
 						{
 							SDL_FillRectXYWH(renderer, warning.x, warning.y, Display_X * 0.1, Display_Y * 0.04, 217, 217, 217);
-					
+
 
 							PutText(renderer, warning.message, warning.x, warning.y, warning.size, warning.r, warning.g, warning.b, 1);
 							warning.ison = 0;
@@ -2808,7 +2809,7 @@ int main(int argc, char *argv[])
 					}
 					warning.ison = 0;
 					SDL_DestroyTexture(Input_Topic_click);
-					
+
 					SDL_DestroyTexture(login_close_noclick);
 					SDL_DestroyTexture(login_close_click);
 
@@ -3046,7 +3047,7 @@ int main(int argc, char *argv[])
 						break;
 					}
 				}
-				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.918, Display_X * 0.05, Display_Y * 0.047, 8, 0, &event, &happen)&& (wcslen(ID_put) > 0)) {
+				if (PutRoundButton(renderer, 0, 176, 240, 20, 196, 255, 59, 127, 172, Display_X * 0.61, Display_Y * 0.918, Display_X * 0.05, Display_Y * 0.047, 8, 0, &event, &happen) && (wcslen(ID_put) > 0)) {
 					char char_message[512] = "";
 					char qwery[850];
 					strcpy(qwery, UNICODE2UTF8(ID_put, 256));
@@ -3121,7 +3122,7 @@ int main(int argc, char *argv[])
 						temp = cnum;
 					}
 					int DeltaY = 0;
-					SDL_FillRectXYWH(renderer, Display_X * 0.02, ChatLimitY-ChatBlank, Display_X*0.65, ChatLimitH+2*ChatBlank, 255, 255, 255);
+					SDL_FillRectXYWH(renderer, Display_X * 0.02, ChatLimitY - ChatBlank, Display_X*0.65, ChatLimitH + 2 * ChatBlank, 255, 255, 255);
 					while (1) {
 						if (strlen(Chattings[temp].message) > 0) {
 							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.65, ChatLimitY - ChatBlank, ChatLimitH + 2 * ChatBlank, renderer, Chattings[temp].message, Display_X * 0.02, ChatLimitY + DeltaY - ChatingDrag, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);
