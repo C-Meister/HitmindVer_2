@@ -2472,7 +2472,7 @@ int main(int argc, char *argv[])
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
 					int fullt = Full;
-					int bbokt= Sound*1.28;
+					int bbokt= Sound;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2619,9 +2619,11 @@ int main(int argc, char *argv[])
 						SDL_RenderPresent(renderer);
 						
 						Mix_VolumeMusic(BGmusic*1.28);
-						if (bbokt != Sound*1.28) {
+
+						if (bbokt != Sound) {
 							Mix_PlayChannel(0, bboksound, 0);
 							Mix_VolumeChunk(bboksound, Sound*1.28);
+							bbokt = Sound;
 						}
 
 					}
