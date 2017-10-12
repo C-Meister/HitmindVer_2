@@ -3727,8 +3727,8 @@ int main(int argc, char *argv[])
 						// 내 턴
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
-					}
-					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					}		
+					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					strcpy(pasttopic, Topics);
@@ -3766,7 +3766,8 @@ int main(int argc, char *argv[])
 					gameuser[NowPlayer - 1].Turn = 0;
 					gameuser[ClientParam.num - 1].Turn = 1;
 					NowPlayer = ClientParam.num;
-					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 					strcpy(pasttopic, Topics);
@@ -3819,8 +3820,8 @@ int main(int argc, char *argv[])
 					if (currectshowtimer > 60)
 					{
 						currectshowtimer = 0;
-						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
-						DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
+						SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
+						SDL_RenderFillRect(canvas->Renderer, &canvas->Rect);
 						gameuser[NowPlayer - 1].Turn = 1;
 						if (Me->Turn == 1) {
 							// 내 턴
@@ -3941,8 +3942,8 @@ int main(int argc, char *argv[])
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
 						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
 					}
-					strcpy(pasttopic, Topics);
-					SDL_FillRectXYWH(renderer, canvas->Rect.x, canvas->Rect.y, canvas->Rect.w, canvas->Rect.h, 255, 255, 255);
+					strcpy(pasttopic, Topics);		
+					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
 					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 				}
