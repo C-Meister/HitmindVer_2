@@ -2906,7 +2906,7 @@ int main(int argc, char *argv[])
 					SDL_FillRectXYWH(renderer, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87, Display_X*0.67, Display_Y * 0.15, 255, 255, 255);
 					while (1) {
 						if (strlen(Chattings[temp].message) > 0) {
-							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.66, Display_Y*0.47, Display_Y * 0.35, renderer, Chattings[temp].message, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87 + DeltaY, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+							DeltaY += PutText_ln(Chattings[temp].name, Display_X*0.66, Display_X*0.195 + Display_Y*0.6*0.37, Display_Y * 0.35, renderer, Chattings[temp].message, Display_X * 0.013, Display_X*0.005 + Display_Y*0.87*0.87 + DeltaY, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 							printf("%d\n", DeltaY);
 							scroll++;
 						}
