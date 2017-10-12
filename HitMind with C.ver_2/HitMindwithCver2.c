@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
 	Mix_Chunk *whysound = Mix_LoadWAV("sound/why.wav");
 	Mix_Chunk *passsound = Mix_LoadWAV("sound/pass.wav");
 	Mix_Chunk *killsound = Mix_LoadWAV("sound/kill.mp3");
+	Mix_Chunk *bboksound = Mix_LoadWAV("sound/bbok.wav");
 	settings(&Display_X, &Display_Y, &BGmusic, &Sound, &Full);
 	Mix_VolumeMusic(BGmusic*1.28);
 	Mix_VolumeChunk(erasersound, Sound*1.28);
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
 	Mix_VolumeChunk(whysound, Sound*1.28);
 	Mix_VolumeChunk(passsound, Sound*1.28);
 	Mix_VolumeChunk(resound, Sound*1.28);
-
+	Mix_VolumeChunk(bboksound, Sound*1.28);
 
 	SDL_Init(SDL_INIT_EVERYTHING);						//SDL 초기화
 	if (Full)
@@ -2468,6 +2469,7 @@ int main(int argc, char *argv[])
 					int display_value = Display_X / 192;
 					int Display_Xt = Display_X;
 					int fullt = Full;
+					int bbokt= Sound*1.28;
 					SDL_Texture * Setting_back = LoadTexture(renderer, ".\\design\\settingmain.png");
 					SDL_Texture * Setting_Close_noclick = LoadTexture(renderer, ".\\login\\close1.png");
 					SDL_Texture * Setting_Close_click = LoadTexture(renderer, ".\\login\\close2.png");
@@ -2612,11 +2614,17 @@ int main(int argc, char *argv[])
 						PutText(renderer, "설문조사", set_start_x + set_start_w * 0.693, set_start_y + set_start_h * 0.83, 35 * ((float)Display_X / 1920), 255, 255, 255, 1);
 
 						SDL_RenderPresent(renderer);
-
+						
 						Mix_VolumeMusic(BGmusic*1.28);
+						if (bbokt != Sound*1.28) {
+							Mix_PlayChannel(0, bboksound, 0);
+							Mix_VolumeChunk(bboksound, Sound*1.28);
+						}
+
 					}
 
 					Mix_VolumeMusic(BGmusic*1.28);
+					Mix_VolumeChunk(bboksound, Sound*1.28);
 					Mix_VolumeChunk(erasersound, Sound*1.28);
 					Mix_VolumeChunk(pencilsound, Sound*1.28);
 					Mix_VolumeChunk(killsound, Sound*1.28);
