@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	ZeroMemory(&ClientParam, sizeof(SockParam));
 	int bangsang = 0;
 	srand((unsigned)time(NULL));
-
+	
 	ServerParam.s = &server;
 	ServerParam.c = &client;
 	if (font == 0)
@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
 	else
 		Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI);		//해당 해상도로 Window를 생성함
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_SOFTWARE/* | SDL_RENDERER_PRESENTVSYNC*/);
+	
+
 
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
@@ -95,8 +97,7 @@ int main(int argc, char *argv[])
 	{
 		//printf("loadbmp");
 	}
-
-	SDL_Cursor*cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+	SDL_Cursor* cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 	if (!cursor)
 	{
 		//printf("cursor");
@@ -1394,6 +1395,24 @@ int main(int argc, char *argv[])
 			{
 				if (newdataed)
 				{
+					newdata[1] = 1;
+					pastchating_cnt = allchating_cnt;
+					chatmovehappen = 1;
+					chatingH = 0;
+					for (int i = 0; i < maxchating; i++) {
+						chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
+					}
+					if (chatingH >chatlimith) {
+						chatslide->End = chatingH - chatlimith;
+						MoveSlider_value(chatslide, *chatslide->Value);
+						chatmovehappen = true;
+					}
+					else {
+						chatslide->End = 0;
+						MoveSlider_value(chatslide, 0);
+						chatmovehappen = true;
+					}
+					MoveSlider_value(chatslide, chatslide->End);
 					SDL_SetRenderDrawColor(renderer, 191, 191, 191, 0);
 					SDL_RenderClear(renderer);
 					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.7 + 22, Display_Y * 0.7 + 10, Display_X * 0.275, Display_Y * 0.27, 14);
@@ -2646,7 +2665,10 @@ int main(int argc, char *argv[])
 
 					RoomX_Setting(roomx, Display_X);
 					newdataed = 1;
-					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, 30,15/*(Display_Y * 0.2) - ((int)(Display_Y * 0.2) % 10), Display_Y * 0.2 - ((int)(Display_Y * 0.2) % 10)*/, VERTICAL);
+					chatblank = 17.5 * ((float)Display_X / 1920);
+					chatlimity = Display_Y*0.735 + 10 + chatblank;
+					chatlimith = Display_Y *0.92 - (Display_Y *0.735 + 10) - 2 * chatblank;
+					CreateSlider(chatslide, Slider_Box, Slider_slider_up, Display_X * 0.68, Display_Y * 0.78, Display_X * 0.01, Display_Y * 0.16, Display_X * 0.02, Display_Y * 0.04, &chattingdrag, 0, 0,0, VERTICAL);
 					continue;
 				}
 
