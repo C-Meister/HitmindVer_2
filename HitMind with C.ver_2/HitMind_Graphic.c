@@ -1447,6 +1447,12 @@ void PushSocketEvent(void) {
 	event.user.code = SOCKETHAPPEN;
 	SDL_PushEvent(&event);
 }
+void SDL_Screenshot(const char *filename, SDL_Renderer * Renderer, SDL_Rect *rect) {
+	SDL_Surface *sshot = SDL_CreateRGBSurface(0, rect->w, rect->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_RenderReadPixels(Renderer, rect, SDL_PIXELFORMAT_ARGB8888, sshot->pixels, sshot->pitch);
+	IMG_SavePNG(sshot, filename);
+	SDL_FreeSurface(sshot);
+}
 void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 	int data1 = (int)pdata1;
 	int data2 = (int)pdata2;

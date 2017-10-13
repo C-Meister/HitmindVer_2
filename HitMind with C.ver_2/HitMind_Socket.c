@@ -102,7 +102,7 @@ void HandleClient(SockParam *param) {
 			break;
 		}
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
-	//		printf("Server : %s\n", param->message);
+			printf("Server : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
 				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0 && i != ClientNumber)

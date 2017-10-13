@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	ShowWindow(GetConsoleWindow(), 0);
+	//ShowWindow(GetConsoleWindow(), 0);
 
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
@@ -1811,7 +1811,7 @@ int main(int argc, char *argv[])
 						LobbyShift++;
 					}
 				}
-
+				
 				//if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
 				//	PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 
@@ -3233,7 +3233,7 @@ int main(int argc, char *argv[])
 								UTF82EUCKR(char_message, 512, qwery, 850);
 								char_message[strlen(char_message)] = '\0';
 								sprintf(qwery, "chat %s", char_message);
-								send(ClientParam.Cconnect_socket, qwery, 850, 0);
+								send(ClientParam.Cconnect_socket, qwery,180, 0);
 								wcscpy(ID_put, L"");
 								textinput = true;
 								LobbyShift = 0;
@@ -3319,7 +3319,7 @@ int main(int argc, char *argv[])
 					UTF82EUCKR(char_message, 512, qwery, 850);
 					char_message[strlen(char_message)] = '\0';
 					sprintf(qwery, "chat %s", char_message);
-					send(ClientParam.Cconnect_socket, qwery, 850, 0);
+					send(ClientParam.Cconnect_socket, qwery, 120, 0);
 					wcscpy(ID_put, L"");
 					textinput = true;
 					LobbyShift = 0;
@@ -4188,6 +4188,16 @@ int main(int argc, char *argv[])
 								sprintf(query, "currect answer %s", Get_Random_Topic(cons));
 								send(ClientParam.Cconnect_socket, query, 30, 0);
 
+							}
+							else if (wcsncmp(InGameChat, L"/screenshot ", 12) == 0)
+							{
+								char char_message[512] = "";
+								char qwery[850];
+								strcpy(qwery, UNICODE2UTF8(InGameChat, 256));
+								UTF82EUCKR(char_message, 512, qwery, 850);
+								sscanf(char_message, "/screenshot %[^\n]s", query);
+								sprintf(char_message, "screenshot\\%s.png", query);
+								SDL_Screenshot(char_message, renderer, &canvas->Rect);
 							}
 							else if (wcslen(InGameChat) > 0) {
 								char char_message[512] = "";
