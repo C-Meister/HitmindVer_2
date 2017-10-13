@@ -20,20 +20,20 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 	MYSQL *cons = mysql_init(NULL);		//MySQL을 초기화 한다.
 	if (cons == NULL)
 	{
-		//printf("\nMySQL초기화 실패...\n오류 원인 : %s\n", mysql_error(cons));	//mysql_error() 에러 원인을 반환함
+		////printf("\nMySQL초기화 실패...\n오류 원인 : %s\n", mysql_error(cons));	//mysql_error() 에러 원인을 반환함
 		exit(1);
 	}
 	if (mysql_real_connect(cons, ip, "hitmind", "hituser", NULL, 0, NULL, 0) == NULL)	//MySQL에 연결함
 	{
 		char sqlip[30];
-		//printf("\nMySQL 연결 실패...\n오류 원인 : %s\n", mysql_error(cons));
-		//printf("ip를 다시 적어 주세요...\n->");
+		////printf("\nMySQL 연결 실패...\n오류 원인 : %s\n", mysql_error(cons));
+		////printf("ip를 다시 적어 주세요...\n->");
 		scanf("%s", sqlip);
 		return Mysql_Connect(sqlip);		//재귀함수의 호출(다시 연결함)
 	}
 	else
 	{
-		//printf("\n%s 연결 성공...\n", ip);
+		////printf("\n%s 연결 성공...\n", ip);
 		mysql_set_character_set(cons, "euckr");	//DB의 캐릭터 세승ㄹ euckr(기본 콘솔)로 바꿈
 		mysql_select_db(cons, "hitmind_2");		//hitmind_2 DB를 선택함
 	}
@@ -51,7 +51,7 @@ Hit_User *IsAutoLogin(MYSQL *cons)
 {
 	char query[128];
 	sprintf(query, "select * from User where auto_login = PASSWORD('%s')", GetDefaultMyIP());	//해당 id의 이름을 찾는다
-	//printf("%s\n", GetDefaultMyIP());
+	////printf("%s\n", GetDefaultMyIP());
 	mysql_query(cons, query);
 	MYSQL_ROW rows;
 	rows = mysql_fetch_row(mysql_store_result(cons));
@@ -186,7 +186,7 @@ int Mysql_wstr_query(MYSQL *cons, wchar_t * query) {
 	strcpy(buff, UNICODE2UTF8(query, wcslen(query)));
 	UTF82EUCKR(char_query, 128, buff, 384);
 	char_query[strlen(char_query)] = 0;
-	//printf("%s", char_query);
+	////printf("%s", char_query);
 	return mysql_query(cons, char_query);
 }
 Hit_User *User_Login_sql(MYSQL *cons, char * id, char *password)	//아이디와 비밀번호로 로그인함
