@@ -89,7 +89,15 @@ void ScoreSort(User * users) {
 			}
 		}
 	}
-
+	for (i = 0; i < MAXPEOPLE; i++)
+	{
+		users[i].Th = 1;
+		for (j = 0; j < MAXPEOPLE; j++)
+		{
+			if (users[i].Count < users[j].Count)
+				users[i].Th++;
+		}
+	}
 }
 void soundplay() {
 	

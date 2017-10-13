@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-//	ShowWindow(GetConsoleWindow(), 0);
+	ShowWindow(GetConsoleWindow(), 0);
 
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
@@ -2758,6 +2758,7 @@ int main(int argc, char *argv[])
 										warning.size = 20 * ((float)Display_X / 1920);
 
 									}
+									enter = false;
 									memset(Topic_Input, 0, sizeof(Topic_Input));
 								}
 							}
@@ -4515,7 +4516,7 @@ int main(int argc, char *argv[])
 						FillRoundRect(renderer, 0, 176, 240, Display_X * 0.357, Display_Y * (0.37 + (0.09 * (i + 1))), Display_X * 0.286, Display_Y * 0.08, 18 * ((float)Display_X / 1920));
 						DrawRect(renderer, 0, 112, 192, Display_X * 0.452, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
 						DrawRect(renderer, 0, 112, 192, Display_X * 0.545, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
-						Put_Text_Center(renderer, _itoa(i + 1, query, 10), Display_X * 0.36, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+						Put_Text_Center(renderer, _itoa(gameuser[i].Th, query, 10), Display_X * 0.36, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
 						Put_Text_Center(renderer, gameuser[i].Nickname, Display_X * 0.46, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.08, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
 						Put_Text_Center(renderer, _itoa(gameuser[i].Count, query, 10), Display_X * 0.55, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.09, Display_Y * 0.079, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
 
