@@ -3909,8 +3909,7 @@ int main(int argc, char *argv[])
 					if (currectshowtimer > 60)
 					{
 						currectshowtimer = 0;
-						SDL_SetRenderDrawColor(canvas->Renderer, 255, 255, 255, 0);
-						SDL_RenderFillRect(canvas->Renderer, &canvas->Rect);
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
 						gameuser[NowPlayer - 1].Turn = 1;
 						if (Me->Turn == 1) {
 							// 내 턴
