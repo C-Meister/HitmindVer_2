@@ -4125,7 +4125,8 @@ int main(int argc, char *argv[])
 								strcpy(qwery, UNICODE2UTF8(InGameChat, 256));
 								UTF82EUCKR(char_message, 512, qwery, 850);
 								sscanf(char_message, "/screenshot %[^\n]s", query);
-								SDL_Screenshot("screenshot\\test.png", renderer, &canvas->Rect);
+								sprintf(char_message, "screenshot\\%s.png", query);
+								SDL_Screenshot(char_message, renderer, &canvas->Rect);
 							}
 							else if (wcslen(InGameChat) > 0) {
 								char char_message[512] = "";
