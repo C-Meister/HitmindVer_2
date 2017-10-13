@@ -3810,6 +3810,11 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+					SDL_RenderPresent(renderer);
+					//printf("render	");
+					continue;
+				}
 				if (ClientParam.sockethappen != 0)
 				{
 					if (ClientParam.sockethappen == NewTopicEvent)
