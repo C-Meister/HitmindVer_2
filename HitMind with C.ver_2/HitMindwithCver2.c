@@ -190,7 +190,8 @@ int main(int argc, char *argv[])
 				SDL_WaitEventTimeout(&event, 100);
 
 				switch (event.type) {
-				case SDL_KEYDOWN:SDL_WINDOWEVENT_RESTORED:
+				case SDL_KEYDOWN:
+				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
 					break;
@@ -3776,7 +3777,7 @@ int main(int argc, char *argv[])
 			// 타이머 생성
 			int currectshowtimer = 0;
 			int DefaultTimer = TimerRect.w;
-
+			long long ccount = 0;
 			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
 			double TimerTemp = (double)TimerRect.w;
@@ -3812,6 +3813,7 @@ int main(int argc, char *argv[])
 				SDL_WaitEvent(&event);
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
+					printf("update %lld\n", ++ccount);
 					//printf("render	");
 					continue;
 				}
