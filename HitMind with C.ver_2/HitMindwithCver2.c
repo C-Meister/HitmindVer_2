@@ -3808,6 +3808,11 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
+				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+					SDL_RenderPresent(renderer);
+					//printf("render	");
+					continue;
+				}
 				if (ClientParam.sockethappen == NewTopicEvent)
 				{
 					ClientParam.sockethappen = 0;
@@ -4032,11 +4037,6 @@ int main(int argc, char *argv[])
 					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
 				}
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
-					SDL_RenderPresent(renderer);
-					//printf("render	");
-					continue;
-				}
 				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
 					if (Enter == ACTIVATED&&wcslen(InGameChat) > 0) {
 						Shift = 0;
