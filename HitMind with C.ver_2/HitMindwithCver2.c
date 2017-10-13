@@ -4101,6 +4101,7 @@ int main(int argc, char *argv[])
 						break;
 					}
 					break;
+
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
 					if (Chat != ACTIVATED)
 						break;
