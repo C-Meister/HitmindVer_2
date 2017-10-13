@@ -1427,7 +1427,7 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 		sprintf(data2, "%d", temp);
 	}
 	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 6 + 2 + 7 + 5 +1
-	send(sending, sendstring, 21, 0);
+	send(sending, sendstring, 180, 0);
 	// send문
 	return;
 }
