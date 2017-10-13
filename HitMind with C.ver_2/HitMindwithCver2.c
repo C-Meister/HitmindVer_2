@@ -158,8 +158,15 @@ int main(int argc, char *argv[])
 	//hello
 	ClientParam.topic = Topics;
 
+	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
+	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920,1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
-	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
+	//
+
+	SDL_Rect Displayrect = { 0,0,Display_X,Display_Y };
+
+	//
+		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
 	while (roop)
@@ -184,7 +191,8 @@ int main(int argc, char *argv[])
 				SDL_WaitEventTimeout(&event, 100);
 
 				switch (event.type) {
-				case SDL_KEYDOWN:
+				case SDL_KEYDOWN:SDL_WINDOWEVENT_RESTORED:
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
 					break;
 				case SDL_MOUSEBUTTONDOWN:
@@ -195,17 +203,19 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
+					
+					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+						SDL_UpdateWindowSurface(Window);
+						break;
+					}
+				   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						quit = true;// quit를 true로 변경
 						Sleep(100);
 						break;// 브레이크
 					case SDL_WINDOWEVENT_ENTER:// 윈도우
 						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
-						break;
-					case SDL_WINDOWEVENT_LEAVE:
-						//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
-						break;
-					case SDL_WINDOWEVENT_FOCUS_GAINED:
 						break;
 					}
 				}
@@ -279,6 +289,7 @@ int main(int argc, char *argv[])
 						{
 							//////printf("%d\n", dkdk++);
 							SDL_WaitEvent(&event);
+						
 							switch (event.type)
 							{
 							case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -309,7 +320,8 @@ int main(int argc, char *argv[])
 								}
 								textinput = true;
 								break;
-							case SDL_KEYDOWN:
+							case SDL_KEYDOWN:	
+								SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 								if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 									if (hangeul == true && enter == false)
 										enter = true;
@@ -448,22 +460,23 @@ int main(int argc, char *argv[])
 								break;
 							case SDL_WINDOWEVENT:
 								switch (event.window.event) {
-								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
-									loginpopup = false;// 팝업창을 닫음
-									Sleep(100);
-									break;// 브레이크
+
 								case SDL_WINDOWEVENT_ENTER:// 윈도우
 									SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 									break;
-								case SDL_WINDOWEVENT_LEAVE:
-									//	drag = false;//마우스가 창에서 나갔으므로 드래그 기능을 중지시킴
+								case SDL_WINDOWEVENT_RESTORED: if(Full) {
+									SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+									SDL_UpdateWindowSurface(Window);
 									break;
-								case SDL_WINDOWEVENT_FOCUS_GAINED:
+								}
+															   break;
+								case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
+									loginpopup = false;// 팝업창을 닫음
+									Sleep(100);
 									break;
-
 								}
 							}
-
+						
 							//이미지 출력 시작
 
 							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, set_start_w, set_start_h);
@@ -635,6 +648,8 @@ int main(int argc, char *argv[])
 										textinput = true;
 										break;
 									case SDL_KEYDOWN:
+										SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 										if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 											if (hangeul == true && enter == false)
 												enter = true;
@@ -753,6 +768,13 @@ int main(int argc, char *argv[])
 											create_password_status = false;// 팝업창을 닫음
 											Sleep(100);
 											break;// 브레이크
+
+										case SDL_WINDOWEVENT_RESTORED: if(Full) {
+											SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+											SDL_UpdateWindowSurface(Window);
+											break;
+										}
+																	   break;
 										case SDL_WINDOWEVENT_ENTER:// 윈도우
 											SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 											break;
@@ -968,6 +990,8 @@ int main(int argc, char *argv[])
 										textinput = true;
 										break;
 									case SDL_KEYDOWN:
+										SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 										if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 											if (hangeul == true && enter == false)
 												enter = true;
@@ -1478,6 +1502,8 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 					if (chattingput) {
 						if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 							if (hangeul == true && enter == false)
@@ -1570,11 +1596,19 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
+
+					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+						SDL_UpdateWindowSurface(Window);
+						break;
+					}
+												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						quit = true;
 						Sleep(100);
 						break;// 브레이크
 					case SDL_WINDOWEVENT_ENTER:// 윈도우
+						newdataed = 1;
 						SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 						break;
 					case SDL_WINDOWEVENT_LEAVE:
@@ -1884,6 +1918,8 @@ int main(int argc, char *argv[])
 
 									break;
 								case SDL_KEYDOWN:
+									SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 									if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 										if (hangeul == true && enter == false)
 											enter = true;
@@ -1938,6 +1974,13 @@ int main(int argc, char *argv[])
 									break;
 								case SDL_WINDOWEVENT:
 									switch (event.window.event) {
+
+									case SDL_WINDOWEVENT_RESTORED: if(Full) {
+										SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+										SDL_UpdateWindowSurface(Window);
+										break;
+									}
+																   break;
 									case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 										setting_main = false;
 										Sleep(100);
@@ -2188,6 +2231,8 @@ int main(int argc, char *argv[])
 
 							break;
 						case SDL_KEYDOWN:
+							SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 								if (hangeul == true && enter == false)
 									enter = true;
@@ -2283,6 +2328,13 @@ int main(int argc, char *argv[])
 							break;
 						case SDL_WINDOWEVENT:
 							switch (event.window.event) {
+
+							case SDL_WINDOWEVENT_RESTORED: if(Full) {
+								SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+								SDL_UpdateWindowSurface(Window);
+								break;
+							}
+														   break;
 							case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 								createroom = false;
 								Sleep(100);
@@ -2527,6 +2579,13 @@ int main(int argc, char *argv[])
 							break;
 						case SDL_WINDOWEVENT:
 							switch (event.window.event) {
+
+							case SDL_WINDOWEVENT_RESTORED: if(Full) {
+								SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+								SDL_UpdateWindowSurface(Window);
+								break;
+							}
+														   break;
 							case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 								setting_main = false;
 								Sleep(100);
@@ -2673,6 +2732,7 @@ int main(int argc, char *argv[])
 					free(slider_display);
 
 					RoomX_Setting(roomx, Display_X);
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					newdataed = 1;
 					chatblank = 17.5 * ((float)Display_X / 1920);
 					chatlimity = Display_Y*0.735 + 10 + chatblank;
@@ -2731,6 +2791,7 @@ int main(int argc, char *argv[])
 							textinput = true;
 							break;
 						case SDL_KEYDOWN:
+							SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 
 							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 								if (hangeul == true && enter == false)
@@ -2895,6 +2956,7 @@ int main(int argc, char *argv[])
 							textinput = true;
 							break;
 						case SDL_KEYDOWN:
+							SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 
 							if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 								if (hangeul == true && enter == false)
@@ -3159,6 +3221,8 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 					if (chattingput) {
 						if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 							if (hangeul == true && enter == false)
@@ -3228,6 +3292,13 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
+
+					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+						SDL_UpdateWindowSurface(Window);
+						break;
+					}
+												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						byee = true;
 						Sleep(100);
@@ -4006,8 +4077,7 @@ int main(int argc, char *argv[])
 				{
 				case SDL_USEREVENT:// DB연동
 					if (event.user.code == TIMER) {
-						SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-						SDL_RenderFillRect(renderer, &TimerRect);
+						SDL_FillRectXYWH(renderer, TimerRect.x, TimerRect.y, DefaultTimer,TimerRect.h,255,255,255);
 						TimerTemp -= TimerRate;
 						TimerRect.w = TimerTemp;
 						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
@@ -4060,6 +4130,8 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 					if (event.key.keysym.sym == SDLK_ESCAPE) {
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4221,6 +4293,13 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
+
+					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+						SDL_UpdateWindowSurface(Window);
+						break;
+					}
+												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4329,6 +4408,9 @@ int main(int argc, char *argv[])
 					DrawButton(PencilButton);
 					if (PencilButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, pencilsound, 0); //연필 사운드
+						mousesurface = IMG_Load(".\\design\\pencil.png");
+						cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+						SDL_SetCursor(cursor);
 						EraserButton->Flag = DEACTIVATED;
 						DrawButton(EraserButton);
 						canvas->Flag = PENCIL;
@@ -4350,7 +4432,10 @@ int main(int argc, char *argv[])
 				if (UpdateButton(EraserButton, &event) == 1) {
 					DrawButton(EraserButton);
 					if (EraserButton->Flag == ACTIVATED) {
-						Mix_PlayChannel(0, erasersound, 0); //지우게 사운드
+						Mix_PlayChannel(0, erasersound, 0); //지우게(실화냐) 사운드
+						mousesurface = IMG_Load(".\\design\\EraserSurface.png");
+						cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+						SDL_SetCursor(cursor);
 						PencilButton->Flag = DEACTIVATED;
 						DrawButton(PencilButton);
 						canvas->Flag = ERASER;
@@ -4372,8 +4457,13 @@ int main(int argc, char *argv[])
 					if (NewButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, booksound, 0); //북 사운드
 														  //			SDL_Delay(100);
-						if (Me->Turn == 1)
+						if (Me->Turn == 1) {
 							Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
+							mousesurface = IMG_Load(".\\design\\pencil.png");
+							cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+							SDL_SetCursor(cursor);
+
+						}
 						canvas->Flag = PENCIL;
 						PencilButton->Flag = ACTIVATED;
 						EraserButton->Flag = DEACTIVATED;
