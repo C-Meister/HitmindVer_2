@@ -216,6 +216,7 @@ void Clientrecv(SockParam *param) {
 	while (1) {
 
 		if (param->endhappen == 1) {
+			param->endhappen = 0;
 			closesocket(param->Cconnect_socket);
 			break;
 		}

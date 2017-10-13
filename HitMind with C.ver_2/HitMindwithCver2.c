@@ -27,7 +27,8 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	ShowWindow(GetConsoleWindow(), 0);
+//	ShowWindow(GetConsoleWindow(), 0);
+
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -44,8 +45,8 @@ int main(int argc, char *argv[])
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);	//나눔고딕 폰트를 불러옴
 	SockParam ServerParam;
 	SockParam ClientParam;
-	uintptr_t server;
-	uintptr_t client;
+	HANDLE server;
+	HANDLE client;
 	ZeroMemory(&ServerParam, sizeof(SockParam));
 	ZeroMemory(&ClientParam, sizeof(SockParam));
 	int bangsang = 0;
@@ -1308,13 +1309,20 @@ int main(int argc, char *argv[])
 
 		if (loginsuccess)
 		{
-
+			if (ClientParam.endhappen == 1)
+			{
+				while (ClientParam.endhappen == 1)
+				{
+					Sleep(1);
+				}
+					
+			}
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			ClientParam.topic = Topics;
 			int Deltachat = 5 * ((float)Display_X / 1920);
 			int allchating_cnt = 0;
-			sprintf(query, "update user set status = 4 where ownnum = %d", myuser->ownnum);
+			sprintf(query, "update user set status = 1 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			Hit_Room rooms[20];
 			int newdata[3] = { 1, 1, 1 };
@@ -3467,31 +3475,40 @@ int main(int argc, char *argv[])
 
 				}
 				if (ClientParam.sockethappen == MasterExitEvent) {
+					ClientParam.sockethappen = 0;
 					byee = 1;
 				}
 				if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, Display_X*0.7317, Display_Y*0.7222, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen) || byee) //나가기 버튼 
 				{
-					sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					mysql_query(cons, query);
-
-					loginsuccess = 1;
-					roop = 1;
-					send(ClientParam.Cconnect_socket, "exit", 30, 0);
-					Sleep(100);
-					ClientParam.endhappen = 1;
-					ClientParam.Cconnect_socket = 0;
-					byee = 0;
 					if (bangsang == 1) {
 						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
 						mysql_query(cons, query);
+						strcpy(ServerParam.message, "bangsang exit");
+						sendall(&ServerParam);
 						ServerParam.endhappen = 1;
-						send(ClientParam.Cconnect_socket, "bangsang exit", 30, 0);
-						Sleep(100);
+					//	TerminateThread(server, 0);
 						closesocket(ServerParam.Slisten_socket);
 						bangsang = 0;
 					}
-					WSACleanup();
-					qquit = true;
+					else {
+						sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+
+						loginsuccess = 1;
+						roop = 1;
+						send(ClientParam.Cconnect_socket, "exit", 30, 0);
+						Sleep(50);
+
+					
+						ClientParam.endhappen = 1;
+						closesocket(ClientParam.Cconnect_socket);
+						ClientParam.Cconnect_socket = 0;
+						byee = 0;
+						TerminateThread(client, 0);
+						qquit = true;
+						WSACleanup();
+						
+					}
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
 				if (bangsang == 1 && isready)
@@ -3735,9 +3752,6 @@ int main(int argc, char *argv[])
 				}
 				if (ClientParam.sockethappen == MasterExitEvent)
 				{
-
-					send(ClientParam.Cconnect_socket, "exit", 30, 0);
-
 					ClientParam.sockethappen = 0;
 					//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
 					//		mysql_query(cons, query);
@@ -3745,9 +3759,8 @@ int main(int argc, char *argv[])
 					isplaygame = 0;
 					loginsuccess = 1;
 					roop = 1;
-					Sleep(10);
 					ClientParam.endhappen = 1;
-					ClientParam.Cconnect_socket = 0;
+					
 					quit = 1;
 
 					WSACleanup();
@@ -4068,6 +4081,7 @@ int main(int argc, char *argv[])
 							sendall(&ServerParam);
 							Sleep(100);
 							ServerParam.endhappen = 1;
+							TerminateThread(server, 0);
 							closesocket(ServerParam.Slisten_socket);
 							bangsang = 0;
 						}
@@ -4176,6 +4190,7 @@ int main(int argc, char *argv[])
 						sendall(&ServerParam);
 						Sleep(100);
 						ServerParam.endhappen = 1;
+						TerminateThread(server, 0);
 						closesocket(ServerParam.Slisten_socket);
 						bangsang = 0;
 					}
@@ -4186,6 +4201,7 @@ int main(int argc, char *argv[])
 						send(ClientParam.Cconnect_socket, "exit", 30, 0);
 						Sleep(100);
 						ClientParam.endhappen = 1;
+						TerminateThread(client, 0);
 						ClientParam.Cconnect_socket = 0;
 						WSACleanup();
 						quit = true;
