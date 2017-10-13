@@ -88,7 +88,6 @@ int main(int argc, char *argv[])
 	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_SOFTWARE/* | SDL_RENDERER_PRESENTVSYNC*/);
 
 
-
 	SDL_Texture * WaitBar = LoadTexture(renderer, ".\\maintema\\touch.png");		//계속하려면 클릭해주세요... 이미지
 	SDL_Texture * TitleText = LoadTexture(renderer, ".\\mainicon\\MainText.png");	//HitMind 글씨 이미지
 	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
@@ -4039,11 +4038,6 @@ int main(int argc, char *argv[])
 				}
 				
 
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
-					SDL_RenderPresent(renderer);
-					//printf("render	");
-					continue;
-				}
 				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
 					if (Enter == ACTIVATED&&wcslen(InGameChat) > 0) {
 						Shift = 0;
