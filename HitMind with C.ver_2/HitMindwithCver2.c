@@ -4095,13 +4095,13 @@ int main(int argc, char *argv[])
 							}
 
 						}
-						else if (event.user.code != SOCKETHAPPEN) {
+						
 							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
 							SDL_RenderFillRect(renderer, &TimerRect);
 							SDL_RenderPresent(renderer);
-						}
+						
 					}
-					else {
+					else if (event.user.code <= 7){
 						printf("main : %d\n", ++count);
 						Viewing(view, event.user.code, event.user.data1, event.user.data2);
 						SDL_RenderPresent(view->Renderer);
