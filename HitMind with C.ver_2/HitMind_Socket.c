@@ -95,6 +95,7 @@ void connectServer(SockParam *param) {
 void HandleClient(SockParam *param) {
 	char query[256];
 	int ClientNumber = param->num;
+	long long count = 0;
 	while (1) {
 		if (param->endhappen == 1)
 		{
@@ -104,6 +105,7 @@ void HandleClient(SockParam *param) {
 		if (recv(param->Sconnect_socket[ClientNumber], param->message, 180, 0) > 0) { //ClientNumber번 클라이언트에게 패킷을 받았을 때
 			printf("Server : %s\n", param->message);
 			if (!(strncmp(param->message, "Ddata", 5))) {
+				printf("%lld\n", ++count);
 				for (int i = 0; i < 4; i++) {
 					if (param->Sconnect_socket[i] != 0 && i != ClientNumber)
 						send(param->Sconnect_socket[i], param->message, 180, 0);
@@ -213,6 +215,7 @@ void Clientrecv(SockParam *param) {
 	int i = 0;
 	int num;
 	int num2;
+	long long count = 0;
 	while (1) {
 
 		if (param->endhappen == 1) {
@@ -223,6 +226,7 @@ void Clientrecv(SockParam *param) {
 		if (recv(param->Cconnect_socket, param->message, 180, 0)) { // 패킷을 받았을 때
 			printf("Client : %s\n", param->message);
 			if ((strncmp(param->message, "Ddata", 5) == 0)) {
+				printf("%lld\n", ++count);
 				PushUserEvent(param->message);
 			}
 			else if (strcmp(param->message, "game start") == 0) {
