@@ -914,7 +914,7 @@ void Re_Load(SDL_Window *window, SDL_Renderer *renderer, int dis_x, int dis_y, i
 	if (isfull)
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else {
-		//printf("%d %d\n", dis_x, dis_y);
+		////printf("%d %d\n", dis_x, dis_y);
 		SDL_SetWindowFullscreen(window, 0);
 		SDL_SetWindowSize(window, dis_x, dis_y);
 	}
@@ -1427,14 +1427,14 @@ void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 		sprintf(data2, "%d", temp);
 	}
 	sprintf(sendstring, "Ddata %d %s %s", code,data1, data2) ;// 6 + 2 + 7 + 5 +1
-	send(sending, sendstring, 21, 0);
+	send(sending, sendstring, 180, 0);
 	// send문
 	return;
 }
 void PushUserEvent(char receive[]) {
 	int data1; int data2; int code; 
 	sscanf(receive,"Ddata %d %d %d",&code,&data1,&data2);
-//	printf("data1 : %d , data2 : %d\n", data1, data2);
+//	//printf("data1 : %d , data2 : %d\n", data1, data2);
 	ViewEvent.user.data1 = data1;
 	ViewEvent.user.data2 = data2;
 	ViewEvent.user.code = code;
@@ -1464,7 +1464,7 @@ void Viewing(View * View, int code,void *pdata1, void* pdata2) {
 	}
 	else if (code == STRONG) {
 		View->Strong = data1 / 100000.0 * Display_X;
-		printf("view->strong : %d\n", View->Strong);
+		//printf("view->strong : %d\n", View->Strong);
 		return;
 	}
 	else if (code == NEW) {

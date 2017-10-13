@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	ServerParam.c = &client;
 	if (font == 0)
 	{
-		//printf("error");
+		////printf("error");
 		getchar();
 	}
 	Mix_Music *lobbymusic = Mix_LoadMUS("sound/lobby.mp3");
@@ -95,12 +95,12 @@ int main(int argc, char *argv[])
 	mousesurface = IMG_Load(".\\design\\pencil.png");
 	if (!mousesurface)
 	{
-		//printf("loadbmp");
+		////printf("loadbmp");
 	}
 	SDL_Cursor* cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 	if (!cursor)
 	{
-		//printf("cursor");
+		////printf("cursor");
 		getchar();
 	}
 	SDL_SetCursor(cursor);
@@ -190,7 +190,8 @@ int main(int argc, char *argv[])
 				SDL_WaitEventTimeout(&event, 100);
 
 				switch (event.type) {
-				case SDL_KEYDOWN:SDL_WINDOWEVENT_RESTORED:
+				case SDL_KEYDOWN:
+				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
 					break;
@@ -280,13 +281,13 @@ int main(int argc, char *argv[])
 							pass_length = myuser->pass_length;
 							autologin_checking = 1;
 							myuser->password[strlen(myuser->password)] = 0;
-							////printf("%s", myuser->password);
+							//////printf("%s", myuser->password);
 
 							han2unicode(myuser->password, Password_put);
 						}
 						while (loginpopup && !loginsuccess)
 						{
-							//////printf("%d\n", dkdk++);
+							////////printf("%d\n", dkdk++);
 							SDL_WaitEvent(&event);
 						
 							switch (event.type)
@@ -341,7 +342,7 @@ int main(int argc, char *argv[])
 											myuser = User_Login_sql(cons, db_id, db_password);
 											if (myuser == -1)
 											{
-												//	////printf("\n아이디 오류");
+												//	//////printf("\n아이디 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "아이디가 틀립니다");
 												warning.size = 20.0 * ((float)Display_X / 1920);
@@ -355,7 +356,7 @@ int main(int argc, char *argv[])
 											}
 											else if (myuser == 0)
 											{
-												//	////printf("\n비밀번호 오류");
+												//	//////printf("\n비밀번호 오류");
 												warning.ison = 1;
 												strcpy(warning.message, "비밀번호가 틀립니다");
 												warning.size = 20.0 * ((float)Display_X / 1920);
@@ -399,7 +400,7 @@ int main(int argc, char *argv[])
 								else if (event.key.keysym.sym == SDLK_BACKSPACE && (ID_INPUT ? wcslen(ID_put) > 0 : (PASSWORD_INPUT ? wcslen(Password_put) > 0 : 0)))// 키보드 백스페이스고 배열의 길이가 1이상일때
 								{
 									if (slice == 0) {
-										//		//printf("\nslice아니 상태");
+										//		////printf("\nslice아니 상태");
 										if (ID_INPUT == 1)
 											ID_put[wcslen(ID_put) - 1] = '\0';
 										else if (PASSWORD_INPUT == 1)
@@ -407,7 +408,7 @@ int main(int argc, char *argv[])
 										textinput = true;
 									}
 									else {
-										//		//printf("\nslice상태");
+										//		////printf("\nslice상태");
 										slice--;
 									}
 								}
@@ -535,7 +536,7 @@ int main(int argc, char *argv[])
 								myuser = User_Login_sql(cons, db_id, db_password);
 								if (myuser == -1)
 								{
-									////printf("\n아이디 오류");
+									//////printf("\n아이디 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "아이디가 틀립니다");
 									warning.size = 20.0 * ((float)Display_X / 1920);
@@ -549,7 +550,7 @@ int main(int argc, char *argv[])
 								}
 								else if (myuser == 0)
 								{
-									////printf("\n비밀번호 오류");
+									//////printf("\n비밀번호 오류");
 									warning.ison = 1;
 									strcpy(warning.message, "비밀번호가 틀립니다");
 									warning.size = 20.0 * ((float)Display_X / 1920);
@@ -568,7 +569,7 @@ int main(int argc, char *argv[])
 										}
 										else
 										{
-											////printf("\n자동 로그인 오류");
+											//////printf("\n자동 로그인 오류");
 											warning.ison = 1;
 											strcpy(warning.message, "자동 로그인 등록 실패");
 											warning.size = 15.0 * ((float)Display_X / 1920);
@@ -1340,6 +1341,8 @@ int main(int argc, char *argv[])
 				}
 					
 			}
+			cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+			SDL_SetCursor(cursor);
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			ClientParam.topic = Topics;
@@ -1462,7 +1465,7 @@ int main(int argc, char *argv[])
 					newdataed = 0;
 					RefrashEvent = 1;
 				}
-				////printf("%d\n", dkdkdk++);
+				//////printf("%d\n", dkdkdk++);
 				//		if (SDL_PollEvent(&event))
 				//		{
 				//	SDL_WaitEvent(&event);
@@ -1558,7 +1561,7 @@ int main(int argc, char *argv[])
 								textinput = true;
 							}
 							else {
-								//		////printf("\nslice상태");
+								//		//////printf("\nslice상태");
 								slice--;
 							}
 						}
@@ -1693,7 +1696,7 @@ int main(int argc, char *argv[])
 
 				if (newdata[1] || chatmovehappen) {
 					int DeltaY = 0;
-					//printf("happen\n");
+					////printf("happen\n");
 					for (i = maxchating - 1; i >= 0; i--)
 					{
 						//	sprintf(db_id, "%s : %s", chatings[i].name, chatings[i].message);
@@ -2835,7 +2838,7 @@ int main(int argc, char *argv[])
 									textinput = true;
 								}
 								else {
-									//		////printf("\nslice상태");
+									//		//////printf("\nslice상태");
 									slice--;
 								}
 							}
@@ -2999,7 +3002,7 @@ int main(int argc, char *argv[])
 									textinput = true;
 								}
 								else {
-									//		////printf("\nslice상태");
+									//		//////printf("\nslice상태");
 									slice--;
 								}
 							}
@@ -3253,7 +3256,7 @@ int main(int argc, char *argv[])
 								textinput = true;
 							}
 							else {
-								//		////printf("\nslice상태");
+								//		//////printf("\nslice상태");
 								slice--;
 							}
 						}
@@ -3633,7 +3636,6 @@ int main(int argc, char *argv[])
 			int cnum = 0;
 			SOCKCHAT Chattings[20] = { 0, };
 
-
 			sprintf(query, "update user set status = 2 where ownnum = %d", myuser->ownnum);
 			mysql_query(cons, query);
 			int MaxTopic = My_Room.question; //총 토픽 개수
@@ -3774,7 +3776,6 @@ int main(int argc, char *argv[])
 			// 타이머 생성
 			int currectshowtimer = 0;
 			int DefaultTimer = TimerRect.w;
-
 			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
 			int Time = 50; // ms 단위(10의 배수로) 너무 크게하면 타이머가 스무스하지 않고 너무 작게하면 keyboardRepeat가 빨라진다
 			double TimerTemp = (double)TimerRect.w;
@@ -3810,97 +3811,123 @@ int main(int argc, char *argv[])
 				SDL_WaitEvent(&event);
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					//printf("update %lld\n", ++ccount);
+					////printf("render	");
 					continue;
 				}
-				if (ClientParam.sockethappen == NewTopicEvent)
+				if (ClientParam.sockethappen != 0)
 				{
-					ClientParam.sockethappen = 0;
-					if (Me->Turn == 1) {
-						// 내 턴
-						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
-						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
-					}		
-					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-					strcpy(pasttopic, Topics);
-				}
-				if (ClientParam.sockethappen == MasterExitEvent)
-				{
-					ClientParam.sockethappen = 0;
-					//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
-					//		mysql_query(cons, query);
-					isstartgame = 0;
-					isplaygame = 0;
-					loginsuccess = 1;
-					roop = 1;
-					ClientParam.endhappen = 1;
-					
-					quit = 1;
-
-					WSACleanup();
-				}
-				if (ClientParam.sockethappen == UserHappenEvent)
-				{
-					ClientParam.sockethappen = 0;
-					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
-					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-
-				}
-				if (ClientParam.sockethappen == InGamePassButton)
-				{
-					ClientParam.sockethappen = 0;
-					gameuser[NowPlayer - 1].Turn = 0;
-					gameuser[ClientParam.num - 1].Turn = 1;
-					NowPlayer = ClientParam.num;
-					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
-					DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-					strcpy(pasttopic, Topics);
-				}
-				if (ClientParam.sockethappen == CurrectAnswerEvent)
-				{
-					Mix_PlayChannel(0, killsound, 0);
-					ClientParam.sockethappen = 0;
-					NowTopic++;
-
-					gameuser[NowPlayer - 1].Turn = 0;
-
-					gameuser[ClientParam.num - 1].Count++;
-					NowPlayer = ClientParam.num;
-					if (NowTopic > MaxTopic) {
-						showscore = 1;
-						quit = true;
-						break;
+					if (ClientParam.sockethappen == NewTopicEvent)
+					{
+						ClientParam.sockethappen = 0;
+						if (Me->Turn == 1) {
+							// 내 턴
+							Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+							Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+						}
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+						strcpy(pasttopic, Topics);
 					}
-					//시작
-					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-					FillRoundRect(renderer, 211, 211, 211, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.18, 20 * ((float)Display_X / 1920));
-					FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.04, 20 * ((float)Display_X / 1920));
-					Put_Text_Center(renderer, "알림", Display_X * 0.48, Display_Y * 0.4, Display_X * 0.06, Display_Y * 0.04, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+					if (ClientParam.sockethappen == MasterExitEvent)
+					{
+						ClientParam.sockethappen = 0;
+						//		sprintf(query, "update room set people = people - 1 where num = %d", My_Room.ownnum);
+						//		mysql_query(cons, query);
+						isstartgame = 0;
+						isplaygame = 0;
+						loginsuccess = 1;
+						roop = 1;
+						ClientParam.endhappen = 1;
 
-					FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.455, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
-					FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.515, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
+						quit = 1;
 
-					//변수를 출력해야 할 곳
-					//사람 이름
-					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.422, Display_Y * 0.46, Display_X * 0.08, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
-					Put_Text_Center(renderer, gameuser[NowPlayer - 1].Nickname, Display_X * 0.422, Display_Y * 0.465, Display_X * 0.08, Display_Y * 0.03, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
-					PutText(renderer, "님이 맞추셨습니다.", Display_X * 0.505, Display_Y * 0.468, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					//정답
-					PutText(renderer, "정답은", Display_X * 0.43, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					FillRoundRect(renderer, 255, 255, 255, Display_X * 0.47, Display_Y * 0.52, Display_X * 0.1, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
-					Put_Text_Center(renderer, pasttopic, Display_X * 0.47, Display_Y * 0.521, Display_X * 0.1, Display_Y * 0.04, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
+						WSACleanup();
+					}
+					if (ClientParam.sockethappen == UserHappenEvent)
+					{
+						ClientParam.sockethappen = 0;
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_Y * 0.77 + Display_X*0.005, Display_X * 0.8, Display_Y * 0.21, Display_X*0.007);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_Y * 0.77 + Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.21 + 2, Display_X*0.007, 1);
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 
-					PutText(renderer, "입니다.", Display_X * 0.5735, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
-					strcpy(pasttopic, Topics);
+					}
+					if (ClientParam.sockethappen == InGamePassButton)
+					{
+						ClientParam.sockethappen = 0;
+						gameuser[NowPlayer - 1].Turn = 0;
+						gameuser[ClientParam.num - 1].Turn = 1;
+						NowPlayer = ClientParam.num;
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+						DrawRoundRect(renderer, 191, 191, 191, Display_X*0.005 - 1, Display_X*0.005 - 1, Display_X * 0.8 + 2, Display_Y * 0.76 + 2, Display_X*0.007, 1);
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+						strcpy(pasttopic, Topics);
+					}
+					if (ClientParam.sockethappen == CurrectAnswerEvent)
+					{
+						Mix_PlayChannel(0, killsound, 0);
+						ClientParam.sockethappen = 0;
+						NowTopic++;
+
+						gameuser[NowPlayer - 1].Turn = 0;
+
+						gameuser[ClientParam.num - 1].Count++;
+						NowPlayer = ClientParam.num;
+						if (NowTopic > MaxTopic) {
+							showscore = 1;
+							quit = true;
+							break;
+						}
+						//시작
+						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+						FillRoundRect(renderer, 211, 211, 211, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.18, 20 * ((float)Display_X / 1920));
+						FillUpRoundRect(renderer, 146, 208, 80, Display_X * 0.35, Display_Y * 0.4, Display_X * 0.32, Display_Y * 0.04, 20 * ((float)Display_X / 1920));
+						Put_Text_Center(renderer, "알림", Display_X * 0.48, Display_Y * 0.4, Display_X * 0.06, Display_Y * 0.04, 255, 255, 255, 30 * ((float)Display_X / 1920), 2);
+
+						FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.455, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
+						FillRoundRect(renderer, 242, 242, 242, Display_X * 0.365, Display_Y * 0.515, Display_X * 0.29, Display_Y * 0.05, 10 * ((float)Display_X / 1920));
+
+						//변수를 출력해야 할 곳
+						//사람 이름
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.422, Display_Y * 0.46, Display_X * 0.08, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
+						Put_Text_Center(renderer, gameuser[NowPlayer - 1].Nickname, Display_X * 0.422, Display_Y * 0.465, Display_X * 0.08, Display_Y * 0.03, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
+						PutText(renderer, "님이 맞추셨습니다.", Display_X * 0.505, Display_Y * 0.468, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						//정답
+						PutText(renderer, "정답은", Display_X * 0.43, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						FillRoundRect(renderer, 255, 255, 255, Display_X * 0.47, Display_Y * 0.52, Display_X * 0.1, Display_Y * 0.04, 10 * ((float)Display_X / 1920));
+						Put_Text_Center(renderer, pasttopic, Display_X * 0.47, Display_Y * 0.521, Display_X * 0.1, Display_Y * 0.04, 0, 0, 0, 25 * ((float)Display_X / 1920), 2);
+
+						PutText(renderer, "입니다.", Display_X * 0.5735, Display_Y * 0.528, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
+						strcpy(pasttopic, Topics);
 
 
-					currectshowtimer = 1;
+						currectshowtimer = 1;
 
+					}
+					if (ClientParam.sockethappen == TimeOutEvent) {
+						ClientParam.sockethappen = 0;
+						gameuser[NowPlayer - 1].Turn = 0;
+						while (1)
+						{
+							NowPlayer %= 4;
+							NowPlayer++;
+							if (gameuser[NowPlayer - 1].status != 0) {
+								gameuser[NowPlayer - 1].Turn = 1;
+								break;
+							}
+						}
+						if (Me->Turn == 1) {
+							// 내 턴
+							Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
+							Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
+						}
+						strcpy(pasttopic, Topics);
+						FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
+						UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
+						TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
+					}
 				}
 				if (currectshowtimer != 0 && event.user.code == TIMER && event.type == SDL_USEREVENT)
 				{
@@ -4013,28 +4040,7 @@ int main(int argc, char *argv[])
 						continue;
 					}
 				}
-				if (ClientParam.sockethappen == TimeOutEvent) {
-					ClientParam.sockethappen = 0;
-					gameuser[NowPlayer - 1].Turn = 0;
-					while (1)
-					{
-						NowPlayer %= 4;
-						NowPlayer++;
-						if (gameuser[NowPlayer - 1].status != 0) {
-							gameuser[NowPlayer - 1].Turn = 1;
-							break;
-						}
-					}
-					if (Me->Turn == 1) {
-						// 내 턴
-						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
-						Streaming(COLOR, canvas->Color.r, canvas->Color.g, canvas->Color.b, ClientParam.Cconnect_socket);
-					}
-					strcpy(pasttopic, Topics);		
-					FillRoundRect(renderer, 255, 255, 255, Display_X*0.005, Display_X*0.005, Display_X * 0.8, Display_Y * 0.76, Display_X*0.007);
-					UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
-					TimerTemp = DefaultTimer;// 실제로는 그리고 있는 사람의 타이머에 동기화해야하므로 그리고있는 사람은 계속 타이머의 w값을 보내줘야함.
-				}
+				
 
 				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
 					if (Enter == ACTIVATED&&wcslen(InGameChat) > 0) {
@@ -4060,7 +4066,7 @@ int main(int argc, char *argv[])
 						textinput = true;
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render   ");
+					////printf("render   ");
 					continue;
 				}
 				if (PutButtonWithImage(renderer, DChatTexture, HChatTexture, ChatTexture, ChatRect.x, ChatRect.y, ChatRect.w, ChatRect.h, &event, &Chat) == 1) {
@@ -4068,7 +4074,7 @@ int main(int argc, char *argv[])
 						wcscpy(InGameChat, L"");
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 				switch (event.type)
@@ -4088,18 +4094,20 @@ int main(int argc, char *argv[])
 							}
 
 						}
-						else if (event.user.code != SOCKETHAPPEN) {
+						
 							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
 							SDL_RenderFillRect(renderer, &TimerRect);
 							SDL_RenderPresent(renderer);
-						}
+						
 					}
-					else {
+					else if (event.user.code <= 7){
+						//printf("main : %d\n", ++count);
 						Viewing(view, event.user.code, event.user.data1, event.user.data2);
 						SDL_RenderPresent(view->Renderer);
 						break;
 					}
 					break;
+
 				case SDL_TEXTINPUT: // 채팅 입력 이벤트
 					if (Chat != ACTIVATED)
 						break;
@@ -4352,7 +4360,7 @@ int main(int argc, char *argv[])
 						Shift++;
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					////printf("render	");
 					textinput = false;
 					continue;
 				}
@@ -4370,7 +4378,7 @@ int main(int argc, char *argv[])
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_RenderDrawRect(renderer, &rect2);
 						SDL_RenderPresent(renderer);
-						//printf("render	");
+						////printf("render	");
 					}
 					else if (canvas->Flag == PENCIL) {
 						canvas->Strong *= PencilStrong / 70.0;
@@ -4378,7 +4386,7 @@ int main(int argc, char *argv[])
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 						SDL_RenderPresent(renderer);
-						//printf("render	");
+						////printf("render	");
 					}
 					if (Me->Turn == 1)
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
@@ -4390,14 +4398,14 @@ int main(int argc, char *argv[])
 						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_RenderDrawRect(renderer, &rect2);
 						SDL_RenderPresent(renderer);
-						//printf("render	");
+						////printf("render	");
 					}
 					else if (canvas->Flag == PENCIL) {
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 						SDL_RenderPresent(renderer);
-						//printf("render	");
+						////printf("render	");
 					}
 					continue;
 				}
@@ -4423,7 +4431,7 @@ int main(int argc, char *argv[])
 
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					////printf("render	");
 
 					continue;
 				}
@@ -4446,7 +4454,7 @@ int main(int argc, char *argv[])
 						SDL_RenderDrawRect(renderer, &rect2);
 					}
 					SDL_RenderPresent(renderer);
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 				if (UpdateButton(NewButton, &event) == 1) {
@@ -4482,7 +4490,7 @@ int main(int argc, char *argv[])
 					SDL_RenderPresent(renderer);
 					if (NewButton->Flag == ACTIVATED)
 						NewButton->Flag = HIGHLIGHT;
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 				if (UpdateButton(MagButton, &event) == 1) {
@@ -4509,7 +4517,7 @@ int main(int argc, char *argv[])
 					}
 					if (MagButton->Flag == ACTIVATED)
 						MagButton->Flag = HIGHLIGHT;
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 				if (UpdateButton(RecycleButton, &event) == 1) {
@@ -4525,7 +4533,7 @@ int main(int argc, char *argv[])
 					}
 					if (RecycleButton->Flag == ACTIVATED)
 						RecycleButton->Flag = HIGHLIGHT;
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 				if (UpdateButton(PassButton, &event) == 1) {
@@ -4550,7 +4558,7 @@ int main(int argc, char *argv[])
 					}
 					if (PassButton->Flag == ACTIVATED)
 						PassButton->Flag = HIGHLIGHT;
-					//printf("render	");
+					////printf("render	");
 					continue;
 				}
 			}
