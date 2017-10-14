@@ -360,7 +360,22 @@ int Create_Room_sql(MYSQL *cons, wchar_t * roomname, wchar_t * rompass, int mode
 	}
 	return 1;
 }
-
+int Get_Notice_sql(MYSQL *cons, Notice * notice) {
+	MYSQL_RES * sql_result;
+	MYSQL_ROW rows;
+	int i = 0;
+	mysql_query(cons, "select * from notice");
+	sql_result = mysql_store_result(cons);
+	while ((rows = mysql_fetch_row(sql_result)) != 0)
+	{
+		notice[i].ownnum = atoi(rows[0]);
+		strcpy(notice[i].content, rows[1]);
+		strcpy(notice[i].time, rows[2]);
+		i++;
+	}
+	mysql_free_result(sql_result);
+	return i;
+}
 int Insert_Topic_sql(MYSQL *cons, char *my_name, wchar_t * topic)
 {
 	char char_message[256] = "";
