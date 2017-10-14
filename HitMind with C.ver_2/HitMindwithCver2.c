@@ -160,6 +160,8 @@ int main(int argc, char *argv[])
 
 	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
 	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920,1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+
 	SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
@@ -2758,7 +2760,7 @@ int main(int argc, char *argv[])
 					RoomX_Setting(roomx, Display_X);
 					Displayrect.w = Display_X;
 					Displayrect.h = Display_Y;
-					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+					SurfaceOfWindow = SDL_GetWindowSurface(Window);
 					newdataed = 1;
 					chatblank = 17.5 * ((float)Display_X / 1920);
 					chatlimity = Display_Y*0.735 + 10 + chatblank;
@@ -3835,6 +3837,16 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
+				if (event.type == SDL_KEYDOWN) {
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+					printf("saved\n");
+				}
+				if(event.type== SDL_WINDOWEVENT&& event.window.event== SDL_WINDOWEVENT_RESTORED &&Full) {
+					SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+					SDL_UpdateWindowSurface(Window);
+					printf("restored\n");
+					continue;
+				}
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("update %lld\n", ++ccount);
@@ -4234,8 +4246,7 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
-					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
-
+				
 					if (event.key.keysym.sym == SDLK_ESCAPE) {
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4398,11 +4409,7 @@ int main(int argc, char *argv[])
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 
-					case SDL_WINDOWEVENT_RESTORED: if(Full) {
-						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
-						SDL_UpdateWindowSurface(Window);
-						break;
-					}
+				
 												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						if (Me->Turn == 1) {// DB연동
