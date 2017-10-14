@@ -160,16 +160,14 @@ int main(int argc, char *argv[])
 	ClientParam.topic = Topics;
 
 	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
-	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920,1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-
-
+	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 	SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 	//
 
-	SDL_Rect Displayrect = { 0,0,Display_X,Display_Y };		
-	
+	SDL_Rect Displayrect = { 0,0,Display_X,Display_Y };
+
 	//SDL_Rect rect2 = { 0,0,50,50 };
 	//SDL_Rect rect3 = { 0,44-25,50,50 };
 	//SDL_Rect rect4 = { 25,0,44,44 };
@@ -190,7 +188,7 @@ int main(int argc, char *argv[])
 	//SDL_Delay(1000);
 
 	//
-		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
+	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
 	Mix_FadeInMusic(mainmusic, -1, 3000);
 
 	while (roop)
@@ -233,13 +231,13 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
-					
-					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+
+					case SDL_WINDOWEVENT_RESTORED: if (Full) {
 						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 						SDL_UpdateWindowSurface(Window);
 						break;
 					}
-				   break;
+												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						quit = true;// quit를 true로 변경
 						Sleep(100);
@@ -320,7 +318,7 @@ int main(int argc, char *argv[])
 						{
 							////////printf("%d\n", dkdk++);
 							SDL_WaitEvent(&event);
-						
+
 							switch (event.type)
 							{
 							case SDL_TEXTINPUT: // 채팅 입력 이벤트
@@ -351,7 +349,7 @@ int main(int argc, char *argv[])
 								}
 								textinput = true;
 								break;
-							case SDL_KEYDOWN:	
+							case SDL_KEYDOWN:
 								SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 								if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 									if (hangeul == true && enter == false)
@@ -495,7 +493,7 @@ int main(int argc, char *argv[])
 								case SDL_WINDOWEVENT_ENTER:// 윈도우
 									SDL_RaiseWindow(SDL_GetWindowFromID(event.window.windowID));//포커스 이동시킴
 									break;
-								case SDL_WINDOWEVENT_RESTORED: if(Full) {
+								case SDL_WINDOWEVENT_RESTORED: if (Full) {
 									SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 									SDL_UpdateWindowSurface(Window);
 									break;
@@ -507,7 +505,7 @@ int main(int argc, char *argv[])
 									break;
 								}
 							}
-						
+
 							//이미지 출력 시작
 
 							RenderTextureXYWH(renderer, login_base, set_start_x, set_start_y, set_start_w, set_start_h);
@@ -800,7 +798,7 @@ int main(int argc, char *argv[])
 											Sleep(100);
 											break;// 브레이크
 
-										case SDL_WINDOWEVENT_RESTORED: if(Full) {
+										case SDL_WINDOWEVENT_RESTORED: if (Full) {
 											SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 											SDL_UpdateWindowSurface(Window);
 											break;
@@ -1370,7 +1368,7 @@ int main(int argc, char *argv[])
 				{
 					Sleep(1);
 				}
-					
+
 			}
 			cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 			SDL_SetCursor(cursor);
@@ -1630,7 +1628,7 @@ int main(int argc, char *argv[])
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 
-					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+					case SDL_WINDOWEVENT_RESTORED: if (Full) {
 						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 						SDL_UpdateWindowSurface(Window);
 						break;
@@ -1845,7 +1843,7 @@ int main(int argc, char *argv[])
 						LobbyShift++;
 					}
 				}
-				
+
 				//if (Display_Y * (1.08 - (0.03 * i)) - chattingdrag < Display_Y * 0.89 && Display_Y * (1.08 - (0.03 * i)) - chattingdrag > Display_Y * 0.76)
 				//	PutText(renderer, db_id, Display_X * 0.04, Display_Y * (1.08 - (0.03 * i)) - chattingdrag, 25 * ((float)Display_X / 1920), 0, 0, 0, 1);
 
@@ -2008,7 +2006,7 @@ int main(int argc, char *argv[])
 								case SDL_WINDOWEVENT:
 									switch (event.window.event) {
 
-									case SDL_WINDOWEVENT_RESTORED: if(Full) {
+									case SDL_WINDOWEVENT_RESTORED: if (Full) {
 										SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 										SDL_UpdateWindowSurface(Window);
 										break;
@@ -2362,7 +2360,7 @@ int main(int argc, char *argv[])
 						case SDL_WINDOWEVENT:
 							switch (event.window.event) {
 
-							case SDL_WINDOWEVENT_RESTORED: if(Full) {
+							case SDL_WINDOWEVENT_RESTORED: if (Full) {
 								SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 								SDL_UpdateWindowSurface(Window);
 								break;
@@ -2613,7 +2611,7 @@ int main(int argc, char *argv[])
 						case SDL_WINDOWEVENT:
 							switch (event.window.event) {
 
-							case SDL_WINDOWEVENT_RESTORED: if(Full) {
+							case SDL_WINDOWEVENT_RESTORED: if (Full) {
 								SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 								SDL_UpdateWindowSurface(Window);
 								break;
@@ -2767,7 +2765,7 @@ int main(int argc, char *argv[])
 					RoomX_Setting(roomx, Display_X);
 					Displayrect.w = Display_X;
 					Displayrect.h = Display_Y;
-					SurfaceOfWindow = SDL_GetWindowSurface(Window);
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					newdataed = 1;
 					chatblank = 17.5 * ((float)Display_X / 1920);
 					chatlimity = Display_Y*0.735 + 10 + chatblank;
@@ -3269,7 +3267,7 @@ int main(int argc, char *argv[])
 								UTF82EUCKR(char_message, 512, qwery, 850);
 								char_message[strlen(char_message)] = '\0';
 								sprintf(qwery, "chat %s", char_message);
-								send(ClientParam.Cconnect_socket, qwery,180, 0);
+								send(ClientParam.Cconnect_socket, qwery, 180, 0);
 								wcscpy(ID_put, L"");
 								textinput = true;
 								LobbyShift = 0;
@@ -3328,7 +3326,7 @@ int main(int argc, char *argv[])
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 
-					case SDL_WINDOWEVENT_RESTORED: if(Full) {
+					case SDL_WINDOWEVENT_RESTORED: if (Full) {
 						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
 						SDL_UpdateWindowSurface(Window);
 						break;
@@ -3593,7 +3591,7 @@ int main(int argc, char *argv[])
 						strcpy(ServerParam.message, "bangsang exit");
 						sendall(&ServerParam);
 						ServerParam.endhappen = 1;
-					//	TerminateThread(server, 0);
+						//	TerminateThread(server, 0);
 						closesocket(ServerParam.Slisten_socket);
 						bangsang = 0;
 					}
@@ -3606,7 +3604,7 @@ int main(int argc, char *argv[])
 						send(ClientParam.Cconnect_socket, "exit", 30, 0);
 						Sleep(50);
 
-					
+
 						ClientParam.endhappen = 1;
 						closesocket(ClientParam.Cconnect_socket);
 						ClientParam.Cconnect_socket = 0;
@@ -3614,7 +3612,7 @@ int main(int argc, char *argv[])
 						TerminateThread(client, 0);
 						qquit = true;
 						WSACleanup();
-						
+
 					}
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
@@ -3844,16 +3842,6 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
-				if (event.type == SDL_KEYDOWN) {
-					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
-					printf("saved\n");
-				}
-				if(event.type== SDL_WINDOWEVENT&& event.window.event== SDL_WINDOWEVENT_RESTORED &&Full) {
-					SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
-					SDL_UpdateWindowSurface(Window);
-					printf("restored\n");
-					continue;
-				}
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("update %lld\n", ++ccount);
@@ -3961,7 +3949,7 @@ int main(int argc, char *argv[])
 
 						WSACleanup();
 					}
-				
+
 					if (ClientParam.sockethappen == UserHappenEvent)
 					{
 						ClientParam.sockethappen = 0;
@@ -4157,7 +4145,7 @@ int main(int argc, char *argv[])
 						continue;
 					}
 				}
-				
+
 
 				if (PutButtonWithImage(renderer, EnterTexture, HEnterTexture, NULL, EnterRect.x, EnterRect.y, EnterRect.w, EnterRect.h, &event, &Enter)) {
 					if (Enter == ACTIVATED&&wcslen(InGameChat) > 0) {
@@ -4198,7 +4186,7 @@ int main(int argc, char *argv[])
 				{
 				case SDL_USEREVENT:// DB연동
 					if (event.user.code == TIMER) {
-						SDL_FillRectXYWH(renderer, TimerRect.x, TimerRect.y, DefaultTimer,TimerRect.h,255,255,255);
+						SDL_FillRectXYWH(renderer, TimerRect.x, TimerRect.y, DefaultTimer, TimerRect.h, 255, 255, 255);
 						TimerTemp -= TimerRate;
 						TimerRect.w = TimerTemp;
 						//send문으로 모든플레이어에게 현재 TimerRect의 가로길이를 알려줘야함
@@ -4211,13 +4199,13 @@ int main(int argc, char *argv[])
 							}
 
 						}
-						
-							SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
-							SDL_RenderFillRect(renderer, &TimerRect);
-							SDL_RenderPresent(renderer);
-						
+
+						SDL_SetRenderDrawColor(renderer, 146, 208, 80, 0);
+						SDL_RenderFillRect(renderer, &TimerRect);
+						SDL_RenderPresent(renderer);
+
 					}
-					else if (event.user.code <= 7){
+					else if (event.user.code <= 7) {
 						//printf("main : %d\n", ++count);
 						Viewing(view, event.user.code, event.user.data1, event.user.data2);
 						SDL_RenderPresent(view->Renderer);
@@ -4253,7 +4241,8 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
-				
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+
 					if (event.key.keysym.sym == SDLK_ESCAPE) {
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4416,7 +4405,11 @@ int main(int argc, char *argv[])
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 
-				
+					case SDL_WINDOWEVENT_RESTORED: if (Full) {
+						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+						SDL_UpdateWindowSurface(Window);
+						break;
+					}
 												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						if (Me->Turn == 1) {// DB연동
@@ -4622,8 +4615,8 @@ int main(int argc, char *argv[])
 							}
 							CenterArrange(TopicText);
 							RenderText(TopicText);
-											// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
-							
+							// 실제로는 관리자 : 정답은 x글자입니다 라는걸 알려줘야함.
+
 							SDL_RenderPresent(renderer);
 
 						}
