@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
 	SDL_Texture * TitleImage = LoadTexture(renderer, ".\\mainicon\\main_wallpaper.jpg");
 	SDL_Surface * mousesurface = NULL;
 	mousesurface = IMG_Load(".\\design\\pencil.png");
+	SDL_Surface * mousesurface2 = IMG_Load(".\\design\\EraserSurface.png");
 	if (!mousesurface)
 	{
 		////printf("loadbmp");
@@ -161,9 +162,32 @@ int main(int argc, char *argv[])
 	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
 	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920,1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
+
+	SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
 	//
 
-	SDL_Rect Displayrect = { 0,0,Display_X,Display_Y };
+	SDL_Rect Displayrect = { 0,0,Display_X,Display_Y };		
+	
+	//SDL_Rect rect2 = { 0,0,50,50 };
+	//SDL_Rect rect3 = { 0,44-25,50,50 };
+	//SDL_Rect rect4 = { 25,0,44,44 };
+	//SDL_FillRectXYWH(renderer, rect2.x,rect2.y,rect2.w,rect2.h,255,255,255);
+	//SDL_DrawRectXYWH(renderer, rect2.x, rect2.y, rect2.w, rect2.h, 0,0,0);
+	//SDL_RenderPresent(renderer);
+	//SDL_RenderReadPixels(renderer, &rect2, SDL_PIXELFORMAT_ARGB8888, SurfaceOfCursor->pixels, SurfaceOfCursor->pitch);
+	//SDL_RenderClear(renderer);
+	//SDL_RenderPresent(renderer);
+	//SDL_Delay(1000);
+	//SDL_BlitSurface(SurfaceOfCursor, NULL,TempSurface,&rect3);
+	//SDL_BlitSurface(mousesurface, NULL,TempSurface,&rect4 );
+	//SDL_BlitSurface(TempSurface, NULL, SurfaceOfWindow, NULL);
+	SDL_BlitSurface(mousesurface, NULL, TempSurface, NULL);
+	cursor = SDL_CreateColorCursor(TempSurface, 0, 43);
+	SDL_SetCursor(cursor);
+	//SDL_UpdateWindowSurface(Window);
+	//SDL_Delay(1000);
 
 	//
 		_beginthreadex(NULL, 0, (_beginthreadex_proc_type)Thread_MySQL, (void *)&status, 0, 0);
@@ -2740,7 +2764,9 @@ int main(int argc, char *argv[])
 					free(slider_display);
 
 					RoomX_Setting(roomx, Display_X);
-					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+					Displayrect.w = Display_X;
+					Displayrect.h = Display_Y;
+					SurfaceOfWindow = SDL_GetWindowSurface(Window);
 					newdataed = 1;
 					chatblank = 17.5 * ((float)Display_X / 1920);
 					chatlimity = Display_Y*0.735 + 10 + chatblank;
@@ -3780,7 +3806,8 @@ int main(int argc, char *argv[])
 			UpdateUserInfo(gameuser, Me, Topics, UserRect, CountText, TopicText, NowTopic, MaxTopic);
 			//
 			// 타이머 생성
-			
+			SDL_Point mouse;
+			int OnCanvas = 0;
 			int currectshowtimer = 0;
 			int DefaultTimer = TimerRect.w;
 			int LimitTime = My_Room.time; // 초단위 (최소 1초 이상이여야한다 )
@@ -3816,11 +3843,92 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
+				if (event.type == SDL_KEYDOWN) {
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+					printf("saved\n");
+				}
+				if(event.type== SDL_WINDOWEVENT&& event.window.event== SDL_WINDOWEVENT_RESTORED &&Full) {
+					SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+					SDL_UpdateWindowSurface(Window);
+					printf("restored\n");
+					continue;
+				}
 				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("update %lld\n", ++ccount);
 					////printf("render	");
 					continue;
+				}
+				if (event.type == SDL_MOUSEMOTION) {
+					SDL_GetMouseState(&mouse.x, &mouse.y);
+					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1) {
+						OnCanvas = 1;
+						SDL_Rect samplerect = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+						SDL_Rect rect2 = { 0,44 - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+						SDL_Rect rect3 = { canvas->Strong / 2.0,0,44,44 };
+						SDL_Rect strongrect = { 0,0,canvas->Strong,canvas->Strong };
+						SDL_Cursor * Temp = cursor;
+						if (canvas->Flag == ERASER) {
+							SDL_RenderReadPixels(renderer, &samplerect, SDL_PIXELFORMAT_ARGB8888, TempSurface->pixels, TempSurface->pitch);
+							SDL_UpperBlitScaled(TempSurface, &strongrect, SurfaceOfCursor, &rect2);
+							SDL_UpperBlitScaled(mousesurface2, NULL, SurfaceOfCursor, &rect3);
+							cursor = SDL_CreateColorCursor(SurfaceOfCursor, canvas->Strong / 2.0, 44);
+							SDL_SetCursor(cursor);
+						}
+						else {
+							SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
+
+							if (canvas->Color.r + canvas->Color.g + canvas->Color.b == 255 + 255 + 255) {
+								SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+								SDL_RenderFillRect(renderer, &rect1);
+								SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+								FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+								SDL_RenderReadPixels(renderer, &samplerect, SDL_PIXELFORMAT_ARGB8888, TempSurface->pixels, TempSurface->pitch);
+								SDL_SetColorKey(TempSurface, 1, SDL_MapRGB(TempSurface->format, 0, 0, 0));// r,g,b값에 해당하는 색상을 지우는 함수
+								SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+								SDL_RenderFillRect(renderer, &rect1);
+
+							}
+							else {
+								SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+								SDL_RenderFillRect(renderer, &rect1);
+								SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+								FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+								SDL_RenderReadPixels(renderer, &samplerect, SDL_PIXELFORMAT_ARGB8888, TempSurface->pixels, TempSurface->pitch);
+								SDL_SetColorKey(TempSurface, 1, SDL_MapRGB(TempSurface->format, 255, 255, 255));// r,g,b값에 해당하는 색상을 지우는 함수
+							}
+							SDL_UpperBlitScaled(TempSurface, &strongrect, SurfaceOfCursor, &rect2);
+							SDL_UpperBlitScaled(mousesurface, NULL, SurfaceOfCursor, &rect3);
+							cursor = SDL_CreateColorCursor(SurfaceOfCursor, canvas->Strong / 2.0, 44);
+							SDL_SetCursor(cursor);
+							SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+							FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
+							SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
+							FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
+							SDL_RenderPresent(renderer);
+
+						}
+						SDL_FreeCursor(Temp);
+						SDL_FreeSurface(SurfaceOfCursor);
+						SDL_FreeSurface(TempSurface);
+						SDL_FreeSurface(SurfaceOfRenderer);
+						SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+						SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+						TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+					}
+					else if (OnCanvas == 1 && SDL_PointInRect(&mouse, &canvas->Rect) == 0) {
+						OnCanvas = 0;
+						SDL_Cursor * Temp = cursor;
+						if (canvas->Flag == PENCIL) {
+							cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+						}
+						else {
+							cursor = SDL_CreateColorCursor(mousesurface2, 0, 43);
+						}
+						SDL_SetCursor(cursor);
+						SDL_FreeCursor(Temp);
+					}
 				}
 				if (ClientParam.sockethappen != 0)
 				{
@@ -3852,6 +3960,7 @@ int main(int argc, char *argv[])
 
 						WSACleanup();
 					}
+				
 					if (ClientParam.sockethappen == UserHappenEvent)
 					{
 						ClientParam.sockethappen = 0;
@@ -4143,8 +4252,7 @@ int main(int argc, char *argv[])
 					}
 					break;
 				case SDL_KEYDOWN:
-					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
-
+				
 					if (event.key.keysym.sym == SDLK_ESCAPE) {
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4307,11 +4415,7 @@ int main(int argc, char *argv[])
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
 
-					case SDL_WINDOWEVENT_RESTORED: if(Full) {
-						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
-						SDL_UpdateWindowSurface(Window);
-						break;
-					}
+				
 												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						if (Me->Turn == 1) {// DB연동
@@ -4382,18 +4486,17 @@ int main(int argc, char *argv[])
 					SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 					if (canvas->Flag == ERASER) {
 						canvas->Strong *= EraserStrong / 70.0;
-						SDL_Rect rect2 = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
-						SDL_RenderDrawRect(renderer, &rect2);
+						SDL_Rect samplerect = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
+						SDL_RenderDrawRect(renderer, &samplerect);
 						SDL_RenderPresent(renderer);
-						////printf("render	");
 					}
 					else if (canvas->Flag == PENCIL) {
+						SDL_Rect samplerect = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						canvas->Strong *= PencilStrong / 70.0;
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 						SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 						FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 						SDL_RenderPresent(renderer);
-						////printf("render	");
 					}
 					if (Me->Turn == 1)
 						Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
@@ -4421,9 +4524,10 @@ int main(int argc, char *argv[])
 					DrawButton(PencilButton);
 					if (PencilButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, pencilsound, 0); //연필 사운드
-						mousesurface = IMG_Load(".\\design\\pencil.png");
+						SDL_Cursor * Temp = cursor;
 						cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 						SDL_SetCursor(cursor);
+						SDL_FreeCursor(Temp);
 						EraserButton->Flag = DEACTIVATED;
 						DrawButton(EraserButton);
 						canvas->Flag = PENCIL;
@@ -4446,9 +4550,10 @@ int main(int argc, char *argv[])
 					DrawButton(EraserButton);
 					if (EraserButton->Flag == ACTIVATED) {
 						Mix_PlayChannel(0, erasersound, 0); //지우게(실화냐) 사운드
-						mousesurface = IMG_Load(".\\design\\EraserSurface.png");
-						cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
+						SDL_Cursor * Temp = cursor;
+						cursor = SDL_CreateColorCursor(mousesurface2, 0, 43);
 						SDL_SetCursor(cursor);
+						SDL_FreeCursor(Temp);
 						PencilButton->Flag = DEACTIVATED;
 						DrawButton(PencilButton);
 						canvas->Flag = ERASER;
@@ -4472,9 +4577,10 @@ int main(int argc, char *argv[])
 														  //			SDL_Delay(100);
 						if (Me->Turn == 1) {
 							Streaming(NEW, 0, 0, 0, ClientParam.Cconnect_socket);
-							mousesurface = IMG_Load(".\\design\\pencil.png");
+							SDL_Cursor * Temp = cursor;
 							cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 							SDL_SetCursor(cursor);
+							SDL_FreeCursor(Temp);
 
 						}
 						canvas->Flag = PENCIL;
