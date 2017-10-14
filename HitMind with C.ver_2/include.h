@@ -41,7 +41,6 @@
 #define COLOR 6
 #define NEW 7 
 //헤더파일
-#include <math.h>
 #include <stdio.h>				//Standard Input/Output
 #include <stdlib.h>				//malloc 사용
 #include <math.h>				//수학 관련 함수
