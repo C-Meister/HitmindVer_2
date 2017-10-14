@@ -216,6 +216,11 @@ int main(int argc, char *argv[])
 
 				switch (event.type) {
 				case SDL_KEYDOWN:
+					if (event.key.keysym.sym = SDLK_ESCAPE)
+					{
+						quit = true;
+						break;
+					}
 				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
@@ -246,11 +251,7 @@ int main(int argc, char *argv[])
 				}
 				//	}
 
-				if (GetAsyncKeyState(VK_ESCAPE) & 0x0001)
-				{
-					quit = true;
-					break;
-				}
+				
 				if (status.ishappen == true) {
 					if (sum) {
 						//i = Get_Notice_sql(cons, notice);
