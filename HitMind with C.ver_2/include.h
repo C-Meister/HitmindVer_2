@@ -181,6 +181,11 @@ typedef struct User {
 	int status;
 	int ownnum;
 }User;
+typedef struct sql_notice {
+	int ownnum;
+	char content[100];
+	char time[20];
+}Notice;
 typedef struct Text {
 	SDL_Renderer *Renderer;
 	SDL_Rect Limit;
@@ -307,6 +312,7 @@ int hannum(wchar_t unicode[], int len);
 //SDL - RenderTextureXYWH 이미지를 불러오는데 Rect를 미리 생성할 필요가 없슴
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
 //SDL - PutText_Unicode Unicode모드로 글자를 출력한다. 
+int Get_Notice_sql(MYSQL *cons, Notice * notice);
 void SDL_DrawRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius, int strong);
 void SDL_DrawRectXYWH(SDL_Renderer *renderer, int x, int y, int w, int h, int r, int g, int b);
 void SDL_FillRoundRect(SDL_Renderer* Renderer, SDL_Rect * Rect, SDL_Color color, int radius);
