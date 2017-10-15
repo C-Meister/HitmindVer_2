@@ -208,6 +208,11 @@ int main(int argc, char *argv[])
 
 				switch (event.type) {
 				case SDL_KEYDOWN:
+					if (event.key.keysym.sym = SDLK_ESCAPE)
+					{
+						quit = true;
+						break;
+					}
 				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
@@ -238,11 +243,7 @@ int main(int argc, char *argv[])
 				}
 				//	}
 
-				if (GetAsyncKeyState(VK_ESCAPE) & 0x0001)
-				{
-					quit = true;
-					break;
-				}
+
 				if (status.ishappen == true) {
 					if (sum) {
 						RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
@@ -1432,7 +1433,7 @@ int main(int argc, char *argv[])
 			for (int i = 0; i < maxchating; i++) {
 				chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
 			}
-			if (chatingH >chatlimith) {
+			if (chatingH > chatlimith) {
 				chatslide->End = chatingH - chatlimith;
 				MoveSlider_value(chatslide, chatslide->End);
 			}
@@ -1455,7 +1456,7 @@ int main(int argc, char *argv[])
 					for (int i = 0; i < maxchating; i++) {
 						chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
 					}
-					if (chatingH >chatlimith) {
+					if (chatingH > chatlimith) {
 						chatslide->End = chatingH - chatlimith;
 						MoveSlider_value(chatslide, *chatslide->Value);
 						chatmovehappen = true;
@@ -1795,7 +1796,7 @@ int main(int argc, char *argv[])
 						for (int i = 0; i < maxchating; i++) {
 							chatingH += HeightOfText(chatings[i].name, Display_X*0.65, renderer, chatings[i].message, 30 * ((float)Display_X / 1920), 1);
 						}
-						if (chatingH >chatlimith) {
+						if (chatingH > chatlimith) {
 							chatslide->End = chatingH - chatlimith;
 							MoveSlider_value(chatslide, *chatslide->Value);
 							chatmovehappen = true;
@@ -3606,20 +3607,18 @@ int main(int argc, char *argv[])
 					}
 				}
 				PutText(renderer, "나가기", Display_X*0.807, Display_Y*0.75, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);
-				if (bangsang == 1 && isready)
+				if (bangsang == 1 && isready && gameuser[0].status != 1 && gameuser[1].status != 1 && gameuser[2].status != 1 && gameuser[3].status != 1)
 				{
-					if (gameuser[0].status != 1 && gameuser[1].status != 1 && gameuser[2].status != 1 && gameuser[3].status != 1)
+					if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
 					{
-						if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
-						{
-							send(ClientParam.Cconnect_socket, "game start", 40, 0);
-							sprintf(query, "delete from room where num = %d", My_Room.ownnum);
-							mysql_query(cons, query);
-							//		MouseUP_Wait;
-						}
-						PutText(renderer, "시작하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
-
+						send(ClientParam.Cconnect_socket, "game start", 40, 0);
+						sprintf(query, "delete from room where num = %d", My_Room.ownnum);
+						mysql_query(cons, query);
+						//		MouseUP_Wait;
 					}
+					PutText(renderer, "시작하기", Display_X*0.796, Display_Y*0.87, 57 * ((float)Display_X) / 1920, 255, 255, 255, 1);    //방장일때는 시작하기
+
+
 				}
 				else {
 					if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X*0.7317, Display_Y*0.85, Display_X*0.2343, Display_Y*0.1157, 20, 0, &event, &happen)) //시작하기, 준비 버튼
@@ -3837,7 +3836,17 @@ int main(int argc, char *argv[])
 					////printf("render	");
 					continue;
 				}
-				if (1||event.type == SDL_MOUSEMOTION) {
+				if (event.type == SDL_KEYDOWN) {
+					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
+					printf("saved\n");
+				}
+				if (event.type == SDL_WINDOWEVENT&& event.window.event == SDL_WINDOWEVENT_RESTORED &&Full) {
+					SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
+					SDL_UpdateWindowSurface(Window);
+					printf("restored\n");
+					continue;
+				}
+				if (event.type == SDL_MOUSEMOTION) {
 					SDL_GetMouseState(&mouse.x, &mouse.y);
 					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1) {
 						SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, canvas->Strong/2.0+44, canvas->Strong / 2.0 + 44, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -4405,13 +4414,7 @@ int main(int argc, char *argv[])
 					break;
 				case SDL_WINDOWEVENT:
 					switch (event.window.event) {
-
-					case SDL_WINDOWEVENT_RESTORED: if (Full) {
-						SDL_BlitSurface(SurfaceOfRenderer, NULL, SurfaceOfWindow, NULL);
-						SDL_UpdateWindowSurface(Window);
 						break;
-					}
-												   break;
 					case SDL_WINDOWEVENT_CLOSE:// 다수 창에서의 닫기이벤트가 발생할경우
 						if (Me->Turn == 1) {// DB연동
 							int i = NowPlayer;
@@ -4727,6 +4730,11 @@ int main(int argc, char *argv[])
 				{
 					if (gameuser[i].status != 0)
 					{
+						if (gameuser[i].Th == 1 && gameuser[i].ownnum == myuser->ownnum)
+						{
+							sprintf(query, "update user set level = level+1 where ownnum = %d", myuser->ownnum);
+							mysql_query(cons, query);
+						}
 						FillRoundRect(renderer, 0, 176, 240, Display_X * 0.357, Display_Y * (0.37 + (0.09 * (i + 1))), Display_X * 0.286, Display_Y * 0.08, 18 * ((float)Display_X / 1920));
 						DrawRect(renderer, 0, 112, 192, Display_X * 0.452, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
 						DrawRect(renderer, 0, 112, 192, Display_X * 0.545, Display_Y * (0.371 + (0.09 * (i + 1))), Display_X * 0.003, Display_Y * 0.079);
