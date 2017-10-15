@@ -152,7 +152,6 @@ int main(int argc, char *argv[])
 	int set_start_x = Display_X / 2 - (Display_X*0.346 / 2);
 	int set_start_y = Display_Y / 2.8;
 	int set_start_w = Display_X*0.346;
-	Notice notice[10];
 	int set_start_h = Display_Y*0.38;
 	char Topics[20] = "";
 	ViewEvent.type = SDL_USEREVENT;
@@ -161,8 +160,6 @@ int main(int argc, char *argv[])
 
 	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
 	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-	SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 	//
 
@@ -181,9 +178,6 @@ int main(int argc, char *argv[])
 	//SDL_BlitSurface(SurfaceOfCursor, NULL,TempSurface,&rect3);
 	//SDL_BlitSurface(mousesurface, NULL,TempSurface,&rect4 );
 	//SDL_BlitSurface(TempSurface, NULL, SurfaceOfWindow, NULL);
-	SDL_BlitSurface(mousesurface, NULL, TempSurface, NULL);
-	cursor = SDL_CreateColorCursor(TempSurface, 0, 43);
-	SDL_SetCursor(cursor);
 	//SDL_UpdateWindowSurface(Window);
 	//SDL_Delay(1000);
 
@@ -251,17 +245,12 @@ int main(int argc, char *argv[])
 				}
 				if (status.ishappen == true) {
 					if (sum) {
-						//i = Get_Notice_sql(cons, notice);
 						RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
 						RenderTextureXYWH(renderer, TitleText, set_start_x - (Display_X * 0.078), Display_Y / 10, Display_X / 2, Display_Y / 3);
 						PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255, 1);
 						RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 						// -------------------------------------------------------
-						/*FillRoundRect(renderer, 191, 191, 191, Display_X * 0.3, Display_Y * 0.33, Display_X * 0.4, Display_Y * 0.43, 20 * ((float)Display_X / 1920));
-						FillUpRoundRect(renderer, 146, 209, 79, Display_X * 0.3, Display_Y * 0.33, Display_X * 0.4, Display_Y * 0.045, 20 * ((float)Display_X / 1920));
-						PutText(renderer, "공지사항", Display_X * 0.47, Display_Y * 0.332, 32 * ((float)Display_X / 1920), 255, 255, 255, 1);
-						FillRoundRect(renderer, 217, 217, 217, Display_X * 0.31, Display_Y * 0.39, Display_X * 0.38, Display_Y * 0.27, 25 * ((float)Display_X / 1920));
-						FillRoundRect(renderer, 217, 217, 217, Display_X * 0.31, Display_Y * 0.673, Display_X * 0.38, Display_Y * 0.07, 10 * ((float)Display_X / 1920));*/
+
 						SDL_RenderPresent(renderer);
 						sum = 0;
 					}
@@ -1369,8 +1358,10 @@ int main(int argc, char *argv[])
 				}
 
 			}
+			SDL_Cursor * Temp = cursor;
 			cursor = SDL_CreateColorCursor(mousesurface, 0, 43);
 			SDL_SetCursor(cursor);
+			SDL_FreeCursor(Temp);
 			ZeroMemory(&ServerParam, sizeof(SockParam));
 			ZeroMemory(&ClientParam, sizeof(SockParam));
 			ClientParam.topic = Topics;
@@ -3832,7 +3823,6 @@ int main(int argc, char *argv[])
 			ClientParam.sockethappen = 0;
 			char pasttopic[128] = { 0 };
 			strcpy(pasttopic, Topics);
-
 			if (Me->Turn == 1) {
 				// 내 턴
 				Streaming(STRONG, 0, 0, canvas->Strong, ClientParam.Cconnect_socket);
@@ -3847,9 +3837,11 @@ int main(int argc, char *argv[])
 					////printf("render	");
 					continue;
 				}
-				if (event.type == SDL_MOUSEMOTION) {
+				if (1||event.type == SDL_MOUSEMOTION) {
 					SDL_GetMouseState(&mouse.x, &mouse.y);
 					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1) {
+						SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, canvas->Strong/2.0+44, canvas->Strong / 2.0 + 44, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+						SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL,canvas->Strong, canvas->Strong, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 						OnCanvas = 1;
 						SDL_Rect samplerect = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_Rect rect2 = { 0,44 - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
@@ -3857,15 +3849,17 @@ int main(int argc, char *argv[])
 						SDL_Rect strongrect = { 0,0,canvas->Strong,canvas->Strong };
 						SDL_Cursor * Temp = cursor;
 						if (canvas->Flag == ERASER) {
+							SDL_Surface * EraserSurface = IMG_Load(".\\design\\EraserSurface.png");
 							SDL_RenderReadPixels(renderer, &samplerect, SDL_PIXELFORMAT_ARGB8888, TempSurface->pixels, TempSurface->pitch);
 							SDL_UpperBlitScaled(TempSurface, &strongrect, SurfaceOfCursor, &rect2);
-							SDL_UpperBlitScaled(mousesurface2, NULL, SurfaceOfCursor, &rect3);
+							SDL_UpperBlitScaled(EraserSurface, NULL, SurfaceOfCursor, &rect3);
 							cursor = SDL_CreateColorCursor(SurfaceOfCursor, canvas->Strong / 2.0, 44);
 							SDL_SetCursor(cursor);
+							SDL_FreeSurface(EraserSurface);
 						}
 						else {
+							SDL_Surface	* PencilSurface = IMG_Load(".\\design\\pencil.png");
 							SDL_Rect rect1 = { Sample.x - MaxStrong / 2.0,Sample.y - MaxStrong / 2.0,MaxStrong + 2,MaxStrong + 2 };
-
 							if (canvas->Color.r + canvas->Color.g + canvas->Color.b == 255 + 255 + 255) {
 								SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 								SDL_RenderFillRect(renderer, &rect1);
@@ -3875,7 +3869,7 @@ int main(int argc, char *argv[])
 								SDL_SetColorKey(TempSurface, 1, SDL_MapRGB(TempSurface->format, 0, 0, 0));// r,g,b값에 해당하는 색상을 지우는 함수
 								SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 								SDL_RenderFillRect(renderer, &rect1);
-
+						
 							}
 							else {
 								SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -3886,23 +3880,31 @@ int main(int argc, char *argv[])
 								SDL_SetColorKey(TempSurface, 1, SDL_MapRGB(TempSurface->format, 255, 255, 255));// r,g,b값에 해당하는 색상을 지우는 함수
 							}
 							SDL_UpperBlitScaled(TempSurface, &strongrect, SurfaceOfCursor, &rect2);
-							SDL_UpperBlitScaled(mousesurface, NULL, SurfaceOfCursor, &rect3);
+							SDL_UpperBlitScaled(PencilSurface, NULL, SurfaceOfCursor, &rect3);
 							cursor = SDL_CreateColorCursor(SurfaceOfCursor, canvas->Strong / 2.0, 44);
+									cursor = SDL_CreateColorCursor(SurfaceOfCursor, canvas->Strong / 2.0, 44);
+						
+							/*	SDL_BlitSurface(TempSurface, NULL, SurfaceOfWindow, NULL);
+								SDL_UpdateWindowSurface(Window);
+								SDL_Delay(1000);
+								SDL_BlitSurface(mousesurface, NULL, SurfaceOfWindow, NULL);
+								SDL_UpdateWindowSurface(Window);
+								SDL_Delay(1000);
+								SDL_BlitSurface(SurfaceOfCursor, NULL, SurfaceOfWindow, NULL);
+								SDL_UpdateWindowSurface(Window);
+								SDL_Delay(1000);
+					*/		
 							SDL_SetCursor(cursor);
 							SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 							FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0 + 1);
 							SDL_SetRenderDrawColor(renderer, canvas->Color.r, canvas->Color.g, canvas->Color.b, 0);
 							FillCircle(renderer, Sample.x, Sample.y, canvas->Strong / 2.0);
 							SDL_RenderPresent(renderer);
-
+							SDL_FreeSurface(PencilSurface);
 						}
 						SDL_FreeCursor(Temp);
 						SDL_FreeSurface(SurfaceOfCursor);
 						SDL_FreeSurface(TempSurface);
-						SDL_FreeSurface(SurfaceOfRenderer);
-						SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-						SurfaceOfCursor = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-						TempSurface = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 					}
 					else if (OnCanvas == 1 && SDL_PointInRect(&mouse, &canvas->Rect) == 0) {
