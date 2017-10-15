@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 	ClientParam.topic = Topics;
 
 	SDL_Surface * SurfaceOfWindow = SDL_GetWindowSurface(Window);
-	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(NULL, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	SDL_Surface * SurfaceOfRenderer = SDL_CreateRGBSurface(0, 1920, 1080, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 	//
 
@@ -1489,7 +1489,7 @@ int main(int argc, char *argv[])
 					DrawRoundRect(renderer, 191, 191, 191, Display_X * 0.7 + 21, 9, Display_X * 0.275 + 2, Display_Y * 0.09 + 2, 3, 1);
 					PutText(renderer, myuser->name, Display_X * 0.87, Display_Y * 0.8, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);	//개인정보 - 이름 출력
 					PutText(renderer, query, Display_X * 0.88, Display_Y * 0.85, 30 * ((float)Display_X / 1920), 0, 0, 0, 1);	//개인정보 - 이름 출력
-					RenderTextureXYWH(renderer, myProfile, Display_X * 0.75, Display_Y * 0.75, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+					RenderTextureXYWH(renderer, myProfile, Display_X * 0.74, Display_Y * 0.74, 180 * ((float)Display_X / 1920), 180 * ((float)Display_X / 1920));
 					newdata[0] = 1;
 					newdata[1] = 1;
 					newdata[2] = 1;
@@ -1958,7 +1958,7 @@ int main(int argc, char *argv[])
 										if (hangeul == true && enter == false)
 											enter = true;
 										else {
-											if (!wstrcmp(&passwordput, &rooms[i].password)) {
+											if (!wstrcmp(passwordput, rooms[i].password)) {
 												memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
 												strcpy(ClientParam.serverip, My_Room.ip);
 												client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
@@ -2046,7 +2046,7 @@ int main(int argc, char *argv[])
 
 								//접속
 								if (PutRoundButton(renderer, 3, 114, 237, 23, 134, 255, 3, 114, 237, set_start_x + set_start_w * 0.8, set_start_y + set_start_h * 0.55, set_start_w * 0.15, set_start_h * 0.32, 13, 0, &event, &happen)) { //접속
-									if (!wstrcmp(&passwordput, &rooms[i].password)) {
+									if (!wstrcmp(passwordput, rooms[i].password)) {
 										memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
 										strcpy(ClientParam.serverip, My_Room.ip);
 										client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
@@ -3515,7 +3515,7 @@ int main(int argc, char *argv[])
 					if (gameuser[0].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-						RenderTextureXYWH(renderer, gameuser[0].Profile, Display_X * 0.08, Display_Y * 0.12, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						RenderTextureXYWH(renderer, gameuser[0].Profile, Display_X * 0.08, Display_Y * 0.12, 180 * ((float)Display_X / 1920), 180 * ((float)Display_X / 1920));
 						if (gameuser[0].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						PutText(renderer, gameuser[0].Nickname, Display_X * 0.2, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
@@ -3526,7 +3526,7 @@ int main(int argc, char *argv[])
 					if (gameuser[1].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.07, Display_X * 0.32, Display_Y * 0.04, 20);
-						RenderTextureXYWH(renderer, gameuser[1].Profile, Display_X * 0.42, Display_Y * 0.12, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						RenderTextureXYWH(renderer, gameuser[1].Profile, Display_X * 0.42, Display_Y * 0.12, 180 * ((float)Display_X / 1920), 180 * ((float)Display_X / 1920));
 						if (gameuser[1].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.07, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						PutText(renderer, gameuser[1].Nickname, Display_X * 0.55, Display_Y * 0.15, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
@@ -3537,7 +3537,7 @@ int main(int argc, char *argv[])
 					if (gameuser[2].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.03, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-						RenderTextureXYWH(renderer, gameuser[2].Profile, Display_X * 0.08, Display_Y * 0.42, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						RenderTextureXYWH(renderer, gameuser[2].Profile, Display_X * 0.08, Display_Y * 0.42, 180 * ((float)Display_X / 1920), 180 * ((float)Display_X / 1920));
 						if (gameuser[2].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.166, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						PutText(renderer, gameuser[2].Nickname, Display_X * 0.2, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
@@ -3549,7 +3549,7 @@ int main(int argc, char *argv[])
 					if (gameuser[3].status) {
 						FillRoundRect(renderer, 232, 232, 232, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.275, 20);
 						FillUpRoundRect(renderer, 0, 176, 240, Display_X * 0.37, Display_Y * 0.37, Display_X * 0.32, Display_Y * 0.04, 20);
-						RenderTextureXYWH(renderer, gameuser[3].Profile, Display_X * 0.42, Display_Y * 0.42, 148 * ((float)Display_X / 1920), 173 * ((float)Display_X / 1920));
+						RenderTextureXYWH(renderer, gameuser[3].Profile, Display_X * 0.42, Display_Y * 0.42, 180 * ((float)Display_X / 1920), 180* ((float)Display_X / 1920));
 						if (gameuser[3].status == 2)
 							PutText(renderer, "Ready", Display_X * 0.51, Display_Y * 0.37, 30 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						PutText(renderer, gameuser[3].Nickname, Display_X * 0.55, Display_Y * 0.47, 40 * ((float)Display_X / 1920), 0, 0, 0, 1);
@@ -3664,7 +3664,7 @@ int main(int argc, char *argv[])
 		{
 			Mix_PauseMusic();
 			DWORD ExitSoundThread = 0;
-			HANDLE SoundThread = (HANDLE)_beginthreadex(NULL, NULL, (_beginthreadex_proc_type)soundplay, NULL, NULL, NULL); //나중에 게임 들어가면 쓸 음악
+			HANDLE SoundThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)soundplay, NULL, 0, NULL); //나중에 게임 들어가면 쓸 음악
 			int cnum = 0;
 			SOCKCHAT Chattings[20] = { 0, };
 
@@ -3861,8 +3861,8 @@ int main(int argc, char *argv[])
 				if (event.type == SDL_MOUSEMOTION) {
 					SDL_GetMouseState(&mouse.x, &mouse.y);
 					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1 && canvas->Strong>=2) {
-						SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, canvas->Strong/2.0+44, canvas->Strong / 2.0 + 44, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-						SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL,canvas->Strong, canvas->Strong, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+						SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(0, canvas->Strong/2.0+44, canvas->Strong / 2.0 + 44, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+						SDL_Surface * TempSurface = SDL_CreateRGBSurface(0,canvas->Strong, canvas->Strong, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 						OnCanvas = 1;
 						SDL_Rect samplerect = { Sample.x - canvas->Strong / 2.0,Sample.y - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
 						SDL_Rect rect2 = { 0,44 - canvas->Strong / 2.0,canvas->Strong,canvas->Strong };
