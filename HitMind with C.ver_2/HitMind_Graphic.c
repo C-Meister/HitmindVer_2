@@ -1259,8 +1259,13 @@ void Timer(unsigned int time) {
 }
 int PutText_ln(char * name, int Limit_w, int Limit_y, int Limit_h, SDL_Renderer * renderer, char * sentence, int x, int y, int size, int r, int g, int b, int m) {
 	int DeltaY = 0, Shift = 0, Length = 150;
-	char Name[30]; Unicode unicode[256] = L""; Unicode Sentence[151] = L"";
-	sprintf(Name, "%s : ", name); han2unicode(Name, unicode);
+	char Name[30] = ""; Unicode unicode[256] = L""; Unicode Sentence[151] = L"";
+	if (name != 0) {
+		sprintf(Name, "%s : ", name);
+	}
+	else
+		sprintf(Name, "·");
+	han2unicode(Name, unicode);
 	SDL_Color Color = { r,g,b,0 };
 	SDL_Surface * Surface = NULL;	SDL_Texture* NameTexture = NULL;	SDL_Texture* MsgTexture = NULL;
 	SDL_Rect Src = { 0 };	SDL_Rect Dst = { 0 };
@@ -1547,3 +1552,17 @@ void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT **Chatlist, int first) {
 	}
 
 }*/
+void PrintNotice(SDL_Renderer * renderer, MYSQL*cons)
+{
+	printf("%d %d", Display_X, Display_Y);
+	int plus_y = 0;
+	Notice notice[5];
+	int i = Get_Notice_sql(cons, notice);
+	for (int j = 0; j < i; j++)
+	{
+		printf("%s\n", notice[j].content);
+		
+		plus_y += PutText_ln(NULL, Display_X * 0.37, Display_Y * 0.34, Display_Y * 0.4, renderer, notice[j].content, Display_X * 0.32, Display_Y * 0.4 + plus_y,30 * ((float)Display_X / 1920), 0, 0, 0, 1);
+		plus_y += 10;
+	}
+}

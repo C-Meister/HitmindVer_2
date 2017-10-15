@@ -214,11 +214,12 @@ int main(int argc, char *argv[])
 
 				switch (event.type) {
 				case SDL_KEYDOWN:
-					if (event.key.keysym.sym = SDLK_ESCAPE)
+					if (event.key.keysym.sym == SDLK_ESCAPE)
 					{
 						quit = true;
 						break;
 					}
+					break;
 				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
@@ -252,24 +253,30 @@ int main(int argc, char *argv[])
 
 				if (status.ishappen == true) {
 					if (sum) {
+						cons = status.arg;
 						//i = Get_Notice_sql(cons, notice);
 						RenderTextureXYWH(renderer, TitleImage, 0, 0, Display_X, Display_Y);
 						RenderTextureXYWH(renderer, TitleText, set_start_x - (Display_X * 0.078), Display_Y / 10, Display_X / 2, Display_Y / 3);
 						PutText(renderer, version, 20, (Display_Y / 20) * 19, Display_X / 48, 255, 255, 255, 1);
 						RenderTextureXYWH(renderer, WaitBar, 0, Display_Y / 1.3, Display_X, Display_Y / 15);
 						// -------------------------------------------------------
-						/*FillRoundRect(renderer, 191, 191, 191, Display_X * 0.3, Display_Y * 0.33, Display_X * 0.4, Display_Y * 0.43, 20 * ((float)Display_X / 1920));
+						FillRoundRect(renderer, 191, 191, 191, Display_X * 0.3, Display_Y * 0.33, Display_X * 0.4, Display_Y * 0.43, 20 * ((float)Display_X / 1920));
 						FillUpRoundRect(renderer, 146, 209, 79, Display_X * 0.3, Display_Y * 0.33, Display_X * 0.4, Display_Y * 0.045, 20 * ((float)Display_X / 1920));
 						PutText(renderer, "공지사항", Display_X * 0.47, Display_Y * 0.332, 32 * ((float)Display_X / 1920), 255, 255, 255, 1);
 						FillRoundRect(renderer, 217, 217, 217, Display_X * 0.31, Display_Y * 0.39, Display_X * 0.38, Display_Y * 0.27, 25 * ((float)Display_X / 1920));
-						FillRoundRect(renderer, 217, 217, 217, Display_X * 0.31, Display_Y * 0.673, Display_X * 0.38, Display_Y * 0.07, 10 * ((float)Display_X / 1920));*/
+						FillRoundRect(renderer, 217, 217, 217, Display_X * 0.31, Display_Y * 0.673, Display_X * 0.38, Display_Y * 0.07, 10 * ((float)Display_X / 1920));
+						if (Get_Version_sql(cons, query))
+						{
+							Put_Text_Center(renderer, query, Display_X * 0.33, Display_Y * 0.675, Display_X * 0.34, Display_Y * 0.066, 0, 0, 0, 40 * ((float)Display_X / 1920), 1);
+						}
+						PrintNotice(renderer, cons);
 						SDL_RenderPresent(renderer);
 						sum = 0;
 					}
 					if (PressButton)	//계속하려면 클릭하세요 버튼을 누를때
 					{
 						warning.ison = 0;
-						cons = status.arg;
+						
 						ID_INPUT = 1;
 						PASSWORD_INPUT = 0;
 						loginpopup = true;

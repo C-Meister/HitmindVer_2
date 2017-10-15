@@ -182,7 +182,7 @@ typedef struct User {
 }User;
 typedef struct sql_notice {
 	int ownnum;
-	char content[100];
+	char content[200];
 	char time[20];
 }Notice;
 typedef struct Text {
@@ -343,6 +343,7 @@ int UpdateButton(Button * Button, SDL_Event * event);
 void DrawButton(Button * Button);
 void FillCircle(SDL_Renderer * Renderer, int Center_x, int Center_y, int radius);
 void Line(SDL_Renderer* Renderer, float x1, float y1, float x2, float y2);
+void PrintNotice(SDL_Renderer * renderer, MYSQL*cons);
 void LineThick(SDL_Renderer* Renderer, int Thick,float x1, float y1, float x2, float y2);
 void LineCircle(SDL_Renderer*Renderer, int Thick, float x1, float y1, float x2, float y2);
 void swap(float *a, float * b);
@@ -365,6 +366,7 @@ int Password_Change_sql(MYSQL *cons, wchar_t *id, wchar_t *newpassword, wchar_t 
 //_beginthreadex용 함수. 쓰레드로 mysql에 연결함
 void Thread_MySQL(Connect_status *type);
 //처음 MySQL에 연결함
+int Get_Version_sql(MYSQL *cons, char * message);
 MYSQL * Mysql_Connect(char *ip);
 //wstr로 쿼리문을 실행함
 int Mysql_wstr_query(MYSQL *cons, wchar_t * query);
