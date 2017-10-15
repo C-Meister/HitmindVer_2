@@ -213,6 +213,8 @@ int main(int argc, char *argv[])
 						quit = true;
 						break;
 					}
+					else
+						PressButton = 1;
 					break;
 				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
