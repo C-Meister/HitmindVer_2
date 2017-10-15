@@ -27,7 +27,7 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	//ShowWindow(GetConsoleWindow(), 0);
+	ShowWindow(GetConsoleWindow(), 0);
 
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	TTF_Init();		//TTF 초기화
 	HitMind_TTF_Init();
 	HitMind_TTF2_Init();
-	char version[] = "1.0.1 - Beta";		//현제 버전
+	char version[] = "1.0.1 - Release";		//현제 버전
 	TTF_Font *font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);	//나눔고딕 폰트를 불러옴
 	SockParam ServerParam;
 	SockParam ClientParam;
