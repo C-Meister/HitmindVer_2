@@ -29,12 +29,25 @@ char * GetDefaultMyIP()
 
 void settings(int *x, int *y, int *music, int *sound, int *full) {
 	FILE *set = fopen("setting.txt", "rt");
+	if (set == NULL)
+	{
+		set = fopen("setting.txt", "wt");
+		fprintf(set, "<HitMid_Setting>\n");
+		fprintf(set, "배경음악 : %d\n", 30);
+		fprintf(set, "효과음 : %d\n", 30);
+		fprintf(set, "Display_X : %d\n", 1920);
+		fprintf(set, "Display_Y : %d\n", 1080);
+		fprintf(set, "fullscreen : %d\n", 1);
+		fclose(set);
+		set = fopen("setting.txt", "rt");
+	}
 	fscanf(set, "<HitMid_Setting>\n");
 	fscanf(set, "배경음악 : %d\n", music);
 	fscanf(set, "효과음 : %d\n", sound);
 	fscanf(set, "Display_X : %d\n", x);
 	fscanf(set, "Display_Y : %d\n", y);
 	fscanf(set, "fullscreen : %d\n", full);
+	SetFileAttributes(L"setting.txt", FILE_ATTRIBUTE_HIDDEN);
 }
 
 void HitMind_Timer(Hit_Timer *arg)
