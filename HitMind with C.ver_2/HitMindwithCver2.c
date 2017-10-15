@@ -208,11 +208,12 @@ int main(int argc, char *argv[])
 
 				switch (event.type) {
 				case SDL_KEYDOWN:
-					if (event.key.keysym.sym = SDLK_ESCAPE)
+					if (event.key.keysym.sym == SDLK_ESCAPE)
 					{
 						quit = true;
 						break;
 					}
+					break;
 				case SDL_WINDOWEVENT_RESTORED:
 					SDL_RenderReadPixels(renderer, &Displayrect, SDL_PIXELFORMAT_ARGB8888, SurfaceOfRenderer->pixels, SurfaceOfRenderer->pitch);
 					PressButton = 1;
@@ -3830,7 +3831,7 @@ int main(int argc, char *argv[])
 			while (!quit)//로그인 성공 후 대기창
 			{
 				SDL_WaitEvent(&event);
-				if (Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
+				if (StrongSlider->Click==false&&Me->Turn == 1 && UpdateCanvas(canvas, &event, ClientParam.Cconnect_socket) == 1 && Chat != ACTIVATED) {
 					SDL_RenderPresent(renderer);
 					//printf("update %lld\n", ++ccount);
 					////printf("render	");
@@ -3848,7 +3849,7 @@ int main(int argc, char *argv[])
 				}
 				if (event.type == SDL_MOUSEMOTION) {
 					SDL_GetMouseState(&mouse.x, &mouse.y);
-					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1) {
+					if (OnCanvas == 0 && SDL_PointInRect(&mouse, &canvas->Rect) == 1 && canvas->Strong>=2) {
 						SDL_Surface * SurfaceOfCursor = SDL_CreateRGBSurface(NULL, canvas->Strong/2.0+44, canvas->Strong / 2.0 + 44, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 						SDL_Surface * TempSurface = SDL_CreateRGBSurface(NULL,canvas->Strong, canvas->Strong, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 						OnCanvas = 1;
