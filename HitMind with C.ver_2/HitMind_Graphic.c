@@ -1405,6 +1405,7 @@ int RoomX_Setting(roomX *roomx, int Display_x) {
 	roomx[1].time = Display_x * 0.575;
 	roomx[1].people = Display_x * 0.65;
 	roomx[1].rock = Display_x * 0.645;
+	return 1;
 }
 void Streaming(int code, int x_r, int y_g, int Strong_b, SOCKET sending) {
 	char data1[7]="0";

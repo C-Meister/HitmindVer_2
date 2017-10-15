@@ -1875,7 +1875,7 @@ int main(int argc, char *argv[])
 
 					if (PutButtonImage(renderer, Room_Back_noclick, Room_Back_click, roomx[i % 2].button, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event, &happen)) {
 
-						RenderTextureXYWH(renderer, Room_Back_noclick, roomx[i % 2].button, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14, &event);
+						RenderTextureXYWH(renderer, Room_Back_noclick, roomx[i % 2].button, Display_Y * (0.07 + 0.15 * (j / 2)), Display_X * 0.335, Display_Y * 0.14);
 						sprintf(db_id, "%.3d", rooms[i].ownnum);
 						PutText(renderer, db_id, roomx[i % 2].number, Display_Y * (0.107 + 0.15 * (j / 2)), 50 * ((float)Display_X / 1920), 0, 0, 0, 1);	//번호 출력
 
