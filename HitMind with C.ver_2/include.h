@@ -260,9 +260,9 @@ SDL_Event ViewEvent;
  int Display_X;
  int Display_Y;
  char ServerIp[20];
-static int BGmusic = 30;     //배경음악 크기
-static int Sound = 30;       //효과음
-static int Full = 0;
+int BGmusic;     //배경음악 크기
+int Sound ;       //효과음
+int Full ;
 //---------------콘솔 함수----------------
 //나의 IP를 받아옴a
 char * GetDefaultMyIP();

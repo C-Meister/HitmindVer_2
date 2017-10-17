@@ -5,7 +5,6 @@
 
 void Thread_MySQL(Connect_status *type)
 {
-	printf("%s", ServerIp);
 	(MYSQL *)type->arg = Mysql_Connect(ServerIp);
 	type->ishappen = true;
 }
@@ -21,7 +20,6 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 	MYSQL *cons = mysql_init(NULL);		//MySQL을 초기화 한다.
 	if (cons == NULL)
 	{
-		////printf("\nMySQL초기화 실패...\n오류 원인 : %s\n", mysql_error(cons));	//mysql_error() 에러 원인을 반환함
 		exit(1);
 	}
 	if (mysql_real_connect(cons, ip, "hitmind", "hituser", NULL, 0, NULL, 0) == NULL)	//MySQL에 연결함
@@ -30,7 +28,10 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 		////printf("\nMySQL 연결 실패...\n오류 원인 : %s\n", mysql_error(cons));
 		////printf("ip를 다시 적어 주세요...\n->");
 		ShowWindow(GetConsoleWindow(), 1);
+		printf("DB서버에 연결을 실패하였습니다. setting.txt파일에 Ip를 바꾸거나 지금 입력해주세요\n->");
 		scanf("%s", ServerIp);
+		ShowWindow(GetConsoleWindow(), 0);
+		changesetting(BGmusic, Sound, Display_X, Display_Y, Full);
 		return Mysql_Connect(ServerIp);		//재귀함수의 호출(다시 연결함)
 	}
 	else
