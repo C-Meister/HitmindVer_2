@@ -5,7 +5,8 @@
 
 void Thread_MySQL(Connect_status *type)
 {
-	(MYSQL *)type->arg = Mysql_Connect("10.80.162.92");
+	printf("%s", ServerIp);
+	(MYSQL *)type->arg = Mysql_Connect(ServerIp);
 	type->ishappen = true;
 }
 MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL구조체
@@ -25,11 +26,12 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 	}
 	if (mysql_real_connect(cons, ip, "hitmind", "hituser", NULL, 0, NULL, 0) == NULL)	//MySQL에 연결함
 	{
-		char sqlip[30];
+		
 		////printf("\nMySQL 연결 실패...\n오류 원인 : %s\n", mysql_error(cons));
 		////printf("ip를 다시 적어 주세요...\n->");
-		scanf("%s", sqlip);
-		return Mysql_Connect(sqlip);		//재귀함수의 호출(다시 연결함)
+		ShowWindow(GetConsoleWindow(), 1);
+		scanf("%s", ServerIp);
+		return Mysql_Connect(ServerIp);		//재귀함수의 호출(다시 연결함)
 	}
 	else
 	{

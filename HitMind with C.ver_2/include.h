@@ -259,6 +259,7 @@ SDL_Event ViewEvent;
 
  int Display_X;
  int Display_Y;
+ char ServerIp[20];
 static int BGmusic = 30;     //배경음악 크기
 static int Sound = 30;       //효과음
 static int Full = 0;

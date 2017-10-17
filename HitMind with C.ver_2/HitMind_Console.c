@@ -38,6 +38,7 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 		fprintf(set, "Display_X : %d\n", 1920);
 		fprintf(set, "Display_Y : %d\n", 1080);
 		fprintf(set, "fullscreen : %d\n", 1);
+		fprintf(set, "ServerIp : %s\n", "10.80.162.92");
 		fclose(set);
 		set = fopen("setting.txt", "rt");
 	}
@@ -47,6 +48,7 @@ void settings(int *x, int *y, int *music, int *sound, int *full) {
 	fscanf(set, "Display_X : %d\n", x);
 	fscanf(set, "Display_Y : %d\n", y);
 	fscanf(set, "fullscreen : %d\n", full);
+	fscanf(set, "ServerIp : %s", ServerIp);
 	fclose(set);
 	
 }
@@ -78,6 +80,7 @@ void changesetting(int bgmusic, int sound, int x, int y, int full) {
 	fprintf(set, "Display_X : %d\n", x);
 	fprintf(set, "Display_Y : %d\n", y);
 	fprintf(set, "fullscreen : %d\n", full);
+	fprintf(set, "ServerIp : %s\n", ServerIp);
 	fclose(set);
 }
 int wstrcmp(wchar_t *First, char *second) {
