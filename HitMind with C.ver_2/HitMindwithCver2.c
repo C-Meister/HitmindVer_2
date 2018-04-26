@@ -27,8 +27,26 @@ HitMind with C.ver_2 프로젝트를 시작합니다.
 
 int main(int argc, char *argv[])
 {
-	ShowWindow(GetConsoleWindow(), 0);
+	//MYSQL * con = Mysql_Connect("10.80.161.54");
+	//char query[128] = "";
+	//sprintf(query, "select * from hitmind_2.notice"); // sprintf 변수를 문자열에 넣기 위한 함수 stdio.h에 선언되어있음.
+	//mysql_query(con, query);
+	//MYSQL_RES * sql_result; // 리턴된 값을 받기 위한 함수
+	//sql_result = mysql_store_result(con); // 값을 저장함
+	//MYSQL_ROW sql_row;
+	//int i = 0, max = mysql_num_fields(sql_result);
+	//while (sql_row = mysql_fetch_row(sql_result)) { //값이 끝날때 까지 반복함
+	//	for (i = 0; i < max; i++)	//필드의 개수만큼 반복
+	//		printf("%s ", sql_row[i])
+	//		;
+	//}
+	//mysql_close(con);
+	//getchar();
 
+	char query[128] = "";
+	int i = 0;
+	ShowWindow(GetConsoleWindow(), 0);
+	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
 	MYSQL *cons = 0;		//MySQL선언
@@ -115,7 +133,8 @@ int main(int argc, char *argv[])
 	Hit_User * myuser = 0;
 	int hanyeong = false; // 한영키상태에 쓰이는 불 변수
 	User gameuser[4] = { 0, };
-	int i, j;
+//	int i, j;
+	int j;
 	Hit_Room My_Room;
 	memset(&My_Room, 0, sizeof(My_Room));
 	int happen = 0;
@@ -134,7 +153,7 @@ int main(int argc, char *argv[])
 	int setting_main = 0;
 	int isplaygame = 0;
 	int pass_length = 0;
-	char query[256];
+//	char query[256];
 	char utf8[256] = "";// wtf8 변환에 필요한 배열
 	int my_game_number = 0;
 	char wtf8[768] = "";
@@ -2561,16 +2580,20 @@ int main(int argc, char *argv[])
 					newdataed = 1;
 					continue;
 				}
+			
 				if (PutRoundButton(renderer, 255, 0, 0, 210, 0, 0, 255, 0, 0, Display_X * 0.81 + 22, Display_Y * 0.037 - (Display_Y*Display_Y) / (1080 * 1080.0)*11.5, Display_X / 11, Display_Y / 18, 8, 0, &event, &happen)) //빠른 시작 버튼
 				{
 					for (j = 3; j >= 1; j--) {
+						if (isplaygame == true)
+							break;
 						for (i = 0; i < roomcount; i++) {
 							if (rooms[i].people == j && strlen(rooms[i].password) == 0) {
 								memcpy(&My_Room, &rooms[i], sizeof(Hit_Room));
 								strcpy(ClientParam.serverip, My_Room.ip);
 								client = _beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, &ClientParam, 0, NULL);
 
-								isplaygame = true;
+								isplaygame = true; 
+								break;
 							}
 
 						}

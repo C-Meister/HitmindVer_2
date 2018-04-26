@@ -22,7 +22,7 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 	{
 		exit(1);
 	}
-	if (mysql_real_connect(cons, ip, "hitmind", "hituser", NULL, 0, NULL, 0) == NULL)	//MySQL에 연결함
+	if (mysql_real_connect(cons, ip, "hitmind", "", NULL, 0, NULL, 0) == NULL)	//MySQL에 연결함
 	{
 		
 		////printf("\nMySQL 연결 실패...\n오류 원인 : %s\n", mysql_error(cons));
@@ -39,6 +39,7 @@ MYSQL * Mysql_Connect(char *ip)		//Mysql_Connect함수	인자값:ip주소 반환값:MySQL�
 		////printf("\n%s 연결 성공...\n", ip);
 		mysql_set_character_set(cons, "euckr");	//DB의 캐릭터 세승ㄹ euckr(기본 콘솔)로 바꿈
 		mysql_select_db(cons, "hitmind_2");		//hitmind_2 DB를 선택함
+		
 	}
 	return cons;	//연결값을 반환
 }

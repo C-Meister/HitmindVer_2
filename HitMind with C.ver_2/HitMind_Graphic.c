@@ -695,6 +695,7 @@ char* UNICODE2UTF8(wchar_t* unicode, int len) {
 }
 int UTF82EUCKR(char *outBuf, int outLength, char *inBuf, int inLength)
 {
+	
 	iconv_t cd = iconv_open("EUC-KR", "UTF-8");
 	int ires = (int)iconv(cd, &inBuf, (size_t*)&inLength, &outBuf, (size_t*)&outLength);
 	iconv_close(cd);
