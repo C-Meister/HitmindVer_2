@@ -1,7 +1,0 @@
-<HitMid_Setting>
-배경음악 : 30
-효과음 : 30
-Display_X : 1280
-Display_Y : 720
-fullscreen : 0
-ServerIp : 10.80.162.92
