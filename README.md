@@ -1,5 +1,4 @@
 # Hitmind
-c언어로 만든 캐치마인드 게임 입니다
 
 ![크레딧 사진](./image/credit.png)
 
