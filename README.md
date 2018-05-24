@@ -2,6 +2,9 @@
 
 ![크레딧 사진](./image/credit.png)
 
+## 개요
+히트마인드 [버전 1](https://github.com/tbvjaos510/HitmindVer_1)을 재개발하여 만든 게임입니다.
+
 ## 참가자
 
 [대구소프트웨어고등학교](http://www.dgsw.hs.kr/index.do) 학생들로 구성된 4인 팀입니다.
