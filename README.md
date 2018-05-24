@@ -3,9 +3,8 @@
 ![크레딧 사진](./image/credit.png)
 
 ## 개요
-![크레딧 사진](./image/what.jpg) <br>
-[히트마인드 버전1](https://github.com/tbvjaos510/HitmindVer_1)을 재개발하여 만든 게임입니다.
-c언어로 만든 
+![내용 사진](./image/what.jpg) <br>
+[히트마인드 버전1](https://github.com/tbvjaos510/HitmindVer_1)을 재개발하여 만든 게임입니다. 
 
 ## 팀원
 
